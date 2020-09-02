@@ -33,15 +33,7 @@ const Plan=(props)=>{
            <div className='md:block px-2'>
            <label className='text-xl text-gray-700 md:text-sm'>Plan type:</label>
            <p className='text-gray-600'>{props.plan.identification}</p>
-           {
-            props.plan.planId ?
-            <Button 
-        isButton={true}
-        onClick={cancelSubscription.bind(this,props.plan)} 
-        title='Cancel Subscription'
-        moreStyle='bg-red-500 text-white rounded-lg mt-4 py-1 px-8 md:mt-6'/>
-            :null
-           }
+           
            </div>
            </div>
            {
@@ -52,7 +44,15 @@ const Plan=(props)=>{
            </div>
            :null
            }
-           
+           {
+            props.plan.planId ?
+            <Button 
+        isButton={true}
+        onClick={cancelSubscription.bind(this,props.plan)} 
+        title='Cancel Subscription'
+        moreStyle='bg-red-500 text-white rounded-lg mt-4 py-1 px-8 md:mt-6'/>
+            :null
+           }
            
 		</div>
 		)
