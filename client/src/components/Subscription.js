@@ -65,7 +65,7 @@ class Subscription extends React.Component{
   render(){
 
   return (
-    <div className='px-16 mx-auto container bg-gray-100 mt-12 '>
+    <div className='px-16 mx-auto container mt-12'>
     <Input 
     title='Amount'
     value={this.state.amount}
