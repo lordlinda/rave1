@@ -3,11 +3,9 @@ const unirest = require('unirest');
 const cors =require('cors')
 require('dotenv').config()
 var bodyParser = require('body-parser')
-const Ravepay = require("flutterwave-node");
- const request = require('request');
  const moment=require('moment')
-const rave = new Ravepay(process.env.PUBLIC, process.env.SECRET, false);
 const morgan=require('morgan')
+const path=require('path')
 //connect to mongodb
 const connectDB =require('./db.js')
 
@@ -22,6 +20,12 @@ app.use('/users',require('./routes/users.js'))
 app.use('/payments',require('./routes/payments.js'))
 
  //console.log(moment('2020-08-31T09:26:42.000Z').format("YYYY-MM-DD HH:mm"))
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/client/build/index.html'));
+  });
+}
 
-
-app.listen(5000,()=>console.log('server is listening'))
+const port =process.env.PORT || 5000
+app.listen(port,()=>console.log('server is listening'))
