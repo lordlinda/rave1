@@ -19,7 +19,7 @@ class Rave extends React.Component{
     onSuccess: (response) => {
       console.log(response)
         if(response){
-            axios.post('http://localhost:5000/payments/makePayment',response)
+            axios.post('/payments/makePayment',response)
             .then(res=>{
                 console.log(res.data)
                 this.setState({amount:0})
@@ -43,7 +43,7 @@ class Rave extends React.Component{
     this.setState({currency:e.target.value})
    }
    componentDidMount(){
-     axios.get('http://localhost:5000/users/user')
+     axios.get('/users/user')
             .then(res=>{
               this.setState({customer_email:res.data.user.email})
             })

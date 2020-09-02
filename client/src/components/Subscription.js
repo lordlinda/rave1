@@ -22,7 +22,7 @@ class Subscription extends React.Component{
     onSuccess: (response) => {
       console.log(response)
         if(response){
-          axios.post('http://localhost:5000/payments/makeSubscription',response)
+          axios.post('/payments/makeSubscription',response)
           .then(res=>{
             console.log(res.data)
             this.setState({amount:0})
@@ -56,7 +56,7 @@ class Subscription extends React.Component{
     }
     
     componentDidMount(){
-       axios.get('http://localhost:5000/users/user')
+       axios.get('/users/user')
             .then(res=>{
               this.setState({customer_email:res.data.user.email})
             })      

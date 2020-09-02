@@ -8,7 +8,7 @@ import {SIGN_UP,AUTH_ERROR,SIGN_IN,USER_LOADED,SIGN_OUT} from './types.js'
 export const loadUser=()=>async (dispatch)=>{
 	const token = localStorage.getItem('token')
 axios.defaults.headers.common['Authorization'] = token 
-	await axios.get('http://localhost:5000/users/user')
+	await axios.get('/users/user')
             .then(res=>{
               //console.log(res.data.user)
               dispatch({
@@ -24,7 +24,7 @@ axios.defaults.headers.common['Authorization'] = token
 }
 export const signUp =(user)=>async (dispatch)=>{
 		await axios
-				   .post('http://localhost:5000/users/signup',user)	
+				   .post('/users/signup',user)	
 				   .then(res=>{
 				   	console.log(res.data)
 				   	  dispatch({
@@ -46,7 +46,7 @@ export const signUp =(user)=>async (dispatch)=>{
 
 export const signIn =(user)=>async (dispatch)=>{
 		await axios
-				   .post('http://localhost:5000/users/signin',user)	
+				   .post('/users/signin',user)	
 				   .then(res=>{
 				   	console.log(res.data.token)
 				   	  dispatch({
