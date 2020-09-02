@@ -24,7 +24,7 @@ const Plan=(props)=>{
       }
     }
 	return(
-		<div className='border shadow-lg px-6 py-2 mt-4 w-1/2'>
+		<div className='border shadow-lg px-6 py-2 mt-4 md:w-1/2'>
       <div className='flex justify-between px-4 md:flex-wrap'>
            <div className='md:mr-2'>
            <label className='text-2xl md:text-xl'>Amount:</label>
