@@ -4,7 +4,20 @@ import { RaveProvider, RavePaymentButton } from "react-ravepayment";
 import Input from './Reusables/Input.js'
 import {connect} from 'react-redux'
 import * as actions from '../redux/actions/index.js'
+//import Button from './Reusables/Button.js'
+//import {CirclePicker } from 'react-color';
+//import Dialog from '@material-ui/core/Dialog';
+//import DialogTitle from '@material-ui/core/DialogTitle';
+import { withStyles } from '@material-ui/core/styles';
+import {compose} from 'redux'
 
+const styles ={
+  root:{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+}
 class Rave extends React.Component{
     constructor(props) {
     super(props);
@@ -16,10 +29,19 @@ class Rave extends React.Component{
     currency:'USD',
     PBFPubKey: 'FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X',
     production: false,
+    targetAmount:0,
+    display:false,
+    color:'#fff',
+    reason:'',
     onSuccess: (response) => {
       console.log(response)
+      const variables ={
+        response:response,
+        reason:this.state.reason,
+        targetAmount:this.state.targetAmount
+      }
         if(response){
-            axios.post('/payments/makePayment',response)
+            axios.post('/payments/makePayment',variables)
             .then(res=>{
                 console.log(res.data)
                 this.setState({amount:0})
@@ -34,6 +56,14 @@ class Rave extends React.Component{
   }
   handleChange=(e)=>{
         this.setState({amount:e.target.value})
+
+     }
+      targetAmount=(e)=>{
+        this.setState({targetAmount:e.target.value})
+        //console.log(this.state.targetAmount)
+     }
+     reason=(e)=>{
+        this.setState({reason:e.target.value})
      }
      handleEmail=(e)=>{
         this.setState({customer_email:e.target.value})
@@ -42,6 +72,16 @@ class Rave extends React.Component{
     //console.log(e.target.value)
     this.setState({currency:e.target.value})
    }
+   handleChangeComplete=(color)=>{
+         this.setState({color:color.hex})
+  }
+   handleClick = () => {
+    this.setState({ display: !this.state.display })
+  };
+  handleClose = () => {
+    this.setState({ display: false })
+  };
+
    componentDidMount(){
      axios.get('/users/user')
             .then(res=>{
@@ -50,21 +90,67 @@ class Rave extends React.Component{
    }
 
   render(){
-
+ //const {classes}=this.props
   return (
-    <div className="px-16 mx-auto container mt-12 ">
+    <div className="container mx-auto px-6 mt-12">
     <Input
-    title='Amount'
+    title='Why are you saving?'
+    value={this.state.reason}
+    onChange={this.reason}
+    type='text'
+    moreStyle='border rounded-lg mt-1 px-4 py-1'
+    />
+    <Input
+    title='How much would you like to save?'
     value={this.state.amount}
     onChange={this.handleChange}
     type='number'
+    moreStyle='border rounded-lg mt-1 px-4 py-1'
     />
     <Input
+    title='What is your target Amount?'
+    value={this.state.targetAmount}
+    onChange={this.targetAmount}
+    type='number'
+    moreStyle='border rounded-lg mt-1 px-4 py-1'
+    />
+         <Input
     title='Email'
     value={this.state.customer_email}
     onChange={this.handleEmail}
     type='email'
+    moreStyle='border rounded-lg mt-1 px-4 py-1'
     />
+    {/*<div className=''>
+    <div >
+    <Button 
+    isButton={true}
+    title='Pick a color'
+    onClick={this.handleClick}
+    style={{backgroundColor:`${this.state.color}`}}
+    />
+    </div>
+    {
+      this.state.display ?
+      <Dialog 
+      open={this.state.display} 
+      onClose={this.handleClose} 
+      aria-labelledby="form-dialog-title"
+      className={classes.root}>
+      <div className='px-5 mb-5'>
+        <DialogTitle id="form-dialog-title">Choose color</DialogTitle>
+        <CirclePicker 
+            color={this.state.color}
+           onChangeComplete={this.handleChangeComplete}
+           className=''
+       />
+       </div>
+
+      </Dialog>
+           
+      :null
+    }
+   </div>*/}
     <label className='block mt-2 text-gray-700'>Currency</label>
  <select id="comboA"
  onChange={this.getCurrency}
@@ -100,4 +186,7 @@ class Rave extends React.Component{
 }
 }
 
-export default connect(null,actions)(Rave)
+export default compose(
+  connect(null,actions),
+  withStyles(styles)
+  )(Rave)

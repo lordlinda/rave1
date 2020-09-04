@@ -21,6 +21,15 @@ const paymentPlanSchema= mongoose.Schema({
 	},
 	createdAt:{
 		type:String
+	},
+	targetAmount:{
+		type:Number
+	},
+	installment:{
+		type:Number
+	},
+	duration:{
+		type:Number
 	}
 
 })

@@ -5,19 +5,20 @@ const PaymentPlan = require('../models/PaymentPlan.js')
 const User=require('../models/User.js')
 
 module.exports ={
-
   //@route     POST /payments/makePayment
 //@decription  create  and update onetime payment user
 //@access      Public
 	makePayment:(req,res)=>{
 	//console.log(req.body)
+   const {reason,targetAmount} =req.body 
+   //console.log(reason,targetAmount)
     //create payload to verify payment
     var payload = {
     SECKEY:process.env.SECRET,
-    flw_ref: req.body.tx.flwRef
+    flw_ref: req.body.response.tx.flwRef
   };
 
-  console.log(payload)
+  //console.log(payload)
 
   //make sure to change this to live verify url in production
 var server_url = "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/flwv3-pug/getpaidx/api/verify"; 
@@ -32,7 +33,7 @@ unirest
       if (response.body.status === "success"  && response.body.data.flwMeta.chargeResponse ==='00') {
       	console.log('first condition satisfied')
          //check if the amount is same as amount you wanted to charge just to be very sure
-        if (response.body.data.amount == req.body.data.data.amount) {
+        if (response.body.data.amount == req.body.response.tx.amount) {
         	console.log('Payment sucessful')
          
           //so we need to fing out if this is their first payment
@@ -68,8 +69,10 @@ unirest
                   const newPaymentPlan = new PaymentPlan({
                     email:req.user.email,
                     amount:response.body.data.amount,
+                    description:reason,
                     identification:'one-time',
-                    createdAt:moment(req.body.tx.createdAt).format("YYYY-MM-DD HH:mm")
+                    targetAmount:targetAmount,
+                    createdAt:moment(req.body.response.tx.createdAt).format("YYYY-MM-DD HH:mm")
                   })
                   //we save the user to the database
                  newPaymentPlan.save()
@@ -108,12 +111,13 @@ unirest
 //@access        Public
   makeSubscription:(req,res)=>{
   //console.log(req.body)
+  const {reason,targetAmount,duration} =req.body 
   var payload ={
         SECKEY:process.env.SECRET,
-        flw_ref:req.body.tx.flwRef
+        flw_ref:req.body.response.tx.flwRef
   }
 
-  console.log(payload)
+  //console.log(payload)
      //make sure to change this to live verify url in production
 
     var server_url = "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/flwv3-pug/getpaidx/api/verify"; 
@@ -129,16 +133,20 @@ unirest
       if (response.body.status === "success"  && response.body.data.flwMeta.chargeResponse ==='00') {
         console.log('first condition satisfied')
          //check if the amount is same as amount you wanted to charge just to be very sure  
-        if (response.body.data.amount == req.body.tx.amount) {
+        if (response.body.data.amount == req.body.response.tx.amount) {
           console.log('Payment sucessful')
           //console.log(response.body)
           //before
           const newPaymentPlan = new PaymentPlan({
             email:req.user.email,
             amount:response.body.data.amount,
-            planId:req.body.tx.paymentPlan,
-            customerId:req.body.tx.customer.id,
-            createdAt:moment(req.body.tx.createdAt).format("YYYY-MM-DD HH:mm"),
+            installment:response.body.data.amount,
+            planId:req.body.response.tx.paymentPlan,
+            description:reason,
+            targetAmount:targetAmount,
+            duration:duration,
+            customerId:req.body.response.tx.customer.id,
+            createdAt:moment(req.body.response.tx.createdAt).format("YYYY-MM-DD HH:mm"),
             identification:'recurring bill'
           })
 
@@ -339,6 +347,54 @@ console.log(response)
 
  })
     })
+  },
+  editPlan:(req,res)=>{
+    //so when editing a plan we update the targetAmount and the description
+    const id = req.params.id
+    const {targetAmount,description}=req.body
+    //we first find the payment plan using the id
+    //then update  using the updateOne method 
+    //it with the description and targetAmount
+    //if updated sucessfully,we send am messsage to the client
+    //otherwise we send and array
+    PaymentPlan.updateOne({_id:id},{targetAmount:targetAmount,description:description},{new:true})
+                .then(plan=>{
+                  res.status(200).json({
+                    msg:'Updated sucessfully'
+                  })
+                }).catch(err=>{
+                  res.status(400).json({
+                    msg:'plan not updated'
+                  })
+                })
+  },
+  getSubscription:(req,res)=>{
+    //here we  want to be able to update the amount of the subscription
+   /* var server_url='https://ravesandboxapi.flutterwave.com/v3/subscriptions?email=annaphaneroo@gmail.com';
+unirest
+.get(server_url)
+//.send(payload)
+.headers({ "Content-Type": "application/json",
+           "Authorization": `Bearer ${process.env.SECRET}`
+})
+.end(function(response) {
+console.log(response.body)
+
+ 
+ })*/
+ /*var server_url='https://ravesandboxapi.flutterwave.com/v3//subscriptions/6629/activate';
+unirest
+.put(server_url)
+//.send(payload)
+.headers({ "Content-Type": "application/json",
+           "Authorization": `Bearer ${process.env.SECRET}`
+})
+.end(function(response) {
+console.log(response.body)
+
+ 
+ })*/
+
   }
   
 

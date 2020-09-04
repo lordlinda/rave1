@@ -13,11 +13,14 @@ import Home from './components/Home.js'
 import Rave from './components/Rave.js'
 import Subscription from './components/Subscription.js'
 import authGuard from './helpers/auth.js'
+import Navbar from './components/Navbar/Navbar.js'
+
 function App() {
   return (
     <div className="App">
     <Provider store={store}>
       <Router>
+      <Navbar />
       <ToastContainer />
       <Route exact path='/signup' component={Signup}/>
       <Route exact path='/' component={authGuard(Home)}/>

@@ -15,14 +15,24 @@ console.log(props)
 		<div className='text-xl'>
 		   Pbwealth
 		</div>
-		<Button
+		{
+			props.isAuth ?
+			<Button
 		isButton={true}
 		onClick={signout}
 		title='Signout'
 		/>
+			:null
+		}
+		
 		</nav>
 		</div>
 		)
 }
+function mapStateToProps(state){
+		return{
+			isAuth:state.auth.isAuth,
+		}
 
-export default connect(null,actions)(Navbar)
+	}
+export default connect(mapStateToProps,actions)(Navbar)

@@ -3,7 +3,7 @@ const router =express.Router()
 const passport=require('passport')
 
 //import Controllers
-const {makePayment,makeSubscription,cancelSubscription,updateSubscription,getCategories} =require('../controllers/paymentsController.js')
+const {makePayment,makeSubscription,cancelSubscription,updateSubscription,getCategories,editPlan,getSubscription} =require('../controllers/paymentsController.js')
 
 //@route     POST /payments/makePayment
 //@decription  create  and update onetime payment user
@@ -26,5 +26,11 @@ router.post('/cancelSubscription/:id',passport.authenticate('jwt', { session: fa
 //Note this has to be post not put or patch because it is a webhook
 router.post('/updateSubscription',passport.authenticate('jwt', { session: false }),updateSubscription)
 
+//@route        Put /payments/editplan/:id
+//@description    update  payment plan
+//@access        Private
+router.put('/editplan/:id',passport.authenticate('jwt', { session: false }),editPlan)
+
+getSubscription()
 
 module.exports =router

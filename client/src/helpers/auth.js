@@ -6,7 +6,7 @@ export default (OriginalComponent)=>{
 	class MixedComponent extends Component{
 		//this checks if the user is authenticated
 		checkAuth(){
-			if(!this.props.isAuth && !localStorage.token){
+			if(!this.props.isAuth){
 				this.props.history.push('/signin')
 			}
 		}

@@ -49,12 +49,14 @@ const Signin=(props)=>{
       title='Email'
       value={email}
       onChange={handleChange('email')}
+      moreStyle='border-b border-indigo-500'
        />
        <Input
       type='password'
       title='Password'
       value={password}
       onChange={handleChange('password')}
+      moreStyle='border-b border-indigo-500'
        />
        <Button
        isButton={true}

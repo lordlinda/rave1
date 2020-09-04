@@ -6,7 +6,12 @@ import axios from 'axios'
 const token = localStorage.getItem('token')
 console.log(token)
 axios.defaults.headers.common['Authorization'] = token 
-const store = createStore(reducer, composeWithDevTools(
+const store = createStore(reducer,{
+	auth:{
+		isAuth: token ? true : false,
+		loading:true
+	}
+}, composeWithDevTools(
   applyMiddleware(ReduxThunk),
   // other store enhancers if any
 ));

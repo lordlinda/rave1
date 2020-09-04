@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Input=({title,type,value,onChange,moreStyle})=>{
-	const style=`appearance-none focus:outline-none border-b border-indigo-500 ${moreStyle}`
+	const style=`appearance-none focus:outline-none ${moreStyle}`
 	return(
 		<div className='mt-2'>
 		<label className='block text-gray-700'>{title}</label>
