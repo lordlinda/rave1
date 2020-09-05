@@ -16,7 +16,7 @@ axios.defaults.headers.common['Authorization'] = token
               	payload:res.data.user.paymentPlan
               })
             }).catch(err=>{
-              console.log(err)
+              //console.log(err)
               dispatch({
               	type:AUTH_ERROR
               })

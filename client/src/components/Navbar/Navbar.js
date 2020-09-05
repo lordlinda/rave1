@@ -7,7 +7,7 @@ const Navbar=(props)=>{
 const signout=()=>{
 	props.signOut()
 }
-console.log(props)
+//console.log(props)
 
 	return(
 		<div className='bg-purple-900 py-2 text-white'>
