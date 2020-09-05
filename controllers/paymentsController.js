@@ -295,7 +295,7 @@ unirest
   //we check if the event is charge.completed
   //then we find the payment plan whose createdAt date matches  the created_at date in req.body and 
   //update the amount with the amount
-  if(req.body.event == 'charge.completed' && req.body.data.narration === 'Charge for Hourly Savings'|| 'Charge for Daily Savings'){
+  if(req.body.event == 'charge.completed' && req.body.data.narration === 'Charge for Hourly Savings'|| 'Charge for Daily Savings'||'Charge for Monthly Savings' || 'Charge for Weekly Savings' || 'Charge for Yearly Savings'){
    const customer = req.body.data.customer.id
    const amount=req.body.data.amount
    //console.log(date,amount)

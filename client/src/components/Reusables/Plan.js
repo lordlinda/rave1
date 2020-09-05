@@ -27,7 +27,7 @@ const handleChange=text=>e=>{
   setFormData({...formData,[text]:e.target.value})
 }
 	const cancelSubscription=(plan)=>{
-      console.log(plan)
+      //console.log(plan)
     alert('Are u sure?')
       axios.post(`/payments/cancelSubscription/${plan._id}`,{plan:plan.planId})
            .then(res=>{
