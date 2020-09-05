@@ -129,7 +129,7 @@ const handleChange=text=>e=>{
            <div className='mt-2 text-lg text-purple-700'>
             <p className='mb-2'>UGX {numberWithCommas(props.plan.amount)}</p>
               <label className='mt-3 text-purple-900'>Target:</label>
-            //<p className=''>UGX {numberWithCommas(props.plan.targetAmount)}</p>
+            <p className=''>UGX {numberWithCommas(props.plan.targetAmount)}</p>
            
             <Button
         isButton={true}
@@ -144,12 +144,13 @@ const handleChange=text=>e=>{
            title='Description'
            value={description}
            onChange={handleChange('description')}
-           moreStyle=''
+            moreStyle='border rounded-lg mt-1 px-4 py-1'
           />
           <Input 
            type='number'
            title='Target Amount'
            value={targetAmount}
+            moreStyle='border rounded-lg mt-1 px-4 py-1'
            onChange={handleChange('targetAmount')}
           />
           <div className='flex flex-between'>

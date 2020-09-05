@@ -102,7 +102,7 @@ class Subscription extends React.Component{
   <option value="6872">Daily</option>
   <option value="6912">Weekly</option>
   <option value="6913">Monthly</option>
-    <option value="6929">Monthly</option>
+    <option value="6929">Yearly</option>
 </select>
  <Input 
     title='How much would you like to save?'
