@@ -1,5 +1,6 @@
 const unirest = require('unirest');
  const moment=require('moment')
+var request = require('request');
 
 const PaymentPlan = require('../models/PaymentPlan.js')
 const User=require('../models/User.js')
@@ -315,39 +316,6 @@ unirest
 
        }//end of if statement
   },
-  getCategories:(req,res)=>{
-
-    //console.log('hello')
-    var server_url = `https://ravesandboxapi.flutterwave.com/v3/bill-categories`;
-  unirest
-    .get(server_url)
-    //in this case the secret key is in the auth header
-    .headers({ "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.SECRET}`
-     })
-    .end(function(response) {
-      console.log(response.body)
-      const payload ={
-country:'UG',
-customer:'+256756875835',
-amount:'10000',
-type:'AIRTIME',
-referrence:'9300049404444',
-biller_name:'MTN'
-}
-var server_url='https://ravesandboxapi.flutterwave.com/v3/bills';
-unirest
-.post(server_url)
-.send(payload)
-.headers({ "Content-Type": "application/json",
-           "Authorization": `Bearer ${process.env.SECRET}`
-})
-.end(function(response) {
-console.log(response)
-
- })
-    })
-  },
   editPlan:(req,res)=>{
     //so when editing a plan we update the targetAmount and the description
     const id = req.params.id
@@ -368,34 +336,6 @@ console.log(response)
                   })
                 })
   },
-  getSubscription:(req,res)=>{
-    //here we  want to be able to update the amount of the subscription
-   /* var server_url='https://ravesandboxapi.flutterwave.com/v3/subscriptions?email=annaphaneroo@gmail.com';
-unirest
-.get(server_url)
-//.send(payload)
-.headers({ "Content-Type": "application/json",
-           "Authorization": `Bearer ${process.env.SECRET}`
-})
-.end(function(response) {
-console.log(response.body)
-
- 
- })*/
- /*var server_url='https://ravesandboxapi.flutterwave.com/v3//subscriptions/6629/activate';
-unirest
-.put(server_url)
-//.send(payload)
-.headers({ "Content-Type": "application/json",
-           "Authorization": `Bearer ${process.env.SECRET}`
-})
-.end(function(response) {
-console.log(response.body)
-
- 
- })*/
-
-  }
   
 
 }
