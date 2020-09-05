@@ -61,10 +61,16 @@ const handleChange=text=>e=>{
     switch(id){
       case 6872:
        dueDate = Moment(date_created).add(1,'days')
+
       return Moment(dueDate).fromNow()
       case 6873:
      dueDate = Moment(date_created).add(1,'hours')
-      return Moment(dueDate).fromNow()
+       if(dueDate > Moment()){
+         return Moment(dueDate).fromNow()
+      }else{
+         return Moment(Moment(dueDate).add(1,'hours')).fromNow()
+     }
+      
         case 6912:
        dueDate = Moment(date_created).add(1,'weeks')
       return Moment(dueDate).fromNow()
