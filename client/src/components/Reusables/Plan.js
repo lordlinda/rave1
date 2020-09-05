@@ -29,7 +29,7 @@ const handleChange=text=>e=>{
 	const cancelSubscription=(plan)=>{
       console.log(plan)
     alert('Are u sure?')
-      axios.post(`http://localhost:5000/payments/cancelSubscription/${plan._id}`,{plan:plan.planId})
+      axios.post(`/payments/cancelSubscription/${plan._id}`,{plan:plan.planId})
            .then(res=>{
             console.log('hello')
             toast.success('Unsubscribed from plan')
@@ -41,7 +41,7 @@ const handleChange=text=>e=>{
         targetAmount:targetAmount,
         description:description
       }
-      axios.put(`http://localhost:5000/payments/editplan/${id}`,variables)
+      axios.put(`/payments/editplan/${id}`,variables)
            .then(res=>{
             console.log('hello')
             //toast.sucess('Unsubscribed from plan')
