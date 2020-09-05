@@ -57,23 +57,49 @@ const handleChange=text=>e=>{
   };
    
   const getDate=(id,date_created)=>{
+    //since we  want this to be recurring  we want to ensure that after the first interval
+    //we keep adding it to the current date 
+    //lets say we are subscribing weekly in the first week everyday it will be 
+    //in [5,4,3,2,1] days and then because we are basing on the 
+    //created date it will start saying [1,2,3,4,5] days ago we want to ensure that as soon as the due date is less than the current date then we add one more interval
     let dueDate = ''
     switch(id){
       case 6872:
        dueDate = Moment(date_created).add(1,'days')
-      return Moment(dueDate).fromNow()
+       if(dueDate > Moment()){
+          return Moment(dueDate).fromNow()
+       }else{
+         return Moment(Moment(dueDate).add(1,'days'))
+       }
+      
       case 6873:
-     dueDate = Moment(date_created).add(1,'hours')
-      return Moment(dueDate).fromNow()
+        dueDate = Moment(date_created).add(1,'hours')
+        if(dueDate > Moment()){
+          return Moment(dueDate).fromNow()
+       }else{
+         return Moment(Moment(dueDate).add(1,'hours'))
+       }
         case 6912:
        dueDate = Moment(date_created).add(1,'weeks')
-      return Moment(dueDate).fromNow()
+      if(dueDate > Moment()){
+          return Moment(dueDate).fromNow()
+       }else{
+         return Moment(Moment(dueDate).add(1,'weeks'))
+       }
         case 6913:
        dueDate = Moment(date_created).add(1,'months')
-      return Moment(dueDate).fromNow()
+      if(dueDate > Moment()){
+          return Moment(dueDate).fromNow()
+       }else{
+         return Moment(Moment(dueDate).add(1,'months'))
+       }
       case 6929:
        dueDate = Moment(date_created).add(1,'years')
-      return Moment(dueDate).fromNow()
+       if(dueDate > Moment()){
+          return Moment(dueDate).fromNow()
+       }else{
+         return Moment(Moment(dueDate).add(1,'years'))
+       }
         default:
         return ''
     }
