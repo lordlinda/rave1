@@ -71,18 +71,19 @@ const handleChange=text=>e=>{
       case 6873:
      dueDate = Moment(date_created).add(1,'hours')
        if(dueDate > Moment()){
+        console.log('init stages')
          return Moment(dueDate).fromNow()
       }else{
+        console.log('loop')
          return Moment(Moment(dueDate).add(1,'hours')).fromNow()
      }
       
         case 6912:
        dueDate = Moment(date_created).add(1,'weeks')
        if(dueDate > Moment()){
-        console.log('init stages')
          return Moment(dueDate).fromNow()
       }else{
-        console.log('loop')
+        
          return Moment(Moment(dueDate).add(1,'weeks')).fromNow()
      }
       
