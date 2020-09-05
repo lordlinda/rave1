@@ -61,7 +61,12 @@ const handleChange=text=>e=>{
     switch(id){
       case 6872:
        dueDate = Moment(date_created).add(1,'days')
-
+        if(dueDate > Moment()){
+         return Moment(dueDate).fromNow()
+      }else{
+         return Moment(Moment(dueDate).add(1,'days')).fromNow()
+     }
+      
       return Moment(dueDate).fromNow()
       case 6873:
      dueDate = Moment(date_created).add(1,'hours')
@@ -73,13 +78,30 @@ const handleChange=text=>e=>{
       
         case 6912:
        dueDate = Moment(date_created).add(1,'weeks')
-      return Moment(dueDate).fromNow()
+       if(dueDate > Moment()){
+        console.log('init stages')
+         return Moment(dueDate).fromNow()
+      }else{
+        console.log('loop')
+         return Moment(Moment(dueDate).add(1,'weeks')).fromNow()
+     }
+      
         case 6913:
        dueDate = Moment(date_created).add(1,'months')
-      return Moment(dueDate).fromNow()
+       if(dueDate > Moment()){
+         return Moment(dueDate).fromNow()
+      }else{
+         return Moment(Moment(dueDate).add(1,'months')).fromNow()
+     }
+      
       case 6929:
        dueDate = Moment(date_created).add(1,'years')
-      return Moment(dueDate).fromNow()
+       if(dueDate > Moment()){
+         return Moment(dueDate).fromNow()
+      }else{
+         return Moment(Moment(dueDate).add(1,'years')).fromNow()
+     }
+      
         default:
         return ''
     }

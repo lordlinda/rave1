@@ -48,7 +48,7 @@ export const signIn =(user)=>async (dispatch)=>{
 		await axios
 				   .post('/users/signin',user)	
 				   .then(res=>{
-				   	console.log(res.data.token)
+				   	//console.log(res.data.token)
 				   	  dispatch({
 				   	  	type:SIGN_IN,
 				   	  	payload:res.data
