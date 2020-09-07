@@ -218,7 +218,7 @@ unirest
         //seconds vary by a few 
         //and we do thsi with the help of moment
         const subscription = response.body.data.filter(customer=>
-          moment(customer.created_at).format("YYYY-MM-DD HH:mm") ==  moment(plan.createdAt).format("YYYY-MM-DD HH:mm"))
+          moment(customer.created_at).format("YYYY-MM-DD HH:mm") ==  moment(plan.createdAt).format("YYYY-MM-DD HH:mm"))[0]
          console.log(subscription)
          //this is how the response will look like
       /*

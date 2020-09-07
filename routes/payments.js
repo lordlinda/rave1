@@ -31,5 +31,4 @@ router.post('https://webhook.site/a74b83a3-0756-40c7-9fa6-2010642be83f',passport
 //@access        Private
 router.put('/editplan/:id',passport.authenticate('jwt', { session: false }),editPlan)
 
-
 module.exports =router

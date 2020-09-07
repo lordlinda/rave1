@@ -27,11 +27,11 @@ const handleChange=text=>e=>{
   setFormData({...formData,[text]:e.target.value})
 }
 	const cancelSubscription=(plan)=>{
-      console.log(plan)
+      //console.log(plan)
     alert('Are u sure?')
       axios.post(`/payments/cancelSubscription/${plan._id}`,{plan:plan.planId})
            .then(res=>{
-            console.log('hello')
+            //console.log('hello')
             toast.success('Unsubscribed from plan')
            })
     }
@@ -69,12 +69,11 @@ const handleChange=text=>e=>{
       
       return Moment(dueDate).fromNow()
       case 6873:
-     dueDate = Moment(date_created).add(1,'hours')
-       if(dueDate < Moment()){
-        console.log('init stages')
+      dueDate = Moment(date_created).add(1,'hours')
+
+       if(dueDate > Moment()){
          return Moment(dueDate).fromNow()
       }else{
-        console.log('loop')
          return Moment(Moment(dueDate).add(1,'hours')).fromNow()
      }
         case 6912:

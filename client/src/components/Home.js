@@ -36,7 +36,7 @@ const getTotal=()=>{
 		<div className='flex justify-center'>
 	        <Button
 	          href='/rave'
-	          title='One time savings'
+	          title='Save now'
 	          moreStyle='bg-purple-800 text-white px-2 py-1 rounded-lg block'
 	         />
 	          

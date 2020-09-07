@@ -19,7 +19,7 @@ app.use(morgan('dev'))
 app.use('/users',require('./routes/users.js'))
 app.use('/payments',require('./routes/payments.js'))
 
- //console.log(moment('2020-09-05 13:01').format("YYYY-MM-DD HH:mm"))
+ //console.log(moment('2020-09-05T16:15:34.000Z').format("YYYY-MM-DD HH:mm"))
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
   app.get('*', (req, res) => {

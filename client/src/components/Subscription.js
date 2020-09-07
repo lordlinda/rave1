@@ -55,7 +55,7 @@ class Subscription extends React.Component{
         this.setState({customer_email:e.target.value})
      }
      getInterval(e) {
-    console.log(e.target.value)
+    //console.log(e.target.value)
     this.setState({payment_plan:e.target.value})
    }
     handlefirstName=(e)=>{
