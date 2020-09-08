@@ -14,7 +14,6 @@ class Subscription extends React.Component{
     customer_phone:  "234099940409",
     amount:0,
     customer_firstname:'',
-    customer_lastname:'',
     currency:'UGX',
     PBFPubKey: 'FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X',
     production: false,
@@ -78,6 +77,7 @@ class Subscription extends React.Component{
        axios.get('/users/user')
             .then(res=>{
               this.setState({customer_email:res.data.user.email})
+              this.setState({customer_firstname:res.data.user.username})
             })      
      }
    
@@ -85,14 +85,6 @@ class Subscription extends React.Component{
 
   return (
     <div className='px-16 mx-auto container mt-12'>
-       <Input
-    title='Why are you saving?'
-    value={this.state.reason}
-    onChange={this.reason}
-    type='text'
-    moreStyle='border rounded-lg mt-0 px-4 py-1'
-    />
-   
     <label className='block mt-2 text-gray-700'>How freqently would you like to save?</label> 
  <select  
  className=' bg-white border px-2'
@@ -111,13 +103,7 @@ class Subscription extends React.Component{
     type='number'
     moreStyle='border rounded-lg mt-1 px-4 py-1'
     />
-    <Input
-    title='What is your target Amount'
-    value={this.state.targetAmount}
-    onChange={this.targetAmount}
-    type='number'
-    moreStyle='border rounded-lg mt-1 px-4 py-1'
-    />
+   
         <Input 
     title='How long would you like to save?'
     value={this.state.duration}
@@ -132,22 +118,9 @@ class Subscription extends React.Component{
     type='text'
     moreStyle='border rounded-lg mt-1 px-4 py-1'
     />
-     <Input 
-    title='Lastname'
-    value={this.state.customer_lastname}
-    onChange={this.handlelastName} 
-    type='text'
-    moreStyle='border rounded-lg mt-1 px-4 py-1'
-    />
+     
 
-         <Input
-    title='Email'
-    value={this.state.customer_email}
-    onChange={this.handleEmail}
-    type='email'
-    moreStyle='border rounded-lg mt-1 px-4 py-1'
-    />
-   
+
 <div className=''>
         <RaveProvider {...this.state}>
             <RavePaymentButton type='submit'

@@ -93,33 +93,13 @@ class Rave extends React.Component{
  //const {classes}=this.props
   return (
     <div className="container mx-auto px-6 mt-12">
+    <div className='flex'>
     <Input
-    title='Why are you saving?'
-    value={this.state.reason}
-    onChange={this.reason}
-    type='text'
-    moreStyle='border rounded-lg mt-1 px-4 py-1'
-    />
-    <Input
-    title='How much would you like to save?'
+    title='Amount'
     value={this.state.amount}
     onChange={this.handleChange}
     type='number'
-    moreStyle='border rounded-lg mt-1 px-4 py-1'
-    />
-    <Input
-    title='What is your target Amount?'
-    value={this.state.targetAmount}
-    onChange={this.targetAmount}
-    type='number'
-    moreStyle='border rounded-lg mt-1 px-4 py-1'
-    />
-         <Input
-    title='Email'
-    value={this.state.customer_email}
-    onChange={this.handleEmail}
-    type='email'
-    moreStyle='border rounded-lg mt-1 px-4 py-1'
+    moreStyle='border'
     />
     {/*<div className=''>
     <div >
@@ -151,11 +131,11 @@ class Rave extends React.Component{
       :null
     }
    </div>*/}
-    <label className='block mt-2 text-gray-700'>Currency</label>
+    <label className='block mt-2 text-gray-700'></label>
  <select id="comboA"
  onChange={this.getCurrency}
  value={this.state.currency}
- className=' bg-white border px-2'>
+ className=''>
   <option value="USD">USD</option>
   <option value="EUR">EUR</option>
   <option value="UGX">UGX</option>
@@ -173,10 +153,11 @@ class Rave extends React.Component{
 <option value="CAD">CAD</option>
 </select>
 <br/>
+</div>
         <RaveProvider {...this.state}>
             <RavePaymentButton type='submit'
             className='bg-purple-900 text-white rounded-lg mt-4 py-1 px-10'
-            >Pay</RavePaymentButton>
+            >Make payment</RavePaymentButton>
         </RaveProvider>
          <div>
     

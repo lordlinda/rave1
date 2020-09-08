@@ -4,7 +4,7 @@ import ReduxThunk from 'redux-thunk' // no changes here
 import reducer from './reducers/index.js'
 import axios from 'axios'
 const token = localStorage.getItem('token')
-//console.log(token)
+console.log(token)
 axios.defaults.headers.common['Authorization'] = token 
 const store = createStore(reducer,{
 	auth:{

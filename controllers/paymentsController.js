@@ -48,10 +48,23 @@ unirest
               //console.log('am not new')
              PaymentPlan.update({email:req.user.email},{$inc:{amount:response.body.data.amount}},{new:true})
              .then(plan=>{
-              //we return amessage to our client
-              res.status(200).json({
-                msg:'Payment plan updated'
+              //we store in our user history as transcation
+              User.updateOne({email:req.user.email},{$push:{history:{
+                transcationId:req.body.response.tx.id,
+                amount:req.body.response.tx.amount,
+                paymentMethod:req.body.response.tx.paymentType,
+                currency:req.body.response.tx.currency,
+                date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
+
+              }}}).then(user=>{
+                   res.status(200).json({
+                   msg:'Payment plan updated',
+                   message:'Transaction history registered'
               })
+              })
+              
+              //we return amessage to our client
+             
              }).catch(err=>{
               //if we fail to update the payment ,then we must show an error to the client
                res.status(500).json({
@@ -73,13 +86,24 @@ unirest
                     description:reason,
                     identification:'one-time',
                     targetAmount:targetAmount,
-                    createdAt:moment(req.body.response.tx.createdAt).format("YYYY-MM-DD HH:mm")
+                    createdAt:moment(Date.now()).format("YYYY-MM-DD HH:mm")
                   })
                   //we save the user to the database
                  newPaymentPlan.save()
                  .then(plan=>{
                   //then we add this payment to the user signed in
-                      User.update({email:req.user.email},{$push:{paymentPlan:plan.id}},{new:true})
+                      User.update({email:req.user.email},
+                        {$push:
+                          {paymentPlan:plan.id},
+                          history:{
+                           transcationId:req.body.response.tx.id,
+                           amount:req.body.response.tx.amount,
+                           paymentMethod:req.body.response.tx.paymentType,
+                           currency:req.body.response.tx.currency,
+                           date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
+                          }
+                        },
+                        {new:true})
                       .then(user=>{
                         res.status(200).json({
                         msg:'Plan added to user'
@@ -147,7 +171,7 @@ unirest
             targetAmount:targetAmount,
             duration:duration,
             customerId:req.body.response.tx.customer.id,
-            createdAt:moment(req.body.response.tx.createdAt).format("YYYY-MM-DD HH:mm"),
+            createdAt:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
             identification:'recurring bill'
           })
 
@@ -156,11 +180,23 @@ unirest
           newPaymentPlan.save()
           .then(plan=>{
             if(plan){
-                           //we add this payment plan to user
-             User.update({email:req.user.email},{$push:{paymentPlan:plan.id}},{new:true})
+                  //we add this payment plan to user
+                  //for every single payment we  need to store the transaction as a single entity
+                  //so each subscription can be viewed independently
+                 User.updateOne({email:req.user.email},
+                    {$push:
+                      {paymentPlan:plan.id},
+                       history:{
+                        transcationId:req.body.response.tx.id,
+                        amount:req.body.response.tx.amount,
+                        currency:req.body.response.tx.currency,
+                         paymentMethod:req.body.response.tx.paymentType,
+                        date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
+                       }},     
+                  {new:true})
                   .then(user=>{
-                    res.status(200).json({
-                    msg:'Plan added to user'
+                   res.status(200).json({
+                    msg:'Plan updated'
                    })
                   })
             
@@ -306,6 +342,20 @@ unirest
     console.log('plan' ,plan)
        PaymentPlan.update({_id:plan.id},{$inc:{amount:amount}},{new:true})
         .then(plan=>{
+          //we create a transaction for every subscription that is paid successfully
+           User.updateOne({email:req.user.email},{$push:{history:{
+                transcationId:req.body.response.tx.id,
+                amount:req.body.response.tx.amount,
+                paymentMethod:req.body.response.tx.paymentType,
+                currency:req.body.response.tx.currency,
+                date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
+
+              }}}).then(user=>{
+                   res.status(200).json({
+                   msg:'Payment plan updated',
+                   message:'Transaction history registered'
+              })
+              })
          //we return a message to our client
          res.status(200).json({ msg:'Payment plan updated webhook'})
           }).catch(err=>{

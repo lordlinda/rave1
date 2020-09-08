@@ -15,7 +15,9 @@ router.post('/signup',validateRegister,signup)
 //@acess        Private
 router.get('/user',passport.authenticate('jwt', { session: false }),getUser)  
 
+//@route        GET /users/signin
+//@description  get user
+//@acess        Private
 router.post('/signin',signin)
-
 
 module.exports =router

@@ -62,18 +62,20 @@ const handleChange=text=>e=>{
       case 6872:
        dueDate = Moment(date_created).add(1,'days')
         if(dueDate > Moment()){
+          console.log(dueDate)
          return Moment(dueDate).fromNow()
       }else{
+        console.log(dueDate)
          return Moment(Moment(dueDate).add(1,'days')).fromNow()
      }
       
-      return Moment(dueDate).fromNow()
       case 6873:
       dueDate = Moment(date_created).add(1,'hours')
-
        if(dueDate > Moment()){
+        console.log('init')
          return Moment(dueDate).fromNow()
       }else{
+        console.log('loop')
          return Moment(Moment(dueDate).add(1,'hours')).fromNow()
      }
         case 6912:
@@ -132,32 +134,27 @@ const handleChange=text=>e=>{
     const {classes}=props
     //console.log(color)
 	return(
-		<div className='border shadow-lg mt-5 md:w-full'>
+		<div className='mt-5 md:w-full'>
 
-      <div className='px-3 py-2 flex justify-around mb-1'>
+      <div className='py-2 flex justify-around mb-1'>
            <div className=''>
-           <p className='uppercase text-2xl'>{props.plan.description}</p>
-             <p className='text-md text-gray-600'>{props.plan.identification}</p>
+           <p className='uppercase'>{props.plan.description}</p>
             {
             props.plan.planId ?
             <div>
             <div className=''>
-           <p className=' text-lg mt-1'>Auto:{numberWithCommas(props.plan.installment)}{duration(props.plan.planId)}</p>
-            <p className='text-sm'>{getDate(props.plan.planId,props.plan.createdAt)}</p>
+           <p className='mt-1'>{numberWithCommas(props.plan.installment)}{duration(props.plan.planId)}</p>
+            <p className=''>{getDate(props.plan.planId,props.plan.createdAt)}</p>
            </div>
 
            </div>
 
            :null
            }
-            <p className='text-md mt-1'>{Moment(props.plan.createdAt).format('LL')}</p>
           
            </div>
-           <div className='mt-2 text-lg text-purple-700'>
-            <p className='mb-2'>UGX {numberWithCommas(props.plan.amount)}</p>
-              <label className='mt-3 text-purple-900'>Target:</label>
-            <p className=''>UGX {numberWithCommas(props.plan.targetAmount)}</p>
-           
+           <div className='mt-2text-purple-700'>
+              
             <Button
         isButton={true}
         onClick={handleClickOpen}

@@ -14,7 +14,6 @@ module.exports ={
 		  if (!errors.isEmpty()) {
 		    return res.status(400).json({msg: errors.array().map(error=>error.msg)[0] });
 		  }
-		
 		try{
 		 let user= await User.findOne({email})
 		 if(user){
@@ -39,9 +38,6 @@ module.exports ={
          	msg:error.msg
          })
 		}
-		
-
-		
 	},
 	getUser:(req,res)=>{
 		//console.log(req.user)
@@ -86,5 +82,5 @@ module.exports ={
               })
 			}
 		})
-	}
+	},
 }

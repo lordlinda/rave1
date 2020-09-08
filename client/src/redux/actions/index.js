@@ -13,7 +13,7 @@ axios.defaults.headers.common['Authorization'] = token
               //console.log(res.data.user)
               dispatch({
               	type:USER_LOADED,
-              	payload:res.data.user.paymentPlan
+              	payload:res.data.user
               })
             }).catch(err=>{
               //console.log(err)

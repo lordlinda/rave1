@@ -2,7 +2,8 @@ import {USER_LOADED} from '../actions/types.js'
 
 const initialState={
 	loading:true,
-	plans:[]
+	plans:[],
+	history:[]
 }
 
 //the reducer has the inital state and alters it based on the action
@@ -12,7 +13,8 @@ export default (state=initialState,action)=>{
 		return {
 			...state,
 			loading:false,
-			plans:action.payload
+			plans:action.payload.paymentPlan,
+			history:action.payload.history
 		}
 		default:
 		return state

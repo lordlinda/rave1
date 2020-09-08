@@ -16,7 +16,7 @@ const Signin=(props)=>{
 	}
 	const handleSubmit=(e)=>{
       e.preventDefault()
-      console.log(formData)
+      //console.log(formData)
       //we want to ensure that the user has filled in 
       //all the fields
       if(email&&password){
