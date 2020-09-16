@@ -59,7 +59,7 @@ unirest
                     currency:req.body.response.tx.currency,
                     date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
                     user:req.user._id,
-                    paymentPlan:plan._id
+                    paymentPlan:plan.id
               })
               //we save this transaction to our database and  return a sucess message to our client
               newTransaction.save()
@@ -111,7 +111,7 @@ unirest
                     currency:req.body.response.tx.currency,
                     date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
                     user:req.user._id,
-                    paymentPlan:plan._id
+                    paymentPlan:plan.id
               })
               //we save this transaction to our database and  return a sucess message to our client
               newTransaction.save()
@@ -211,7 +211,7 @@ unirest
                     currency:req.body.response.tx.currency,
                     date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
                     user:req.user._id,
-                    paymentPlan:plan._id
+                    paymentPlan:plan.id
               })
               //we save this transaction to our database and  return a sucess message to our client
               newTransaction.save()
@@ -373,7 +373,7 @@ unirest
                     paymentMethod:req.body.response.tx.paymentType,
                     currency:req.body.response.tx.currency,
                     date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
-                    paymentPlan:plan._id
+                    paymentPlan:plan.id
               })
               //we save this transaction to our database and  return a sucess message to our client
               newTransaction.save()
