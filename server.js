@@ -18,8 +18,9 @@ app.use(morgan('dev'))
 //For routes
 app.use('/users',require('./routes/users.js'))
 app.use('/payments',require('./routes/payments.js'))
+app.use('/transactions',require('./routes/transactions.js'))
 
- //console.log(moment('2020-09-05T16:15:34.000Z').format("YYYY-MM-DD HH:mm"))
+ console.log(moment().add(1,'days').format("YYYY-MM-DD HH:mm"))
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
   app.get('*', (req, res) => {

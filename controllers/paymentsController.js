@@ -4,11 +4,12 @@ var request = require('request');
 
 const PaymentPlan = require('../models/PaymentPlan.js')
 const User=require('../models/User.js')
+const Transaction =require('../models/Transaction.js')
 
 module.exports ={
   //@route     POST /payments/makePayment
 //@decription  create  and update onetime payment user
-//@access      Public
+//@access      Private
 	makePayment:(req,res)=>{
 	//console.log(req.body)
    const {reason,targetAmount} =req.body 
@@ -49,22 +50,26 @@ unirest
              PaymentPlan.update({email:req.user.email},{$inc:{amount:response.body.data.amount}},{new:true})
              .then(plan=>{
               //we store in our user history as transcation
-              User.updateOne({email:req.user.email},{$push:{history:{
-                transcationId:req.body.response.tx.id,
-                amount:req.body.response.tx.amount,
-                paymentMethod:req.body.response.tx.paymentType,
-                currency:req.body.response.tx.currency,
-                date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
-
-              }}}).then(user=>{
-                   res.status(200).json({
+              //
+              //for each payment we create a new transaction object
+              const newTransaction = new Transaction({
+                    transactionId:req.body.response.tx.id,
+                    amount:req.body.response.tx.amount,
+                    paymentMethod:req.body.response.tx.paymentType,
+                    currency:req.body.response.tx.currency,
+                    date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
+                    user:req.user._id,
+                    paymentPlan:plan._id
+              })
+              //we save this transaction to our database and  return a sucess message to our client
+              newTransaction.save()
+              .then(transaction=>{
+                res.status(200).json({
                    msg:'Payment plan updated',
                    message:'Transaction history registered'
-              })
-              })
               
-              //we return amessage to our client
-             
+              })
+              })             
              }).catch(err=>{
               //if we fail to update the payment ,then we must show an error to the client
                res.status(500).json({
@@ -76,7 +81,7 @@ unirest
                //console.log(response.body.data)
                //if they are new
                //We create a payment plan since the  user is new
-               //our payment plan consists of the email,amount,identification
+               //our payment plan consists of the email,amount,identification and more ...
                //identification means that this is a one time payment user
                //and is not on a subscription
                //and the time it was created
@@ -95,19 +100,29 @@ unirest
                       User.update({email:req.user.email},
                         {$push:
                           {paymentPlan:plan.id},
-                          history:{
-                           transcationId:req.body.response.tx.id,
-                           amount:req.body.response.tx.amount,
-                           paymentMethod:req.body.response.tx.paymentType,
-                           currency:req.body.response.tx.currency,
-                           date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
-                          }
                         },
                         {new:true})
                       .then(user=>{
-                        res.status(200).json({
-                        msg:'Plan added to user'
-                       })
+                        //for this payment we also need to store a respective transaction
+                        const newTransaction = new Transaction({
+                    transactionId:req.body.response.tx.id,
+                    amount:req.body.response.tx.amount,
+                    paymentMethod:req.body.response.tx.paymentType,
+                    currency:req.body.response.tx.currency,
+                    date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
+                    user:req.user._id,
+                    paymentPlan:plan._id
+              })
+              //we save this transaction to our database and  return a sucess message to our client
+              newTransaction.save()
+              .then(transaction=>{
+                res.status(200).json({
+                   msg:'Plan added to user',
+                   message:'Transaction history registered'
+              
+              })
+              }) 
+
                     })
                  }).catch(err=>{
                    res.status(500).json({
@@ -185,19 +200,28 @@ unirest
                   //so each subscription can be viewed independently
                  User.updateOne({email:req.user.email},
                     {$push:
-                      {paymentPlan:plan.id},
-                       history:{
-                        transcationId:req.body.response.tx.id,
-                        amount:req.body.response.tx.amount,
-                        currency:req.body.response.tx.currency,
-                         paymentMethod:req.body.response.tx.paymentType,
-                        date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
-                       }},     
+                      {paymentPlan:plan.id}},     
                   {new:true})
                   .then(user=>{
-                   res.status(200).json({
-                    msg:'Plan updated'
-                   })
+                    //for this payment we also need to store a respective transaction
+                        const newTransaction = new Transaction({
+                    transactionId:req.body.response.tx.id,
+                    amount:req.body.response.tx.amount,
+                    paymentMethod:req.body.response.tx.paymentType,
+                    currency:req.body.response.tx.currency,
+                    date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
+                    user:req.user._id,
+                    paymentPlan:plan._id
+              })
+              //we save this transaction to our database and  return a sucess message to our client
+              newTransaction.save()
+              .then(transaction=>{
+                res.status(200).json({
+                   msg:'Plan added to user',
+                   message:'Transaction history registered'
+              
+              })
+              }) 
                   })
             
             }else{
@@ -306,7 +330,7 @@ unirest
   updateSubscription:(req,res)=>{
     console.log('update subscription')
     // retrieve the signature from the header
-  /*var hash = req.headers["verif-hash"];
+  var hash = req.headers["verif-hash"];
   //console.log(hash)
   if(!hash){
     console.log('not from flutterwave')
@@ -343,24 +367,26 @@ unirest
        PaymentPlan.update({_id:plan.id},{$inc:{amount:amount}},{new:true})
         .then(plan=>{
           //we create a transaction for every subscription that is paid successfully
-           User.updateOne({email:req.user.email},{$push:{history:{
-                transcationId:req.body.response.tx.id,
-                amount:req.body.response.tx.amount,
-                paymentMethod:req.body.response.tx.paymentType,
-                currency:req.body.response.tx.currency,
-                date:moment(Date.now()).format("YYYY-MM-DD HH:mm")
-
-              }}}).then(user=>{
-                   res.status(200).json({
+          const newTransaction = new Transaction({
+                    transactionId:req.body.response.tx.id,
+                    amount:req.body.response.tx.amount,
+                    paymentMethod:req.body.response.tx.paymentType,
+                    currency:req.body.response.tx.currency,
+                    date:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
+                    paymentPlan:plan._id
+              })
+              //we save this transaction to our database and  return a sucess message to our client
+              newTransaction.save()
+              .then(transaction=>{
+                res.status(200).json({
                    msg:'Payment plan updated',
                    message:'Transaction history registered'
               })
               })
-         //we return a message to our client
-         res.status(200).json({ msg:'Payment plan updated webhook'})
+             res.status(200).json({ msg:'Payment plan updated webhook'})
           }).catch(err=>{
-          //if we fail to update the payment ,then we must show an error to the client
-          res.status(500).json({error:err.message})
+               //if we fail to update the payment ,then we must show an error to the client
+             res.status(500).json({error:err.message})
              })
    })
 

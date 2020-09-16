@@ -24,7 +24,7 @@ router.post('/cancelSubscription/:id',passport.authenticate('jwt', { session: fa
 //@description    update  subscription
 //@access        Private
 //Note this has to be post not put or patch because it is a webhook
-router.post('/updateSubscription',passport.authenticate('jwt', { session: false }),updateSubscription)
+router.post('/updateSubscription',updateSubscription)
 
 //@route        Put /payments/editplan/:id
 //@description    update  payment plan

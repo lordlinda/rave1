@@ -11,10 +11,6 @@ const userSchema= mongoose.Schema({
 	username:{
 		type:String
 	},
-	history:{
-		type:Array,
-		default:[]
-	},
 	paymentPlan:[{
 		type:mongoose.Schema.Types.ObjectId,
 		ref:'Plan'
