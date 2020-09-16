@@ -112,7 +112,7 @@ const handleChange=text=>e=>{
     //we give a distance from the top one 
     //give it in line 
 	return(
-		<div className='px-2 mt-2'>
+		<div className='px-2 mt-4'>
     {/*we want the interval to be  beside the other text*/}
     <div className='flex justify-between'>
     <div>
@@ -164,7 +164,7 @@ const handleChange=text=>e=>{
         isButton={true}
         onClick={cancelSubscription.bind(this,props.plan)}
         title='cancel subscription'
-        moreStyle='bg-gray-400 block md:hidden text-xs px-1 rounded-md'/>
+        moreStyle='bg-purple-400 block md:hidden text-xs px-1 rounded-md'/>
           </div>
         </DialogTitle>
         <div className='px-3 py-2'>

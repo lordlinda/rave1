@@ -83,7 +83,7 @@ const Dashboard=(props)=>{
                <Link to='/subscriptions' className='text-purple-500'><AddIcon /></Link>
                </div>
            {/*we give the subscriptions some pixels from the title*/}
-               <div className='mt-2'>
+               <div className='mt-5'>
                {
                 props.subscriptions.length > 0  ?
                 props.subscriptions.map(subscription=>{
