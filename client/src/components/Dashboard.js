@@ -30,13 +30,13 @@ const Dashboard=(props)=>{
                {/*we display the total*/}
                <div 
                 style={{backgroundImage:'linear-gradient(95.8deg, #AE64D1 -3.34%, #46C1BA 97.61%)'}}
-               className='sd:w-7/12 rounded-lg md:px-4 md:py-2 shadow-natural px-4 m-2 shadow-sm py-2'>
+               className='sma:w-7/12 rounded-lg md:px-4 md:py-2 shadow-natural px-4 m-2 shadow-sm py-2'>
                <Total
                total={props.total} />
                </div>
              {/*we display the payment section
              the left margin gives it space from the total div*/}
-             <div className='bg-white sd:w-5/12 rounded-lg md:px-4 md:ml-3 md:py-2 shadow-light px-4 m-2 shadow-sm py-2'>
+             <div className='bg-white sma:w-5/12 rounded-lg md:px-4 md:ml-3 md:py-2 shadow-light px-4 m-2 shadow-sm py-2'>
              <p className='text-sm uppercase text-graydark'>Start Saving</p>
               <Rave/>
               </div>
