@@ -69,7 +69,7 @@ const Signin=(props)=>{
        <Button
        title='Signup'
        href={'/signup'}
-       moreStyle='text-blue-600'
+       moreStyle='text-indigo-500'
        />
        </div>
  	 </div>

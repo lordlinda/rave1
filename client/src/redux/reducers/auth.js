@@ -18,14 +18,14 @@ export default (state=initialState,action)=>{
 		case AUTH_ERROR:
 		return{
 			...state,
-			isAuth:null,
+			isAuth:false,
 			loading:false
 		}
 		case SIGN_OUT:
 		localStorage.removeItem('token')
 		return {
         ...state,
-			isAuth:null,
+			isAuth:false,
 			loading:false
 		}
 		default:

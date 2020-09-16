@@ -10,7 +10,8 @@ import * as actions from '../redux/actions/index.js'
 //import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
 import {compose} from 'redux'
-
+import {withRouter} from 'react-router-dom'
+import Select from '../components/Reusables/Select.js'
 const styles ={
   root:{
     display: 'flex',
@@ -25,8 +26,8 @@ class Rave extends React.Component{
     txref: (new Date()).toString(),
     customer_email: "user@example.com",
     customer_phone:  "234099940409",
-    amount:0,
-    currency:'USD',
+    amount:'',
+    currency:'UGX',
     PBFPubKey: 'FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X',
     production: false,
     targetAmount:0,
@@ -88,18 +89,22 @@ class Rave extends React.Component{
               this.setState({customer_email:res.data.user.email})
             })
    }
-
   render(){
  //const {classes}=this.props
+
   return (
-    <div className="container mx-auto px-6 mt-12">
-    <div className='flex'>
+    <div className="">
+    <div className='flex mt-5 sma:flex-wrap sd:flex-no-wrap'>
+        {/*the width full allows the input to occupy the width of its parent and 
+            not exceed it 
+            and give the text some distance from the border and give it some round edges
+          */}
     <Input
-    title='Amount'
-    value={this.state.amount}
-    onChange={this.handleChange}
-    type='number'
-    moreStyle='border'
+     placeholder='Amount'
+     value={this.state.amount}
+     onChange={this.handleChange}
+      type='number'
+       moreStyle='border-2 w-full px-4 py-1 rounded-md appearance-none w-7/12'
     />
     {/*<div className=''>
     <div >
@@ -131,32 +136,21 @@ class Rave extends React.Component{
       :null
     }
    </div>*/}
-    <label className='block mt-2 text-gray-700'></label>
- <select id="comboA"
- onChange={this.getCurrency}
+ {/*the select is given full height so as not to exceed its container and given atop margin
+ to keep in line with the amount input  and some left margin to give it some space from the  amount
+input*/}
+ <Select 
  value={this.state.currency}
- className=''>
-  <option value="USD">USD</option>
-  <option value="EUR">EUR</option>
-  <option value="UGX">UGX</option>
-  <option value="GBP">GBP</option>
-  <option value="KES">KES</option>
-  <option value="GHS">GHS</option>
-  <option value="RWF">RWF</option>
-  <option value="SLL">SLL</option>
-  <option value="ZMW">ZMW</option>
-  <option value="ZAR">ZAR</option>
- <option value="TZS">TZS</option>
- <option value="AUD">AUD</option>
-<option value="XOF">XOF</option>
- <option value="XAF">XAF</option>
-<option value="CAD">CAD</option>
-</select>
+ onChange={this.getCurrency}
+ moreStyle=''
+ />
 <br/>
 </div>
+{/*the payment button is a few pixel from the input w-full means it occupies the entire width of the container and some rounded edges
+we also give it a margin bottom for the distance from the bottom of the container*/}
         <RaveProvider {...this.state}>
             <RavePaymentButton type='submit'
-            className='bg-purple-900 text-white rounded-lg mt-4 py-1 px-10'
+            className=' bg-purple-500 text-white mt-5 px-3 mb-2 w-full py-1 rounded-md'
             >Make payment</RavePaymentButton>
         </RaveProvider>
          <div>
@@ -169,5 +163,6 @@ class Rave extends React.Component{
 
 export default compose(
   connect(null,actions),
-  withStyles(styles)
+  withStyles(styles),
+  withRouter
   )(Rave)

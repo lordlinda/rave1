@@ -4,10 +4,10 @@ import {toast} from 'react-toastify'
 //this written here below are action creators
 //they dispatch an action to a reducer with the maatching type
 //which reducer alters the state
-import {SIGN_UP,AUTH_ERROR,SIGN_IN,USER_LOADED,SIGN_OUT} from './types.js'
+import {SIGN_UP,AUTH_ERROR,SIGN_IN,USER_LOADED,SIGN_OUT,GET_TRANSACTIONS,SEARCH_TRANSACTIONS} from './types.js'
 export const loadUser=()=>async (dispatch)=>{
 	const token = localStorage.getItem('token')
-axios.defaults.headers.common['Authorization'] = token 
+axios.defaults.headers.common['Authorization'] = token
 	await axios.get('/users/user')
             .then(res=>{
               //console.log(res.data.user)
@@ -24,7 +24,7 @@ axios.defaults.headers.common['Authorization'] = token
 }
 export const signUp =(user)=>async (dispatch)=>{
 		await axios
-				   .post('/users/signup',user)	
+				   .post('/users/signup',user)
 				   .then(res=>{
 				   	console.log(res.data)
 				   	  dispatch({
@@ -32,7 +32,7 @@ export const signUp =(user)=>async (dispatch)=>{
 				   	  	payload:res.data
 				   	  })
 				   	   localStorage.setItem('token',res.data.token)
-				   	  dispatch(loadUser())
+				   	    dispatch(loadUser())
 				   	 
 				   }).catch(err=>{
 				   	toast.error(err.response.data.msg)
@@ -64,6 +64,35 @@ export const signIn =(user)=>async (dispatch)=>{
 				   })
 	
 }
+
+export const getTransactions=(limit)=>async (dispatch)=>{
+	//console.log(filters)
+	await axios
+			  .post('/transactions',limit)
+			  .then(res=>{
+			  	dispatch({
+			  		type:GET_TRANSACTIONS,
+			  		payload:res.data.transactions
+			  	})
+
+})
+}
+
+export const searchTransactions=(filters)=>async (dispatch)=>{
+	//console.log(filters)
+	await axios
+			  .post('/transactions',filters)
+			  .then(res=>{
+			  	//console.log(res.data)
+			  	dispatch({
+			  		type:SEARCH_TRANSACTIONS,
+			  		payload:res.data.transactions
+			  	})
+
+})
+}
+
+
 
 export const signOut=()=>dispatch=>{
 	dispatch({

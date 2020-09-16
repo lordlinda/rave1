@@ -1,9 +1,11 @@
-import {USER_LOADED} from '../actions/types.js'
+import {USER_LOADED,GET_TRANSACTIONS,SEARCH_TRANSACTIONS} from '../actions/types.js'
 
 const initialState={
 	loading:true,
 	plans:[],
-	history:[]
+	transactions:[],
+	history:[],
+	name:''
 }
 
 //the reducer has the inital state and alters it based on the action
@@ -14,7 +16,19 @@ export default (state=initialState,action)=>{
 			...state,
 			loading:false,
 			plans:action.payload.paymentPlan,
-			history:action.payload.history
+			name:action.payload.username
+		}
+		case GET_TRANSACTIONS:
+		return {
+			...state,
+			loading:false,
+			transactions:action.payload
+		}
+		case SEARCH_TRANSACTIONS:
+		return{
+			...state,
+			loading:false,
+			history:action.payload
 		}
 		default:
 		return state

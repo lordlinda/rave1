@@ -1,205 +1,79 @@
 import React from 'react'
-import Button from './Button.js'
-import axios from 'axios'
-import {toast} from 'react-toastify'
-import Moment from 'moment';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { withStyles } from '@material-ui/core/styles';
+import Moment from 'moment'
 import {numberWithCommas} from '../../helpers/middleware.js'
-import Input from './Input.js'
-const styles={
-  root:{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-}
+import { extendMoment } from 'moment-range'
+
+const moment = extendMoment(Moment);
+
 const Plan=(props)=>{
-    const [open, setOpen] = React.useState(false);
-    const [formData,setFormData]=React.useState({
-      description:props.plan.description,
-      targetAmount:props.plan.targetAmount,
-    })
-      const {description,targetAmount}=formData
-
-const handleChange=text=>e=>{
-  setFormData({...formData,[text]:e.target.value})
-}
-	const cancelSubscription=(plan)=>{
-      //console.log(plan)
-    alert('Are u sure?')
-      axios.post(`/payments/cancelSubscription/${plan._id}`,{plan:plan.planId})
-           .then(res=>{
-            //console.log('hello')
-            toast.success('Unsubscribed from plan')
-           })
-    }
-
-    const editPlan=(id)=>{
-      const variables ={
-        targetAmount:targetAmount,
-        description:description
-      }
-      axios.put(`/payments/editplan/${id}`,variables)
-           .then(res=>{
-            console.log('hello')
-            //toast.sucess('Unsubscribed from plan')
-           })
-           setOpen(false)
-    }
-    const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-   
   const getDate=(id,date_created)=>{
-    let dueDate = ''
+    let range =''
+    let date = ''
     switch(id){
-      case 6872:
-       dueDate = Moment(date_created).add(1,'days')
-        if(dueDate > Moment()){
-          console.log(dueDate)
-         return Moment(dueDate).fromNow()
-      }else{
-        console.log(dueDate)
-         return Moment(Moment(dueDate).add(1,'days')).fromNow()
-     }
-      
       case 6873:
-      dueDate = Moment(date_created).add(1,'hours')
-       if(dueDate > Moment()){
-        console.log('init')
-         return Moment(dueDate).fromNow()
-      }else{
-        console.log('loop')
-         return Moment(Moment(dueDate).add(1,'hours')).fromNow()
-     }
-        case 6912:
-       dueDate = Moment(date_created).add(1,'weeks')
-       if(dueDate > Moment()){
-         return Moment(dueDate).fromNow()
-      }else{
-        
-         return Moment(Moment(dueDate).add(1,'weeks')).fromNow()
-     }
-      
-        case 6913:
-       dueDate = Moment(date_created).add(1,'months')
-       if(dueDate > Moment()){
-         return Moment(dueDate).fromNow()
-      }else{
-         return Moment(Moment(dueDate).add(1,'months')).fromNow()
-     }
-      
-      case 6929:
-       dueDate = Moment(date_created).add(1,'years')
-       if(dueDate > Moment()){
-         return Moment(dueDate).fromNow()
-      }else{
-         return Moment(Moment(dueDate).add(1,'years')).fromNow()
-     }
-      
-        default:
-        return ''
-    }
-    //so we get the date it was created and subtract it from the curent date
-    //then we  we add the number of days depending on the 
-    //the duration
-    //const dueDate = Moment('2020-09-03 14:40').add(7,'days')
-    //console.log()
+    range = moment.range(date_created,Moment(date_created).add(5,'weeks'))
+    const hours = Array.from(range.by('hour'))
+    date = hours.filter(hour=>hour.format('YYYY-MM-DD HH:mm') > Moment().format('YYYY-MM-DD HH:mm'))[0]
+     return date.format('HH:mm') + 'due';
+     case 6872:
+    range = moment.range(date_created,Moment(date_created).add(5,'weeks'))
+    const days = Array.from(range.by('day'))
+    date = days.filter(day=>day.format('YYYY-MM-DD HH:mm') > Moment().format('YYYY-MM-DD HH:mm'))[0]
+    return date.format('MM-DD') + 'due';
+    case 6912:
+     range = moment.range(date_created,Moment(date_created).add(5,'months'))
+    const weeks = Array.from(range.by('week'))
+    date = weeks.filter(week=>week.format('YYYY-MM-DD HH:mm') > Moment().format('YYYY-MM-DD HH:mm'))[0]
+    return date.format('MM-DD') + 'due';
+    case 6913:
+    range = moment.range(date_created,Moment(date_created).add(5,'years'))
+    const months = Array.from(range.by('month'))
+    date = months.filter(month=>month.format('YYYY-MM-DD HH:mm') > Moment().format('YYYY-MM-DD HH:mm'))[0]
+    return date.format('MM-DD') + 'due';
+    case 6929:
+    range = moment.range(date_created,Moment(date_created).add(5,'weeks'))
+    const years = Array.from(range.by('year'))
+     date = years.filter(year=>year.format('YYYY-MM-DD HH:mm') > Moment().format('YYYY-MM-DD HH:mm'))[0]
+    return date.format('YYYY-MM-DD') + 'due'
+   }
   }
-  //getDate()
-    //console.log(props)
+  
     const duration=(id)=>{
       //console.log(id)
       switch(id){
         case 6872:
-        return '/day';
+        return 'daily';
         case 6873:
-        return '/hr';
+        return 'hourly';
         case 6912:
-        return '/wk'
+        return 'weekly'
         case 6913:
-        return '/mth'
+        return 'monthly'
         case 6929:
-        return '/yr'
+        return 'yearly'
         default:
         return ''
       }
     }
-    const {classes}=props
-    //console.log(color)
+    //we give the first subscriptions
+    //we give a distance from the top one
 	return(
-		<div className='mt-5 md:w-full'>
-
-      <div className='py-2 flex justify-around mb-1'>
-           <div className=''>
-           <p className='uppercase'>{props.plan.description}</p>
-            {
-            props.plan.planId ?
-            <div>
-            <div className=''>
-           <p className='mt-1'>{numberWithCommas(props.plan.installment)}{duration(props.plan.planId)}</p>
-            <p className=''>{getDate(props.plan.planId,props.plan.createdAt)}</p>
-           </div>
-
-           </div>
-
-           :null
-           }
-          
-           </div>
-           <div className='mt-2text-purple-700'>
-              
-            <Button
-        isButton={true}
-        onClick={handleClickOpen}
-        title='Edit'
-        moreStyle='rounded-lg bg-purple-800 text-white px-4 py-1'/>
-          <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" className={classes.root}>
-        <DialogTitle id="form-dialog-title">Edit plan</DialogTitle>
-        <div className='px-5 mb-5'>
-          <Input 
-           type='text'
-           title='Description'
-           value={description}
-           onChange={handleChange('description')}
-            moreStyle='border rounded-lg mt-1 px-4 py-1'
-          />
-          <Input 
-           type='number'
-           title='Target Amount'
-           value={targetAmount}
-            moreStyle='border rounded-lg mt-1 px-4 py-1'
-           onChange={handleChange('targetAmount')}
-          />
-          <div className='flex flex-between'>
-          {
-            props.plan.planId ?
-            <Button 
-        isButton={true}
-        onClick={cancelSubscription.bind(this,props.plan)}
-        title='Cancel Subscription'
-        moreStyle='bg-red-500 text-white rounded-lg px-2 py-1 mr-2'/>
-            :null
-          }
-          <Button 
-        isButton={true}
-        title='Confirm'
-        onClick={editPlan.bind(this,props.plan._id)}
-        moreStyle='bg-purple-900 text-white rounded-lg mt-4 py-1 px-8 md:mt-6'/>
-        </div>
-        </div>
-
-      </Dialog>
-           </div>
-           </div>
+		<div className='md:mt-5 md:w-full'>
+  {/*we want the interval to be  beside the other text*/}
+    <div className='flex justify-between'>
+    <div>
+     <p className='md:text-xl md:font-semibold'>{props.plan.description ? props.plan.description :'Checking account'}</p>
+     {/*we display the installment amount and the due date next to each other*/}
+          <div className='flex text-gray-700 md:text-md flex-wrap'>
+          <p>UGX{numberWithCommas(props.plan.installment)}</p>
+          <p className='ml-1'>{getDate(props.plan.planId,props.plan.createdAt)}</p>
+          </div>
+      </div>
+    {/*we want the interval to have in a background that is round h-full ensures that it is only arond the interval text*/}
+      <div className='bg-purple-500 text-white rounded-lg h-full px-2'>{duration(props.plan.planId)}</div>
+      </div>
 </div>
 		)
 }
 
-export default withStyles(styles)(Plan)
+export default Plan

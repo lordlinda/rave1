@@ -47,18 +47,21 @@ const Signup=(props)=>{
       title='Username'
       value={username}
       onChange={handleChange('username')}
+      moreStyle='border-b border-indigo-500'
        />
         <Input
       type='email'
       title='Email'
       value={email}
       onChange={handleChange('email')}
+      moreStyle='border-b border-indigo-500'
        />
        <Input
       type='password'
       title='Password'
       value={password}
       onChange={handleChange('password')}
+      moreStyle='border-b border-indigo-500'
        />
        <Button
        isButton={true}
@@ -70,7 +73,7 @@ const Signup=(props)=>{
        <span className='text-gray-500'>Already have an account ?</span>
        <Button
        title='Signin'
-       moreStyle='text-blue-600'
+       moreStyle='text-indigo-500'
        href={'/signin'}
        />
        </div>

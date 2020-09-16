@@ -8,7 +8,7 @@ console.log(token)
 axios.defaults.headers.common['Authorization'] = token 
 const store = createStore(reducer,{
 	auth:{
-		isAuth: token ? true : false,
+		isAuth:token ? true :false,
 		loading:true
 	}
 }, composeWithDevTools(
