@@ -3,7 +3,12 @@ const router =express.Router()
 const passport=require('passport')
 
 //import Controllers
-const {makePayment,makeSubscription,cancelSubscription,updateSubscription,editPlan} =require('../controllers/paymentsController.js')
+const {makePayment,makeSubscription,cancelSubscription,updateSubscription,editPlan,getPlan,createPlan,getAllPlans} =require('../controllers/paymentsController.js')
+
+//@route     POST /payments/create
+//@decription  create a plan
+//@access      Private
+router.post('/create',passport.authenticate('jwt', { session: false }),createPlan)
 
 //@route     POST /payments/makePayment
 //@decription  create  and update onetime payment user
@@ -31,4 +36,13 @@ router.post('/updateSubscription',updateSubscription)
 //@access        Private
 router.put('/editplan/:id',passport.authenticate('jwt', { session: false }),editPlan)
 
+//@route        Get /payments/:id
+//@description    get payment plan
+//@access        Private
+router.get('/:id',passport.authenticate('jwt', { session: false }),getPlan)
+
+//@route        Get /payments/
+//@description    get payment plans
+//@access        Private
+router.get('/',passport.authenticate('jwt', { session: false }),getAllPlans)
 module.exports =router

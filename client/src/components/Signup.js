@@ -39,7 +39,7 @@ const Signup=(props)=>{
     <Redirect to='/'/>
     :null
   }
- 	 <div className='shadow-lg px-6 py-12 border'>
+ 	 <div className='md:shadow-lg px-6 py-12 border'>
  	 <h1 className='text-center text-2xl text-indigo-500 mb-5'>Signup with us!</h1>
  	 <form onSubmit={handleSubmit}>
       <Input
@@ -67,7 +67,7 @@ const Signup=(props)=>{
        isButton={true}
        type='submit'
        title='Signup' 
-       moreStyle='w-full leading-wider bg-indigo-400 rounded-sm py-1 text-white shadow-md'/>
+       moreStyle='w-full leading-wider bg-indigo-400 rounded-md py-1 text-white shadow-md mt-3'/>
        </form>
        <div className='flex mt-5 text-sm'>
        <span className='text-gray-500'>Already have an account ?</span>

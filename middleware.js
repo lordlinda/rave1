@@ -34,5 +34,6 @@ passportAuth:passport.use(new JwtStrategy(
    })
 })
 ),
+ 
 
 }

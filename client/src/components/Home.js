@@ -7,10 +7,6 @@ const Home=(props)=>{
 	const [total, setTotal] = useState(0)
     const [subscriptions,setSubscriptions]=useState([])
    useEffect(()=>{
-    props.loadUser()
-    getTotal()
-	props.getTransactions({limit:5})
-	getSubscriptions()
 
 },[props.plans.length,props.transactions.length,total])
 
@@ -24,7 +20,7 @@ const getSubscriptions=()=>{
 
 
  const getTotal = () => {
- 	//console.log(props.plans)
+ 	console.log(props.plans)
         if (props.plans.length > 0) {
             let total = 0
             props.plans.map(plan => {
@@ -37,14 +33,6 @@ const getSubscriptions=()=>{
 
 return (  
 		<div>
-		{/*this is the main screen where our data keeps changing depending on route*/}
-		<div>
-		<div className='bg-gray-500 rounded-full'></div>
-          <Dashboard 
-          total={total}
-          subscriptions={subscriptions}
-          />
-		</div>
 		</div>
 
 		)

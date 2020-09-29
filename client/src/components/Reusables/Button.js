@@ -3,9 +3,9 @@ import {Link} from 'react-router-dom'
 const Button=({isButton,type,title,moreStyle,href,onClick})=>{
 	/*the padding of 6 is what gives that sapcing on the nav items so be carefull
 	if u choose to remove it*/
-	const style=`focus:outline-none mt-4 px-6 ${moreStyle}`
+	const style=`focus:outline-none ${moreStyle}`
 	return(
-		<div className=''>
+		<div>
 		 {
 		 	isButton ?
 		 	<button

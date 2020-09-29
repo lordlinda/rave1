@@ -1,16 +1,15 @@
 import React from 'react'
 
-const Input=({title,type,value,onChange,moreStyle,placeholder,onfocus,onblur})=>{
-	const style=`appearance-none focus:outline-none ${moreStyle}`
+const Input=({title,type,value,onChange,moreStyle,placeholder,labelStyle})=>{
+	const style=`appearance-none focus:outline-none ${moreStyle}`;
+	const label =`block text-gray-700 ${labelStyle}`
 	return(
 		<div className='mt-2'>
-		<label className='block text-gray-700'>{title}</label>
+		<label className={label}>{title}</label>
 		<input className={style}
 		type={type}
 		value={value}
 		onChange={onChange}
-		onFocus={onfocus}
-		onBlur={onblur}
 		placeholder={placeholder}
 		/>
 		</div>

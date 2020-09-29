@@ -1,15 +1,28 @@
 import React from 'react'
 import Moment from 'moment';
 import {numberWithCommas} from '../../helpers/middleware.js'
-
+import {Link} from 'react-router-dom'
+import Input from './Input.js'
 const Transaction=(props)=>{
+  const {_id}=props.transaction
 	return(
-
-          <tr className=''>
-      <td className=" px-5 py-2">{Moment(props.transaction.date).format('LL')}</td>
-      <td className=" px-2 py-2">{props.transaction.currency}{numberWithCommas(props.transaction.amount)}</td>
-      <td className=" px-5 py-2">{props.transaction.paymentMethod}</td>
-    </tr>
+    <Link to={'/transaction/'+props.transaction._id}>
+        <div className='shadow-planShadow mt-3 px-4 py-2 rounded-lg'>
+    <div className='flex justify-between'>
+    <div>
+     <p className='text-titleDark font-semibold text-xl'>{props.transaction.description ? props.plan.description :'Checking account'}</p>
+     {/*we display the installment amount and the due date next to each other*/}
+          <div>
+          <p className='mt-3 text-dateGray'>{Moment(props.transaction.date).format('MMM/DD/YY')}</p>
+          </div>
+      </div>
+      <div>
+        <p className='text-amountGreen'>UGX{numberWithCommas(props.transaction.amount)}</p>
+       
+       </div>
+      </div>
+</div>
+</Link>
 		)
 }
 

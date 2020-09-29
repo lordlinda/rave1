@@ -9,41 +9,18 @@ import {Provider} from 'react-redux'
 import store from './redux/store.js'
 import Signup from './components/Signup.js'
 import Signin from './components/Signin.js'
-import Home from './components/Home.js'
-import Transactions from './components/Transactions.js'
-import Subscriptions from './components/Subscriptions.js'
+import Dashboard from './components/Dashboard.js'
+import Transactions from './components/AllTransactions.js'
 import authGuard from './helpers/auth.js'
-import Sidebar from './components/Sidebar.js'
+import Rave from './components/Rave.js'
+import createSubscription from './components/CreateSubscription.js'
+import AllPlans from './components/plans/AllPlans.js'
+import createPlan from './components/plans/createPlan.js'
+import Plan from './components/plans/SinglePlan.js'
+import editPlan from './components/plans/editPlan.js'
+import  Transaction from  './components/Reusables/SingleTransaction.js'
+import SwipeableRoutes from "react-swipeable-routes";
 
-const defaultContainer =()=>(
-     <div className='flex h-screen'>
-     {/*we give a height of the full screen*/}
-     <div 
-     style={{backgroundColor:'#f7f9f8'}}
-     className='h-screen'>
-       <Sidebar />
-       </div>
-       {/*we give a height of the full screen
-       and the width it occupies is 100% of its part in the flex container and a curve to the left*/}
-       <div className='w-full h-screen md:rounded-l-curve'>
-       <Route exact path='/' component={authGuard(Home)}/>
-      <Route exact path='/transactions' component={authGuard(Transactions)}/>
-      <Route exact path='/subscriptions' component={authGuard(Subscriptions)}/>
-      </div>
-  </div>
-)
-
-const loginContainer=()=>(
-<div>
-    <Route exact path='/signin' component={Signin}/>
-</div>
-)
-
-const signUpContainer=()=>(
-<div>
-    <Route exact path='/signup' component={Signup}/>
-</div>
-)
 function App() {
   return (
     <div className="App">
@@ -51,9 +28,19 @@ function App() {
     <ToastContainer />
       <Router>
       <Switch>
-      <Route exact path='/signin' component={loginContainer} />
-      <Route exact path='/signup' component={signUpContainer} />
-      <Route exact component={defaultContainer} />
+       <Route exact path='/signin' component={Signin}/>
+       <Route exact path='/signup' component={Signup}/>
+        <Route exact path='/rave' component={authGuard(Rave)}/>
+         <Route exact path='/createSubscription' component={authGuard(createSubscription)}/>
+           <Route exact path='/rave/:id' component={authGuard(Rave)}/>
+         <Route exact path='/createSubscription/:id' component={authGuard(createSubscription)}/>
+          <Route exact path='/createPlan' component={authGuard(createPlan)}/>
+          <Route exact path='/plan/:id' component={authGuard(Plan)}/>
+          <Route exact path='/editplan/:id' component={authGuard(editPlan)}/>
+           <Route exact path='/transaction/:id' component={authGuard(Transaction)}/>
+            <Route exact path='/' component={authGuard(Dashboard)}/>
+             <Route exact path='/plans' component={authGuard(AllPlans)}/>
+             <Route exact path='/transactions' component={authGuard(Transactions)}/>
       </Switch>
       </Router>
 
