@@ -17,6 +17,7 @@ createPlan:(req,res)=>{
             user:req.user._id,
             description:description,
             name:name,
+            amount:0,
             targetAmount:targetAmount,
             createdAt:moment(Date.now()).format("YYYY-MM-DD HH:mm"),
           })

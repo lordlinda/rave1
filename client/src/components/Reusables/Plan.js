@@ -70,7 +70,12 @@ const Plan=(props)=>{
           </div>
       </div>
       <div>
+      {
+        props.plan.amount ? 
         <p className='text-amountGreen'>UGX{numberWithCommas(props.plan.amount)}</p>
+        :null
+      }
+        
        <Button 
        href={'/editplan/'+props.plan._id}
        title='Edit'
