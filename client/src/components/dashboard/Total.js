@@ -1,12 +1,12 @@
 import React, { useState,useEffect } from 'react'
-import { numberWithCommas } from '../helpers/middleware.js'
+import { numberWithCommas } from '../../helpers/middleware.js'
 import {connect} from 'react-redux'
 import Moment from 'moment';
 
-import * as actions from '../redux/actions/index.js'
-import Select from './Reusables/select/Select.js'
-import {currencyOptionsArray} from './Reusables/select/Options.js'
-import {calculateTotal} from '../helpers/middleware.js'
+import * as actions from '../../redux/actions/index.js'
+import Select from '../Reusables/select/Select.js'
+import {currencyOptionsArray} from '../Reusables/select/Options.js'
+import {calculateTotal} from  '../../helpers/middleware.js'
 
 const Total = (props) => {
 	const [total,setTotal]=useState('0')

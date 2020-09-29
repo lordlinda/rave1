@@ -3,7 +3,8 @@ import {connect} from 'react-redux'
 import * as actions from '../../redux/actions/index.js'
 
 import Button from  '../Reusables/Button.js'
-import Plan from '../Reusables/Plan.js'
+import Plan from './Plan.js'
+
 const Subscriptions=(props)=>{
 
   

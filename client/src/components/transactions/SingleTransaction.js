@@ -5,8 +5,8 @@ import {connect} from 'react-redux'
 import {numberWithCommas} from '../../helpers/middleware.js'
 import * as actions from '../../redux/actions/index.js'
 import {Link} from 'react-router-dom'
-import Input from './Input.js'
-import BackArrow from './BackArrow.js'
+import Input from '../Reusables/Input.js'
+import BackArrow from '../Reusables/BackArrow.js'
 
 const Transaction=(props)=>{
   const id = props.match.params.id

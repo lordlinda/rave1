@@ -2,9 +2,9 @@ import React,{useState,useEffect} from 'react'
 import {connect} from 'react-redux'
 
 
-import Button from './Reusables/Button.js'
-import Transaction from './Reusables/Transaction.js'
-import * as actions from '../redux/actions/index.js'
+import Button from '../Reusables/Button.js'
+import Transaction from './Transaction.js'
+import * as actions from  '../../redux/actions/index.js'
 const TransactionList=(props)=>{
  useEffect(()=>{
   props.getTransactions()

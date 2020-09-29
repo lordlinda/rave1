@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {numberWithCommas} from '../../helpers/middleware.js'
-import Button from './Button.js'
+import Button from '../Reusables/Button.js'
 import {Link} from 'react-router-dom'
 
 const Goal=(props)=>{

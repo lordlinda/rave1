@@ -3,9 +3,9 @@ import {connect} from 'react-redux'
 
 
 import Button from  '../Reusables/Button.js'
-import Goal from '../Reusables/SingleGoal.js'
+import Goal from './SingleGoal.js'
 import PlusButton from '../Reusables/Plus.js'
-import BottomNavigation from '../views/BottomNavigation.js'
+import BottomNavigation from '../Reusables/BottomNavigation.js'
 import * as actions from '../../redux/actions/index.js'
 const AllPlans=(props)=>{
 useEffect(()=>{

@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from './Reusables/Button.js'
+import Button from '../Reusables/Button.js'
 const Buttons =()=>{
 	return (
 		<div className='flex items-baseline mt-5 justify-between'>

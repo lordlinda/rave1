@@ -6,13 +6,13 @@ import { withStyles } from '@material-ui/core/styles'
 import {compose} from 'redux'
 import {toast} from 'react-toastify'
 
-import Select from './Reusables/select/Select.js'
-import {paymentOptions} from './Reusables/select/Options.js'
-import Input from './Reusables/Input.js'
-import Transaction from './Reusables/Transaction.js'
-import Button from './Reusables/Button.js'
-import BottomNavigation from '../components/views/BottomNavigation.js'
-import * as actions from '../redux/actions/index.js'
+import Select from '../Reusables/select/Select.js'
+import {paymentOptions} from '../Reusables/select/Options.js'
+import Input from '../Reusables/Input.js'
+import Transaction from '../dashboard/Transaction.js'
+import Button from '../Reusables/Button.js'
+import BottomNavigation  from '../Reusables/BottomNavigation.js'
+import * as actions from '../../redux/actions/index.js'
 const styles={
   root:{
     display: 'flex',

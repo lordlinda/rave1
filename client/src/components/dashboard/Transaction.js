@@ -2,7 +2,7 @@ import React from 'react'
 import Moment from 'moment';
 import {numberWithCommas} from '../../helpers/middleware.js'
 import {Link} from 'react-router-dom'
-import Input from './Input.js'
+import Input from '../Reusables/Input.js'
 const Transaction=(props)=>{
   const {_id}=props.transaction
 	return(
