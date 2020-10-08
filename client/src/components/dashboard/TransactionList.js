@@ -9,7 +9,7 @@ import * as actions from '../../redux/actions/index.js'
 const TransactionList = (props) => {
   useEffect(() => {
     props.getTransactions()
-  }, [props.transactions.length])
+  }, [])
   return (
     <div className='mt-8 mb-10'>
       {/*the plans title*/}
