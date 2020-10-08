@@ -31,10 +31,12 @@ export default function LinearWithValueLabel(props) {
   const [progress, setProgress] = React.useState(0);
 
   React.useEffect(() => {
-    setProgress((props.amount/props.targetAmount)* 100)
+    setProgress((props.amount / props.targetAmount) * 100)
 
-  }, [props.amount,props.targetAmount]);
-    console.log(progress)
+  }, [props.amount, props.targetAmount]);
+  console.log(progress)
+
+
   return (
     <div className={classes.root}>
       <LinearProgressWithLabel value={progress} />

@@ -26,3 +26,16 @@ code {
 .main{
   background-color: '#f1f7ff'
 }
+.menu__list{
+  margin-top: 50px !important;
+  padding:20px !important;
+}
+.plan__modal{
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+}
+.menu__sidebar{
+  background-color: aliceblue;
+  margin-top: 10px !important;
+}
