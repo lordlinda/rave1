@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 
 
-const connection = mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/rave1', {
+const connection = mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Moment from 'moment'
 import { connect } from 'react-redux'
 
-import { numberWithCommas } from '../../helpers/middleware.js'
+
 import * as actions from '../../redux/actions/index.js'
 import BackArrow from '../Reusables/BackArrow.js'
 
@@ -12,6 +12,7 @@ const Transaction = (props) => {
   useEffect(() => {
     props.getTransaction(id)
   }, [id])
+
   return (
     <div className='mx-5'>
       <BackArrow href='/transactions' moreStyle='pt-2' />
@@ -30,7 +31,7 @@ const Transaction = (props) => {
               </div>
               <div className='mt-2'>
                 <p>Amount</p>
-                <p className='text-2xl text-amountGreen'>{props.transaction.currency}{numberWithCommas(props.transaction.amount)}</p>
+                <p className='text-2xl text-amountGreen'>{props.transaction.currency}{props.transaction.amount}</p>
               </div>
             </div>
           </>

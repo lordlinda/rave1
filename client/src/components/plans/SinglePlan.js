@@ -75,8 +75,8 @@ const SinglePlan = (props) => {
             </div>
           </div>
           <div className='rounded-t-lg bg-white px-5 py-2 mt-2'>
-            <p className='text-lg mt-2'>Amount saved:{props.plan.currency}{numberWithCommas(props.plan.amount)}</p>
-            {props.plan.targetAmount ? <p className='text-lg py-1'>Target Amount:{props.plan.currency}{numberWithCommas(props.plan.targetAmount)}</p> : null}
+            <p className='text-lg mt-2'>Amount saved:{props.plan.currency}{props.plan.amount}</p>
+            {props.plan.targetAmount ? <p className='text-lg py-1'>Target Amount:{props.plan.currency}{props.plan.targetAmount}</p> : null}
 
             {
               props.plan.description ?
