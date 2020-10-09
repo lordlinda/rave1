@@ -17,6 +17,7 @@ const Dashboard = (props) => {
       <Buttons />
       <Plans />
       <TransactionList />
+      <BottomNavigation />
     </div>
   )
 }

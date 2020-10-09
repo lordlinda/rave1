@@ -39,3 +39,25 @@ code {
   background-color: aliceblue;
   margin-top: 10px !important;
 }
+ 
+.MuiBottomNavigation-root{
+  display: flex !important;
+  justify-content: space-between !important;
+  color:#A5A5A5 !important;
+ 
+}
+/*menu link for bottom navigation*/
+.bottomMenuLink{
+  padding:0px 20px;
+}
+.bottomMenuLink:hover{
+  color:#A577EE !important;
+}
+
+ .MuiSvgIcon-root :hover{
+   color:#A577EE !important;
+}
+.link__active{
+  border-radius: 100%;
+  color:#A577EE !important
+}

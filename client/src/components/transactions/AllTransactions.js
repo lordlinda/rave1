@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import FlipMove from 'react-flip-move';
 
 import Select from '../Reusables/select/Select.js'
 import { paymentOptions } from '../Reusables/select/Options.js'
@@ -10,6 +9,7 @@ import Input from '../Reusables/Input.js'
 import Transaction from '../dashboard/Transaction.js'
 import Button from '../Reusables/Button.js'
 import * as actions from '../../redux/actions/index.js'
+import BottomNavigation from '../Reusables/BottomNavigation.js'
 
 const Transactions = (props) => {
   const [open, setOpen] = React.useState(false)
@@ -84,22 +84,20 @@ const Transactions = (props) => {
           </form>
         </Dialog>
         <div>
-          <FlipMove>
-            {
-              props.transactions ?
-                props.transactions.map(transaction => {
-                  return <Transaction transaction={transaction} key={transaction._id} />
-                })
-                : <tr>
-                  <td>No transactions yet</td>
-                </tr>
+          {
+            props.transactions ?
+              props.transactions.map(transaction => {
+                return <Transaction transaction={transaction} key={transaction._id} />
+              })
+              : <tr>
+                <td>No transactions yet</td>
+              </tr>
 
-            }
-          </FlipMove>
+          }
         </div>
       </div>
 
-
+      <BottomNavigation />
     </div>
   )
 

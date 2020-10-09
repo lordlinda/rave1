@@ -13,7 +13,6 @@ const Greeting = (props) => {
 			{/*some distance from the top*/}
 			<div className='mt-5 text-3xl ml-2'>
 				Hello {name}</div>
-			<Navbar />
 		</div>
 	)
 }

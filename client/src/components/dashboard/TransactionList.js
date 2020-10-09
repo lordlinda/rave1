@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import FlipMove from 'react-flip-move';
 
 
 import Button from '../Reusables/Button.js'
@@ -22,15 +21,27 @@ const TransactionList = (props) => {
         />
       </div>
       {/*mapout our transactions*/}
-      <FlipMove>
-        {
-          props.transactions ?
-            props.transactions.slice(0, 2).map(transaction => {
-              return <Transaction transaction={transaction} key={transaction._id} />
-            })
-            : <p>No transactions yet</p>
-        }
-      </FlipMove>
+      {
+        props.loading ?
+          <div className="border border-gray-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
+            <div className="animate-pulse flex space-x-4">
+              <div className="rounded-full bg-gray-400 h-12 w-12"></div>
+              <div className
+                ="flex-1 space-y-3 py-1">
+                <div className="h-4 bg-gray-400 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-400 rounded"></div>
+              </div>
+            </div>
+          </div> : null
+
+      }
+      {
+        props.transactions ?
+          props.transactions.slice(0, 2).map(transaction => {
+            return <Transaction transaction={transaction} key={transaction._id} />
+          })
+          : <p>No transactions yet</p>
+      }
     </div>
   )
 
@@ -38,7 +49,8 @@ const TransactionList = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    transactions: state.data.transactions
+    transactions: state.data.transactions,
+    loading: state.data.loading
   }
 }
 
