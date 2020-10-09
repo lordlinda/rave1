@@ -11,7 +11,7 @@ const Goal = (props) => {
     <Link to={'/plan/' + props.plan._id}>
       <div className='shadow-planShadow mt-3 px-4 py-2 rounded-buttonRadius mx-2 w-40 h-40'>
         <p className='mt-4 text-2xl'>{props.plan.name}</p>
-        <p className='mb-12'>{props.plan.currency}{numberWithCommas(props.plan.amount)}</p>
+        <p className='mb-12'>{props.plan.currency}{props.plan.amount}</p>
       </div>
     </Link>
   )

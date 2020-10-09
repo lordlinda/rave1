@@ -54,9 +54,7 @@ code {
   color:#A577EE !important;
 }
 
- .MuiSvgIcon-root :hover{
-   color:#A577EE !important;
-}
+ 
 .link__active{
   border-radius: 100%;
   color:#A577EE !important
