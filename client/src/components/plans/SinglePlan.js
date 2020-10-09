@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
-import { withStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { connect } from 'react-redux'
-import { compose } from 'redux'
-import Moment from 'moment';
+
 
 
 import { numberWithCommas } from '../../helpers/middleware.js'
@@ -12,13 +10,6 @@ import Button from '../Reusables/Button.js'
 import ProgressBar from '../Reusables/ProgressBar.js'
 import BackArrow from '../Reusables/BackArrow.js'
 import * as actions from '../../redux/actions/index.js'
-const styles = {
-  root: {
-    display: 'flex',
-    alignItems: 'end',
-    justifyContent: 'center',
-  }
-}
 
 const SinglePlan = (props) => {
   const [open, setOpen] = React.useState(false)
@@ -39,7 +30,6 @@ const SinglePlan = (props) => {
   }
   //give the first subscriptions
   //we give a distance from the top one
-  const { classes } = props
   return (
     /*didnt use a w-1/2 because of no space between the boxes*/
     <div className='bg-customPurple'>
@@ -85,8 +75,8 @@ const SinglePlan = (props) => {
             </div>
           </div>
           <div className='rounded-t-lg bg-white px-5 py-2 mt-2'>
-            <p className='text-lg mt-2'>Amount saved:{props.plan.currency}{props.plan.amount}</p>
-            {props.plan.targetAmount ? <p className='text-lg py-1'>Target Amount:{props.plan.currency}{props.plan.targetAmount}</p> : null}
+            <p className='text-lg mt-2'>Amount saved:{props.plan.currency}{numberWithCommas(props.plan.amount)}</p>
+            {props.plan.targetAmount ? <p className='text-lg py-1'>Target Amount:{props.plan.currency}{numberWithCommas(props.plan.targetAmount)}</p> : null}
 
             {
               props.plan.description ?
@@ -118,4 +108,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default compose(connect(mapStateToProps, actions), withStyles(styles))(SinglePlan)
+export default connect(mapStateToProps, actions)(SinglePlan)

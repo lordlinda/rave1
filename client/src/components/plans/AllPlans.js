@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
 
 
-import Button from '../Reusables/Button.js'
 import Goal from './SingleGoal.js'
 import PlusButton from '../Reusables/Plus.js'
 import * as actions from '../../redux/actions/index.js'
@@ -14,12 +13,7 @@ const AllPlans = (props) => {
     props.getAllPlans()
   }, [props.plans.length])
 
-  const [open, setOpen] = useState(false)
-  const [subscriptions, setSubscriptions] = useState([])
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
 
   return (
     <div className='transition duration-500 ease-in-out'>
@@ -38,7 +32,6 @@ const AllPlans = (props) => {
           }
         </div>
       </div>
-      <BottomNavigation />
     </div>
   )
 

@@ -42,7 +42,6 @@ const Transactions = (props) => {
   useEffect(() => {
     props.getTransactions()
   }, [])
-  const { classes } = props
   return (
     <div className='mx-5'>
       {/*this is displays the title of the page*/}
@@ -97,7 +96,7 @@ const Transactions = (props) => {
         </div>
       </div>
 
-      <BottomNavigation />
+
     </div>
   )
 

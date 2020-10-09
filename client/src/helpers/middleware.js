@@ -7,7 +7,7 @@ export const calculateTotal = (plans) => {
     if (plans.length > 0) {
         let total = 0
         plans.map(plan => {
-            total += plan.amount
+            return total += plan.amount
         })
         return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }

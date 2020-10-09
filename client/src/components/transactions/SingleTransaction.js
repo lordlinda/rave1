@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 
 import { numberWithCommas } from '../../helpers/middleware.js'
 import * as actions from '../../redux/actions/index.js'
-import { Link } from 'react-router-dom'
-import Input from '../Reusables/Input.js'
 import BackArrow from '../Reusables/BackArrow.js'
 
 const Transaction = (props) => {
@@ -32,7 +30,7 @@ const Transaction = (props) => {
               </div>
               <div className='mt-2'>
                 <p>Amount</p>
-                <p className='text-2xl text-amountGreen'>{props.transaction.currency}{props.transaction.amount}</p>
+                <p className='text-2xl text-amountGreen'>{props.transaction.currency}{numberWithCommas(props.transaction.amount)}</p>
               </div>
             </div>
           </>

@@ -2,11 +2,10 @@ import React from 'react'
 import Moment from 'moment';
 import { numberWithCommas } from '../../helpers/middleware.js'
 import { Link } from 'react-router-dom'
-import Input from '../Reusables/Input.js'
 
 
 const Transaction = (props) => {
-  const { _id } = props.transaction
+
   return (
     <Link to={'/transaction/' + props.transaction._id}>
       <div className='shadow-planShadow mt-3 px-4 py-2 rounded-lg'>

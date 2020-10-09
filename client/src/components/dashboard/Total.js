@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Moment from 'moment';
 
 import * as actions from '../../redux/actions/index.js'
 import Select from '../Reusables/select/Select.js'
@@ -19,7 +18,6 @@ const Total = (props) => {
   const handleChange = (e) => {
     setCurrency(e.target.value)
   }
-  console.log(props.transactions.length)
   return (
     <div className='bg-customPurple mt-5 rounded-md'>
       {/*the total container has a custom background color  and margin from the greeting with a border-radius*/}

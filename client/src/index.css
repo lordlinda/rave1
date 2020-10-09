@@ -40,10 +40,10 @@ code {
   margin-top: 10px !important;
 }
  
-.MuiBottomNavigation-root{
-  display: flex !important;
-  justify-content: space-between !important;
-  color:#A5A5A5 !important;
+.bottomNavigation{
+  display: flex;
+  justify-content: space-between;
+  position:sticky;
  
 }
 /*menu link for bottom navigation*/
