@@ -3,7 +3,7 @@ module.exports = {
     // ...
     require('tailwindcss'),
     require('autoprefixer'),
-    process.env.NODE_ENV === 'production' && ('@fullhuman/postcss-purgecss')({
+    process.env.NODE_ENV === 'production' && require('@fullhuman/postcss-purgecss')({
       content: [
         './src/**/*.js',
         './public/index.html',
