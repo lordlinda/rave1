@@ -191,8 +191,8 @@ export const cancelSubscription = (id, plan) => async (dispatch) => {
 }
 
 export const signOut = () => dispatch => {
-	localStorage.remove('email')
-	localStorage.remove('name')
+	localStorage.removeItem('email')
+	localStorage.removeItem('name')
 	dispatch({
 		type: SIGN_OUT,
 		payload: ''
