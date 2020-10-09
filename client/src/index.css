@@ -59,3 +59,11 @@ code {
   border-radius: 100%;
   color:#A577EE !important
 }
+
+.plusContainer > .MuiSvgIcon-root{
+  color:white;
+  font-size:30px;
+  padding:3px;
+  background-color:#8080df;
+  border-radius: 50%;
+}

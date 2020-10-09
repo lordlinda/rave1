@@ -8,7 +8,7 @@ const PlusButton = ({ href, moreStyle }) => {
 	return (
 		/*some distance from the top*/
 		<div className={style}>
-			<Link to={href}>
+			<Link to={href} className='plusContainer'>
 				<AddOutlinedIcon />
 			</Link>
 		</div>

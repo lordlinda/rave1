@@ -9,8 +9,7 @@ import Input from '../Reusables/Input.js'
 import Transaction from '../dashboard/Transaction.js'
 import Button from '../Reusables/Button.js'
 import * as actions from '../../redux/actions/index.js'
-import BottomNavigation from '../Reusables/BottomNavigation.js'
-
+import Navbar from '../Navbar/Navbar'
 const Transactions = (props) => {
   const [open, setOpen] = React.useState(false)
   const [formData, setFormData] = useState({
@@ -46,7 +45,9 @@ const Transactions = (props) => {
     <div className='mx-5'>
       {/*this is displays the title of the page*/}
       <div className='mt-8'>
-        <p className='text-xl text-titleLink'>All Transactions</p>
+        <p className='text-xl text-titleLink'>
+          <Navbar />
+          All Transactions</p>
         <Button
           isButton={true}
           onClick={handleToggle}

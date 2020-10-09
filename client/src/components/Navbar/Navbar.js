@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Avatar } from '@material-ui/core';
-
-
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import Button from '../Reusables/Button.js'
 import * as actions from '../../redux/actions/index.js'
 
@@ -22,11 +20,19 @@ const Navbar = (props) => {
   const signout = () => {
     props.signOut()
   }
+
+  const isActive = (history, path) => {
+    if (history.location.pathname === path) {
+      return 'link__active';
+    } else {
+      return '';
+    }
+  }
   //console.log(props)
   return (
     <div className='block md:hidden'>
       {/*this is the navbar that shows on small screens instaed of the sidebar*/}
-      <div onClick={handleToggle}>
+      <div onClick={handleToggle} className='pointer'>
         <MenuIcon /></div>
       <div className='text-xl px-4 mt-10 ml-3 menu__sidebar'>
         <Drawer
@@ -46,21 +52,23 @@ const Navbar = (props) => {
               <Button
                 href='/'
                 title='Dashboard'
-                moreStyle='text-lg'
+                moreStyle={`text-lg hover:text-customPurple hover:bg-purple-300 px-3 py-2 rounded-full ${isActive(props.history, '/')}`}
               />
             </ListItem>
             <ListItem>
               {/*signout button just below the list items*/}
               <Button
-                href='/'
-                title='Dashboard'
+                href='/plans'
+                title='Plans'
+                moreStyle={`text-lg hover:text-customPurple hover:bg-purple-300 px-3 py-2 rounded-full ${isActive(props.history, '/plans')}`}
               />
             </ListItem>
             <ListItem>
               {/*signout button just below the list items*/}
               <Button
-                href='/'
-                title='Dashboard'
+                href='/transactions'
+                title='Transactions'
+                moreStyle={`text-lg hover:text-customPurple hover:bg-purple-300 px-3 py-3 rounded-full ${isActive(props.history, '/transactions')}`}
               />
             </ListItem>
             <ListItem>
@@ -69,6 +77,7 @@ const Navbar = (props) => {
                 isButton={true}
                 title='SignOut'
                 onClick={signout}
+                moreStyle='px-3'
               />
             </ListItem>
           </List>
@@ -84,4 +93,4 @@ function mapStateToProps(state) {
   }
 
 }
-export default connect(mapStateToProps, actions)(Navbar)
+export default compose(withRouter, connect(mapStateToProps, actions))(Navbar)

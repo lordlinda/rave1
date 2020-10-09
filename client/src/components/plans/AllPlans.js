@@ -6,8 +6,7 @@ import { connect } from 'react-redux'
 import Goal from './SingleGoal.js'
 import PlusButton from '../Reusables/Plus.js'
 import * as actions from '../../redux/actions/index.js'
-import BottomNavigation from '../Reusables/BottomNavigation.js'
-
+import Navbar from '../Navbar/Navbar'
 const AllPlans = (props) => {
   useEffect(() => {
     props.getAllPlans()
@@ -16,12 +15,14 @@ const AllPlans = (props) => {
 
 
   return (
-    <div className='transition duration-500 ease-in-out'>
+    <div>
       <div className='mx-5'>
         {/*the plans title*/}
-        <div className='mt-8 flex justify-between'>
-          <p className='text-xl text-titleLink'> Your Plans</p>
-          <PlusButton href='/createPlan' moreStyle='bg-titleLink rounded-full h-6 w-6 text-white' />
+        <div className='mt-6 flex justify-between'>
+          <p className='text-xl text-titleLink'>
+            <Navbar />
+          Your Plans</p>
+          <PlusButton href='/createPlan' />
         </div>
         {/*mapout our plans*/}
         <div className='flex justify-start flex-wrap items-baseline'>
