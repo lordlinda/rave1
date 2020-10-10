@@ -87,8 +87,8 @@ export const getTransactions = (filters) => async (dispatch) => {
 }
 
 export const searchTransactions = (filters) => async (dispatch) => {
-	//console.log(filters)
-	await axios
+	console.log(filters)
+	/*await axios
 		.post('/transactions', filters)
 		.then(res => {
 			//console.log(res.data)
@@ -97,7 +97,7 @@ export const searchTransactions = (filters) => async (dispatch) => {
 				payload: res.data.transactions
 			})
 
-		})
+		})*/
 }
 
 export const getTransaction = (id) => async (dispatch) => {

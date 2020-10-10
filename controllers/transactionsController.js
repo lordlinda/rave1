@@ -11,21 +11,23 @@ module.exports = {
 
     let findArgs = {}
     if (req.body) {
-      for (let key in req.body) {
-        findArgs['date'] = {
-          $gte: req.body.date ? (moment(req.body.date).subtract(1, 'days')).format('YYYY-MM-DD HH:mm') : '1970-01-01',
-          $lt: req.body.date ? (moment(req.body.date).add(1, 'days')).format('YYYY-MM-DD HH:mm') : '4040-10-11'
-        }
+      if (req.body.startDate || req.body.endDate) {
         //we want findArgs to look like this {date:{$gte:'2020-09-09',$lt:'2020-09-10'}}
-        if (req.body.paymentMethod) {
-          findArgs['paymentMethod'] = req.body['paymentMethod']
+        findArgs['date'] = {
+          $gte: req.body.startDate ? (moment(req.body.startDate)).format('YYYY-MM-DD HH:mm') : '1970-01-01',
+          $lt: req.body.endDate ? (moment(req.body.endDate).format('YYYY-MM-DD HH:mm')) : '4040-10-11',
         }
-        if (req.body.currency) {
-          findArgs['currency'] = req.body['currency']
-        }
-        //i did this because limit interferes with the search parameters
       }
+
+      if (req.body.paymentMethod) {
+        findArgs['paymentMethod'] = req.body['paymentMethod']
+      }
+      if (req.body.currency) {
+        findArgs['currency'] = req.body['currency']
+      }
+      //i did this because limit interferes with the search parameters
     }
+
     console.log(findArgs)
     Transaction.find({ user: req.user._id, ...findArgs })
       .limit(Limit)

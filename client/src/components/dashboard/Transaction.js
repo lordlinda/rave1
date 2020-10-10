@@ -18,7 +18,7 @@ const Transaction = (props) => {
             </div>
           </div>
           <div>
-            <p className='text-amountGreen'>UGX{numberWithCommas(props.transaction.amount)}</p>
+            <p className='text-amountGreen'>{props.transaction.currency}{numberWithCommas(props.transaction.amount)}</p>
 
           </div>
         </div>

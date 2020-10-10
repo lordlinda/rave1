@@ -19,9 +19,9 @@ const AllPlans = (props) => {
       <div className='mx-5'>
         {/*the plans title*/}
         <div className='mt-6 flex justify-between'>
-          <p className='text-xl text-titleLink'>
+          <div className='text-xl text-titleLink'>
             <Navbar />
-          Your Plans</p>
+          Your Plans</div>
           <PlusButton href='/createPlan' />
         </div>
         {/*mapout our plans*/}
@@ -33,7 +33,7 @@ const AllPlans = (props) => {
           }
         </div>
       </div>
-    </div>
+    </div >
   )
 
 }

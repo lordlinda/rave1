@@ -30,7 +30,7 @@ const Navbar = (props) => {
   }
   //console.log(props)
   return (
-    <div className='block md:hidden'>
+    <div className='block md:hidden text-gray-900 w-5'>
       {/*this is the navbar that shows on small screens instaed of the sidebar*/}
       <div onClick={handleToggle} className='pointer'>
         <MenuIcon /></div>
