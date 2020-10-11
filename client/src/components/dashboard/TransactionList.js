@@ -8,6 +8,7 @@ import * as actions from '../../redux/actions/index.js'
 const TransactionList = (props) => {
   useEffect(() => {
     props.getTransactions()
+    /**this list should update whenever the length of transactions changes */
   }, [])
   return (
     <div className='mt-8 mb-10'>

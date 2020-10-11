@@ -11,7 +11,14 @@ function createToken(user) {
 	}, process.env.JWT_SECRET,
 		{ expiresIn: '15m' })
 }
-
+function createRefreshToken() {
+	return res.cookie('refreshToken', jwt.sign({
+		sub: user.id
+	}, process.env.JWT_SECRET,
+		{ expiresIn: '15m' }), {
+		httpOnly: true
+	})
+}
 module.exports = {
 	//@route     POST /users/signup
 	//@decription  create new user

@@ -300,7 +300,6 @@ module.exports = {
         })
 
     }//end of if statement
-    res.status(200).json('continue')
   },
   editPlan: (req, res) => {
     //so when editing a plan we update the targetAmount and the description and name
