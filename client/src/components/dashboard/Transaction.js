@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 
 
 const Transaction = (props) => {
+  /**i want this component to be able to update when the quantity changes */
   return (
     <Link to={'/transaction/' + props.transaction._id}>
       <div className='shadow-planShadow mt-3 px-4 py-2 rounded-lg'>

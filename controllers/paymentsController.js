@@ -285,20 +285,20 @@ module.exports = {
         .findOne({ $and: [{ customerId: customer }, { installment: amount }] })
         .then(plan => {
           console.log('plan', plan)
+          const Plan = plan
           if (plan) {
             return PaymentPlan.update({ _id: plan._id }, { $inc: { amount: amount } }, { new: true })
               .then(plan => {
                 //we create a transaction for every subscription that is paid successfully
                 //we save this transaction to our database and  return a sucess message to our client
-                console.log('plan', plan)
                 const newTransaction = new Transaction({
-                  transactionId: req.body.data.amount,
+                  transactionId: req.body.data.id,
                   amount: req.body.data.amount,
                   paymentMethod: req.body.data.payment_type,
                   currency: req.body.data.currency,
                   date: moment(Date.now()).format("YYYY-MM-DD HH:mm"),
-                  paymentPlan: plan._id,
-                  user: plan.user
+                  paymentPlan: Plan._id,
+                  user: Plan.user
                 })
 
                 newTransaction.save()
@@ -308,6 +308,7 @@ module.exports = {
                       message: 'Transaction history registered'
                     })
                   })
+                console.log('transaction saved')
 
               }).catch(err => {
                 //if we fail to update the payment ,then we must show an error to the client
