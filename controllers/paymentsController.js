@@ -3,6 +3,7 @@ const moment = require('moment')
 var request = require('request');
 
 const PaymentPlan = require('../models/PaymentPlan.js')
+const Transaction = require('../models/Transaction')
 
 const { createTransaction } = require('./transactionsController.js')
 module.exports = {
@@ -289,8 +290,25 @@ module.exports = {
               .then(plan => {
                 //we create a transaction for every subscription that is paid successfully
                 //we save this transaction to our database and  return a sucess message to our client
-                createTransaction(req.body.response, plan._id, plan.user)
-                res.status(200).json({ msg: 'Payment plan updated webhook' })
+                console.log('plan', plan)
+                const newTransaction = new Transaction({
+                  transactionId: req.body.data.amount,
+                  amount: req.body.data.amount,
+                  paymentMethod: req.body.data.payment_type,
+                  currency: req.body.data.currency,
+                  date: moment(Date.now()).format("YYYY-MM-DD HH:mm"),
+                  paymentPlan: plan._id,
+                  user: plan.user
+                })
+
+                newTransaction.save()
+                  .then(transaction => {
+                    res.status(200).json({
+                      msg: 'Payment plan updated',
+                      message: 'Transaction history registered'
+                    })
+                  })
+
               }).catch(err => {
                 //if we fail to update the payment ,then we must show an error to the client
                 res.status(500).json({ error: err.message })
