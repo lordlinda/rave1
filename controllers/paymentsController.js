@@ -154,7 +154,8 @@ module.exports = {
                         customerId: req.body.response.tx.customerId,
                         planId: req.body.response.tx.paymentPlan,
                         currency: req.body.response.tx.currency,
-                        installment: response.body.data.amount
+                        installment: response.body.data.amount,
+                        status: req.body.response.tx.paymentPlan ? 'Active' : 'Inactive',
                       },
                       { new: true })
                       .then(plan => {

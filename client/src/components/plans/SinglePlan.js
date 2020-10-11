@@ -89,7 +89,7 @@ const SinglePlan = (props) => {
             }
 
             {
-              props.plan.status === 'Active' ?
+              props.plan.planId ?
                 <Button
                   title='Cancel subscription'
                   isButton={true}
