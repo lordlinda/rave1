@@ -23,8 +23,6 @@ const Transactions = (props) => {
           <Navbar />
           All Transactions</div>
         <FilterInput />
-
-
         <div>
           {
             props.transactions ?

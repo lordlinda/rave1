@@ -86,26 +86,12 @@ export const getTransactions = (filters) => async (dispatch) => {
 		})
 }
 
-export const searchTransactions = (filters) => async (dispatch) => {
-	console.log(filters)
-	/*await axios
-		.post('/transactions', filters)
-		.then(res => {
-			//console.log(res.data)
-			dispatch({
-				type: SEARCH_TRANSACTIONS,
-				payload: res.data.transactions
-			})
 
-		})*/
-}
 
 export const getTransaction = (id) => async (dispatch) => {
-	//console.log(filters)
 	await axios
 		.get(`/transactions/${id}`)
 		.then(res => {
-			//console.log(res.data)
 			dispatch({
 				type: GET_TRANSACTION,
 				payload: res.data.transaction
@@ -175,12 +161,11 @@ export const editPlan = (id, data) => async (dispatch) => {
 }
 
 export const cancelSubscription = (id, plan) => async (dispatch) => {
-	//console.log(filters)
+	console.log(id, plan)
 	await axios
 		.post(`/payments/cancelSubscription/${id}`, { plan: plan })
 		.then(res => {
 			toast.success('Congragulations,Subscription cancelled')
-			//console.log(res.data)
 			dispatch({
 				type: CANCEL_SUBSCRIPTION,
 			})
@@ -220,7 +205,7 @@ export const makeSubscription = (data) => async (dispatch) => {
 	await axios
 		.post('/payments/makeSubscription', data)
 		.then(res => {
-			toast.error('Congragulations,Subscription Setup')
+			toast.success('Congragulations,Subscription Setup')
 			dispatch({
 				type: CREATE_SUBSCRIPTION,
 				payload: res.data.msg

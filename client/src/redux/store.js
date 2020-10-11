@@ -3,6 +3,9 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import ReduxThunk from 'redux-thunk' // no changes here 
 import reducer from './reducers/index.js'
 import axios from 'axios'
+
+
+
 const token = localStorage.getItem('token')
 axios.defaults.headers.common['Authorization'] = token
 console.log(token)

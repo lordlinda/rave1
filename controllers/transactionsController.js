@@ -1,6 +1,9 @@
 const moment = require('moment')
 const Transaction = require('../models/Transaction.js')
 module.exports = {
+  //@route     POST /transactions
+  //@decription  get transactions based on the parametes
+  //@access      Private
   getTransactions: (req, res) => {
     console.log(req.body)
     const { limit, to } = req.body
@@ -33,6 +36,7 @@ module.exports = {
       .limit(Limit)
       //we want to have the latest payments on top so we sort the date in descending order starting from the beginning
       .sort({ date: -1 })
+      .populate('paymentPlan', 'name')
       .then(transactions => {
         res.status(200).json({
           transactions: transactions
@@ -45,9 +49,12 @@ module.exports = {
 
 
   },
+  //@route     GET /transactions
+  //@decription  get transaction
+  //@access      Private
   getTransaction: (req, res) => {
     Transaction.findOne({ _id: req.params.id })
-      .populate('paymentPlan', 'description')
+      .populate('paymentPlan', 'name')
       .then(transaction => {
         res.status(200).json({
           transaction: transaction
@@ -58,14 +65,16 @@ module.exports = {
         })
       })
   },
+  /**create a transaction */
   createTransaction: (response, plan, user, res) => {
+    console.log('plan', plan)
     const newTransaction = new Transaction({
       transactionId: response.tx.id,
       amount: response.tx.amount,
       paymentMethod: response.tx.paymentType,
       currency: response.tx.currency,
       date: moment(Date.now()).format("YYYY-MM-DD HH:mm"),
-      paymentPlan: plan._id,
+      paymentPlan: plan,
       user: user
     })
     newTransaction.save()

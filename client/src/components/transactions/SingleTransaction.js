@@ -19,7 +19,7 @@ const Transaction = (props) => {
       {
         props.transaction ?
           <>
-            <p className='text-titleDark font-semibold text-4xl mt-10'>{props.transaction.plan}</p>
+            <p className='text-titleDark font-semibold text-4xl mt-10'>{props.transaction.paymentPlan ? props.transaction.paymentPlan.name : 'Transaction'}</p>
             <div className='border px-2'>
               <div className='mt-8'>
                 <p>Payment method</p>

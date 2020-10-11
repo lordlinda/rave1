@@ -10,7 +10,10 @@ const path = require('path')
 const connectDB = require('./db.js')
 
 const app = express()
+/**middlewares */
+/**cors allows cross site requests */
 app.use(cors())
+/**parse req.body */
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
@@ -20,7 +23,7 @@ app.use('/users', require('./routes/users.js'))
 app.use('/payments', require('./routes/payments.js'))
 app.use('/transactions', require('./routes/transactions.js'))
 
-console.log(moment().add(1, 'days').format("YYYY-MM-DD HH:mm"))
+/**serve static files */
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
   app.get('*', (req, res) => {
