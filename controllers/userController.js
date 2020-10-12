@@ -9,7 +9,7 @@ function createToken(user) {
 	return jwt.sign({
 		sub: user.id
 	}, process.env.JWT_SECRET,
-		{ expiresIn: '15m' })
+		{ expiresIn: '1d' })
 }
 function createRefreshToken() {
 	return res.cookie('refreshToken', jwt.sign({
