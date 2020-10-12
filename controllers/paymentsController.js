@@ -314,7 +314,7 @@ module.exports = {
                 res.status(500).json({ error: err.message })
               })
           }
-          console.log('updated plan not foundd')
+          return res.status(422).json({ msg: 'updated plan not foundd' })
         })
 
     }//end of if statement
