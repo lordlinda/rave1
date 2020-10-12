@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import Button from '../Reusables/Button.js'
 const moment = extendMoment(Moment);
 const Plan = (props) => {
+  /**plan should update every time the amount changes */
   const getDate = (id, date_created) => {
     let range = ''
     let date = ''

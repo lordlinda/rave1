@@ -67,7 +67,7 @@ module.exports = {
   },
   /**create a transaction */
   createTransaction: (response, plan, user, res) => {
-    console.log('plan', plan)
+    console.log('create transaction plan', plan)
     const newTransaction = new Transaction({
       transactionId: response.tx.id,
       amount: response.tx.amount,

@@ -164,8 +164,8 @@ module.exports = {
 
                       })
                   } else {
-                    /** 3.2 Subscribe to checking account */
-                    updateCheckingAccountAmount(response.body.data.amount, req.body.response, req.body.id, req.user._id, res)
+                    /** 3.2 Subscribe to checking account this has no id and will return undefined when u create a transaction so i switch it to null*/
+                    updateCheckingAccountAmount(response.body.data.amount, req.body.response, null, req.user._id, res)
 
                   }
                 } else {
