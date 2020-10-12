@@ -279,7 +279,7 @@ module.exports = {
     if (req.body.event == 'charge.completed' && req.body.data.narration === 'Charge for Hourly Savings' || 'Charge for Daily Savings' || 'Charge for Monthly Savings' || 'Charge for Weekly Savings' || 'Charge for Yearly Savings') {
       const customer = req.body.data.customer.id
       const amount = req.body.data.amount
-      console.log(customer, amount)
+      console.log(customer, amount, req.body.data)
       PaymentPlan
         .findOne({ $and: [{ customerId: customer }, { installment: amount }] })
         .then(plan => {
