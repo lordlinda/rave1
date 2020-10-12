@@ -360,7 +360,8 @@ module.exports = {
   //@decription  get all plans
   //@access      Private
   getAllPlans: (req, res) => {
-    PaymentPlan.find({ user: req.user._id })
+    /**select all payment plans where the user is either the id or email address */
+    PaymentPlan.find({ $or: [{ user: req.user._id }, { email: req.user.email }] })
       .then(plans => {
         res.status(200).json({
           plans: plans
