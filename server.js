@@ -30,6 +30,6 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname + '/client/build/index.html'));
   });
 }
-
+console.log(moment('2020-10-12T18:20:31.000Z').format('YYYY-MM-DD HH:mm'))
 const port = process.env.PORT || 5000
 app.listen(port, () => console.log('server is listening'))

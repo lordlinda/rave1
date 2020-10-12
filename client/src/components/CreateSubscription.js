@@ -12,13 +12,14 @@ class Subscription extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            txref: (new Date()).toString(),
+            txref: Date.parse(new Date()),
             customer_email: "user@example.com",
             customer_phone: "234099940409",
             amount: '',
             currency: 'UGX',
             PBFPubKey: 'FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X',
             production: false,
+            payment_option: "mobilemoneyug",
             payment_plan: '6872',
             onSuccess: (response) => {
                 console.log(response)

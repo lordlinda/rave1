@@ -54,56 +54,48 @@ module.exports = {
       .headers({ "Content-Type": "application/json" })
       .send(payload)
       .end(function (response) {
-        //check status is success. <nd amount charged is equal to the one sent in by the user
-        if (response.body.status === "success" && response.body.data.flwMeta.chargeResponse === '00') {
-          console.log('first condition satisfied')
+        /**1.Confirm payment from flutterwave */
+        if (response.body.status === "success" && response.body.data.flwMeta.chargeResponse === '00' && response.body.data.amount == req.body.response.tx.amount) {
           //check if the amount is same as amount you wanted to charge just to be very sure
-          if (response.body.data.amount == req.body.response.tx.amount) {
-            console.log('Payment sucessful')
-
-            //so we need to find out if this is the users' first payment
-            //or they have been saving with us for a while
-            //since this is a single payment we do this
-            PaymentPlan.findOne({ user: req.user._id })
-              .then(plan => {
-                //if we find that this user has saved withus before then we just increase the amount
-                //by this new amount added
-                if (plan) {
-                  /**if the user is topping up to a particular plan */
-                  if (req.body.id) {
-                    //console.log('am not new')
-                    PaymentPlan.update({ _id: req.body.id }, { $inc: { amount: response.body.data.amount } }, { new: true })
-                      .then(plan => {
-                        //for each payment we create a new transaction object
-                        createTransaction(req.body.response, req.body.id, req.user._id, res)
-                      }).catch(err => {
-                        //if we fail to update the payment ,then we must show an error to the client
-                        res.status(500).json({
-                          error: err.message
-                        })
+          console.log('Payment sucessful')
+          /**2.Check if the user already has a payment plan */
+          return PaymentPlan.findOne({ user: req.user._id })
+            .then(plan => {
+              if (plan) {
+                /**3.Which plan does the user want to update */
+                if (req.body.id) {
+                  /**3.1 we update the plan the user if it has been identified */
+                  //the id of plan comes from the body
+                  PaymentPlan.updateOne({ _id: req.body.id }, { $inc: { amount: response.body.data.amount } }, { new: true })
+                    .then(plan => {
+                      //3.1.1 create a new transaction object
+                      createTransaction(req.body.response, req.body.id, req.user._id, res)
+                    }).catch(err => {
+                      /** 3.2.1 we inform the user that the plan was not updated */
+                      res.status(500).json({
+                        error: err.message
                       })
-                  } else {
-                    /**if no id is returned this means the user is updating their default checking account
-                     * every user has one.
-                     */
-                    updateCheckingAccountAmount(response.body.data.amount, req.body.response, plan, req.user._id, res)
-                  }
+                    })
                 } else {
-                  //if this is the first time for them to use the app
-                  newUserCreateCheckingAccount(response.body.data.amount, req.body.response, req.user._id, res)
+                  /**if user has not specified id we update the checking account amount
+                   * the plan is null to show it is the checking account
+                   */
+                  updateCheckingAccountAmount(response.body.data.amount, req.body.response, null, req.user._id, res)
+                }
+              } else {
+                /**3.2 user has no plan and we create them a checking account */
+                newUserCheckingAccount(response.body.data.amount, req.body.response, req.user._id, res)
 
-                }//end of if this is a new user
-              })
-
-          }
-        } else {
-          //this is incase the verifiaction for the payment went wrong
-          //beacuse it can go wrong if we are using the  wrong url in production
-          res.status(500).json({
-            error: 'Wrong url or malicious payment'
-          })
+              }
+            })
 
         }
+        /**this is a malicious payment */
+        res.status(422).json({
+          error: 'Wrong url or malicious payment'
+        })
+
+
       })
 
   },
@@ -114,18 +106,14 @@ module.exports = {
   //@access        Public
   makeSubscription: (req, res) => {
     //console.log(req.body)
-    //const { reason, targetAmount, duration } = req.body
     var payload = {
       SECKEY: process.env.SECRET,
       flw_ref: req.body.response.tx.flwRef
     }
-
-    //console.log(payload)
     //make sure to change this to live verify url in production
-
     var server_url = "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/flwv3-pug/getpaidx/api/verify";
     //please make sure to change this to production url when you go live
-    //make a post request to the server
+    /**Confrim if this is a true payment from flutterwave */
     unirest
       .post(server_url)
       .headers({ "Content-Type": "application/json" })
@@ -134,72 +122,64 @@ module.exports = {
         //console.log(response)
         /**1.Confirm is this is a valid payment from flutterwave */
         //check status is success.
-        if (response.body.status === "success" && response.body.data.flwMeta.chargeResponse === '00') {
-          console.log('first condition satisfied for subcription')
-          //check if the amount is same as amount you wanted to charge just to be very sure  
-          if (response.body.data.amount == req.body.response.tx.amount) {
-            console.log('Subscription sucessful')
-            //console.log(response.body)
-            /**2.Check if the user has a plan with us */
-            PaymentPlan.findOne({ user: req.user._id })
-              .then(plan => {
-                if (plan) {
-                  /**3.if they have a plan,check if they want to subscribe to a particular plan */
-                  if (req.body.id) {
-                    /** 3.1 making a subscription to a particular plan */
-                    PaymentPlan.updateOne({ _id: req.body.id },
+        if (response.body.status === "success" && response.body.data.flwMeta.chargeResponse === '00' && response.body.data.amount == req.body.response.tx.amount) {
+          console.log('Subscription sucessful')
+          /**2.Check if the user has a plan with us */
+          return PaymentPlan.findOne({ user: req.user._id })
+            .then(plan => {
+              if (plan) {
+                /**3.if they have a plan,check if they want to subscribe to a particular plan */
+                if (req.body.id) {
+                  /** 3.1 making a subscription to a particular plan */
+                  return PaymentPlan.updateOne({ _id: req.body.id },
+                    {
+                      $inc: { amount: response.body.data.amount },
+                      customerId: req.body.response.tx.txRef,
+                      planId: req.body.response.tx.paymentPlan,
+                      currency: req.body.response.tx.currency,
+                      installment: response.body.data.amount,
+                      status: 'Active',
+                    },
+                    { new: true })
+                    .then(plan => {
 
-                      {
-                        $inc: { amount: response.body.data.amount },
-                        customerId: req.body.response.tx.customerId,
-                        planId: req.body.response.tx.paymentPlan,
-                        currency: req.body.response.tx.currency,
-                        installment: response.body.data.amount,
-                        status: req.body.response.tx.paymentPlan ? 'Active' : 'Inactive',
-                      },
-                      { new: true })
-                      .then(plan => {
-                        /**create transaction */
-                        createTransaction(req.body.response, req.body.id, req.user._id, res)
+                      /**create transaction */
+                      createTransaction(req.body.response, req.body.id, req.user._id, res)
 
-                      })
-                  } else {
-                    /** 3.2 Subscribe to checking account this has no id and will return undefined when u create a transaction so i switch it to null*/
-                    updateCheckingAccountAmount(response.body.data.amount, req.body.response, null, req.user._id, res)
-
-                  }
+                    })
                 } else {
-                  /**3.Create a  subscribed plan for user */
-                  newUserCreateCheckingAccount(response.body.data.amount, req.body.response, req.user._id, res)
+                  /** 3.2 Subscribe to checking account this has no id and will return undefined when u create a transaction so i switch it to null*/
+                  updateCheckingAccountAmount(response.body.data.amount, req.body.response, null, req.user._id, res)
 
                 }
+              } else {
+                /**3.Create a  subscribed plan for user */
+                newUserCreateCheckingAccount(response.body.data.amount, req.body.response, req.user._id, res)
 
-              }).catch(err => {
-                console.log(err)
-                res.status(500).json({
-                  error: err.message
-                })
+              }
+
+            }).catch(err => {
+              console.log(err)
+              res.status(500).json({
+                error: err.message
               })
-
-          }
-        } else {
-          console.log('not success')
+            })
         }
+        /**Malicious payment */
+        res.status(422).json({
+          msg: 'Sorry,payment failed.Please try again'
+        })
 
       })
 
   },
+  //@route        Post /payments/cancelSubscription/:id
+  //@description    cancel subscription
+  //@access        Private
   cancelSubscription: (req, res) => {
     const id = req.params.id
     const { plan } = req.body
-    //first we need to get the  email and PaymentPlan to find the user subscription,we could ask
-    //them for a description as well  because they can have more than one case of a payment plan
-    //maybe someone is saving for a wedding and also school in the monthly duration
-    //so the email and payment plan will be the same but the customerId from the response
-    //so during creation we need to save that customer id
-    //during createdAt date will be different and that is how we will know which subscription to cancel
-    //we also need to ensure is active and not already canceled,it helps us narrow it down more
-    //make sure to change this url to the production url
+    /**pick the plan we want to cancel from flutterwave */
     var server_url = `https://ravesandboxapi.flutterwave.com/v3/subscriptions?plan=${plan}&${req.user.email}&status=active`;
     //we are getting so we use the get request
     //seckey is stored as Authoristion header,it is required or the route wont work
@@ -210,6 +190,7 @@ module.exports = {
         "Authorization": `Bearer ${process.env.SECRET}`
       })
       .end(function (response) {
+        console.log(response.body.data)
         //the response will basically  be an array ,so we map to find that customer id matching the one stored
         //in our payment schema.
         //console.log(response.body.data.filter(customer=>customer.amount == '50000')[0])
@@ -219,47 +200,56 @@ module.exports = {
             //seconds vary by a few 
             //and we do thsi with the help of moment
             const subscription = response.body.data.filter(customer =>
-              moment(customer.created_at).format("YYYY-MM-DD HH:mm") == moment(plan.createdAt).format("YYYY-MM-DD HH:mm"))[0]
-            //console.log(subscription)
-            //this is how the response will look like
-            /*[{ id: 6590, amount: 100, customer: { id: 451687, customer_email: 'user@example.com' },plan: 6847,status: 'active',created_at: '2020-08-28T07:35:16.000Z'
-             }]*/
-            //then we pick the id and cancel the subscription
-            //make sure to change this url to the production url
-            var server_url = `https://ravesandboxapi.flutterwave.com/v3/subscriptions/${subscription.id}/cancel`;
-            unirest
-              .put(server_url)
-              //in this case the secret key is in the auth header
-              .headers({
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.SECRET}`
+              moment(customer.created_at).format('YYYY-MM-DD HH') == moment(plan.createdAt).format('YYYY-MM-DD HH') && customer.customer.customer_email == req.user.email)[0]
+            if (subscription) {
+              //this is how the response will look like
+              /*[{ id: 6590, amount: 100, customer: { id: 451687, customer_email: 'user@example.com' },plan: 6847,status: 'active',created_at: '2020-08-28T07:35:16.000Z'
+               }]*/
+              //then we pick the id and cancel the subscription
+              //make sure to change this url to the production url
+              var server_url = `https://ravesandboxapi.flutterwave.com/v3/subscriptions/${subscription.id}/cancel`;
+              unirest
+                .put(server_url)
+                //in this case the secret key is in the auth header
+                .headers({
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${process.env.SECRET}`
+                })
+                .end(function (response) {
+                  //console.log(response.body.data)
+                  /*  raw_body: '{"status":"success","message":"Subscription cancelled",
+                  "data":{"id":6590,"amount":100,"customer":{"id":451687,"customer_email":"user@example.com"},
+                  "plan":6847,"status":"cancelled","created_at":"2020-08-28T07:35:16.000Z"}}'*/
+                  //after cancelling the  plan we set its status to inactive
+                  deactivateSubscription(id, res)
+
+                })//end of rave server response
+            } else {
+              res.status(400).json({
+                msg: 'Sorry subscription not cancelled'
               })
-              .end(function (response) {
-                //console.log(response.body.data)
-                /*  raw_body: '{"status":"success","message":"Subscription cancelled",
-                "data":{"id":6590,"amount":100,"customer":{"id":451687,"customer_email":"user@example.com"},
-                "plan":6847,"status":"cancelled","created_at":"2020-08-28T07:35:16.000Z"}}'*/
-                //after cancelling the  plan we set its status to inactive
-                deactivateSubscription(id, res)
-
-              })//end of rave server response
-
-          })//end of finding the paln to cancel
+            }
+          }).catch(err => {
+            res.status(404).json({
+              msg: 'Sorry subscription not found'
+            })
+          })
 
       })//end of finding subscriptions
 
 
   },
   updateSubscription: (req, res) => {
-    //console.log('update subscription')
     // retrieve the signature from the header
     var hash = req.headers["verif-hash"];
     //console.log(hash)
     if (!hash) {
       console.log('not from flutterwave')
+      return res.status(422).json({ msg: 'not from flutterwave' })
     }
+
     if (hash !== process.env.MY_HASH) {
-      console.log('not my hash')
+      return res.status(422).json({ msg: 'not my hash' })
     }
     //so in this route we want to update the users amount who has a subscription with us
     //every time the subscription is completed
@@ -279,11 +269,10 @@ module.exports = {
     if (req.body.event == 'charge.completed' && req.body.data.narration === 'Charge for Hourly Savings' || 'Charge for Daily Savings' || 'Charge for Monthly Savings' || 'Charge for Weekly Savings' || 'Charge for Yearly Savings') {
       const customer = req.body.data.customer.id
       const amount = req.body.data.amount
-      console.log(customer, amount, req.body.data)
-      PaymentPlan
-        .findOne({ $and: [{ customerId: customer }, { installment: amount }] })
+      console.log(customer, amount)
+      return PaymentPlan
+        .findOne({ $and: [{ customerId: { $in: [customer, req.body.data.tx_ref] } }, { installment: amount }] })
         .then(plan => {
-          console.log('plan', plan)
           const Plan = plan
           if (plan) {
             return PaymentPlan.updateOne({ _id: plan._id }, { $inc: { amount: amount } }, { new: true })
@@ -314,10 +303,11 @@ module.exports = {
                 res.status(500).json({ error: err.message })
               })
           }
-          return res.status(422).json({ msg: 'updated plan not foundd' })
+          return res.status(422).json({ msg: 'updated plan not found' })
         })
 
     }//end of if statement
+    return res.status(422).json({ msg: 'This is not a subscription payment' })
   },
   editPlan: (req, res) => {
     //so when editing a plan we update the targetAmount and the description and name
@@ -374,25 +364,23 @@ module.exports = {
 
 
 }
-
-const newUserCreateCheckingAccount = (amount, response, user, res) => {
+/**not exported functions */
+const newUserCheckingAccount = (amount, response, user, res) => {
   const newPaymentPlan = new PaymentPlan({
     name: 'Checking Account',
     planId: response.tx.paymentPlan,
-    customerId: response.tx.customer.id,
+    customerId: response.tx.txRef,
     user: user,
     amount: amount,
-    installment: response.tx.paymentPlan ? amount : 0,
     currency: response.tx.currency,
+    installment: response.tx.paymentPlan ? amount : 0,
     status: response.tx.paymentPlan ? 'Active' : 'Inactive',
     createdAt: moment(Date.now()).format("YYYY-MM-DD HH:mm")
   })
-  //we save the user to the database
+  /**Save checking account to database */
   newPaymentPlan.save()
     .then(plan => {
-      //then we add this payment to the user signed in
-      //for this payment we also need to store a respective transaction
-      //we save this transaction to our database and  return a sucess message to our client
+      /**create transaction */
       createTransaction(response, plan, user, res)
     }).catch(err => {
       res.status(500).json({
@@ -402,12 +390,11 @@ const newUserCreateCheckingAccount = (amount, response, user, res) => {
 }
 
 const updateCheckingAccountAmount = (amount, response, Plan, user, res) => {
-  //console.log('am not new')
-  PaymentPlan.update({ name: 'Checking Account' },
+  PaymentPlan.updateOne({ $and: [{ name: 'Checking Account' }, { user: user }] },
     {
       $inc: { amount: amount },
       planId: response.tx.paymentPlan,
-      customerId: response.tx.customerId,
+      customerId: response.tx.txRef,
       installment: response.tx.paymentPlan ? amount : 0,
       status: response.tx.paymentPlan ? 'Active' : 'Inactive',
     }, { new: true })
@@ -425,7 +412,7 @@ const updateCheckingAccountAmount = (amount, response, Plan, user, res) => {
 }
 
 const deactivateSubscription = (id, res) => {
-  PaymentPlan.update({ _id: id }, { $set: { status: 'Inactive', planId: '', customerId: '', installment: 0 } })
+  PaymentPlan.updateOne({ _id: id }, { $set: { status: 'Inactive', planId: '', customerId: '', installment: 0 } })
     .then(plan => {
       res.status(200).json({
         msg: 'Plan subscription deactivated'

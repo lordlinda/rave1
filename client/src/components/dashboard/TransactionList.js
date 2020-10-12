@@ -9,7 +9,7 @@ const TransactionList = (props) => {
   useEffect(() => {
     props.getTransactions()
     /**this list should update whenever the length of transactions changes */
-  }, [])
+  }, [props.transactions.length])
   return (
     <div className='mt-8 mb-10'>
       {/*the plans title*/}

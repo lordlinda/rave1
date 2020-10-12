@@ -11,7 +11,7 @@ class Rave extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      txref: (new Date()).toString(),
+      txref: Date.parse(new Date()),
       customer_email: "user@example.com",
       customer_phone: "234099940409",
       amount: '',

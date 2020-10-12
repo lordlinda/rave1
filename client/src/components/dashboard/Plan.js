@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Moment from 'moment'
 import { numberWithCommas } from '../../helpers/middleware.js'
 import { extendMoment } from 'moment-range'
@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom'
 import Button from '../Reusables/Button.js'
 const moment = extendMoment(Moment);
 const Plan = (props) => {
+  useEffect(() => {
+
+  }, [props.plan.amount])
   /**plan should update every time the amount changes */
   const getDate = (id, date_created) => {
     let range = ''
