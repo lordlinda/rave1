@@ -38,7 +38,6 @@ module.exports = {
   //@access      Private
   makePayment: (req, res) => {
     //console.log(req.body)
-    //console.log(reason,targetAmount)
     //create payload to verify payment
     var payload = {
       SECKEY: process.env.SECRET,
@@ -166,7 +165,7 @@ module.exports = {
                       })
                   } else {
                     /** 3.2 Subscribe to checking account */
-                    updateCheckingAccountAmount(response.body.data.amount, req.body.response, plan, req.user._id, res)
+                    updateCheckingAccountAmount(response.body.data.amount, req.body.response, req.body.id, req.user._id, res)
 
                   }
                 } else {
@@ -402,7 +401,7 @@ const newUserCreateCheckingAccount = (amount, response, user, res) => {
     })
 }
 
-const updateCheckingAccountAmount = (amount, response, user, res) => {
+const updateCheckingAccountAmount = (amount, response, Plan, user, res) => {
   //console.log('am not new')
   PaymentPlan.update({ name: 'Checking Account' },
     {
@@ -416,7 +415,7 @@ const updateCheckingAccountAmount = (amount, response, user, res) => {
       //we store in our user history as transcation
       //for each payment we create a new transaction object
       //we save this transaction to our database and  return a sucess message to our client
-      createTransaction(response, plan, user, res)
+      createTransaction(response, Plan, user, res)
     }).catch(err => {
       //if we fail to update the payment ,then we must show an error to the client
       res.status(500).json({

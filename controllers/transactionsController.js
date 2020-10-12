@@ -31,7 +31,7 @@ module.exports = {
       //i did this because limit interferes with the search parameters
     }
 
-    console.log(findArgs)
+    //console.log(findArgs)
     Transaction.find({ user: req.user._id, ...findArgs })
       .limit(Limit)
       //we want to have the latest payments on top so we sort the date in descending order starting from the beginning
