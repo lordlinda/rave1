@@ -286,7 +286,7 @@ module.exports = {
           console.log('plan', plan)
           const Plan = plan
           if (plan) {
-            return PaymentPlan.update({ _id: plan._id }, { $inc: { amount: amount } }, { new: true })
+            return PaymentPlan.updateOne({ _id: plan._id }, { $inc: { amount: amount } }, { new: true })
               .then(plan => {
                 //we create a transaction for every subscription that is paid successfully
                 //we save this transaction to our database and  return a sucess message to our client
