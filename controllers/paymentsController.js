@@ -266,6 +266,8 @@ module.exports = {
     //so to update the user we  find the user that belongs to this account
     //we check if the event is charge.completed
     //update the amount with the amount
+
+    console.log(req.body)
     if (req.body.event == 'charge.completed' && req.body.data.narration === 'Charge for Hourly Savings' || 'Charge for Daily Savings' || 'Charge for Monthly Savings' || 'Charge for Weekly Savings' || 'Charge for Yearly Savings') {
       const customer = req.body.data.customer.id
       const amount = req.body.data.amount
