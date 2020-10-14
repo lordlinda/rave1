@@ -119,7 +119,7 @@ module.exports = {
       .headers({ "Content-Type": "application/json" })
       .send(payload)
       .end(function (response) {
-        //console.log(response)
+        console.log(response)
         /**1.Confirm is this is a valid payment from flutterwave */
         //check status is success.
         if (response.body.status === "success" && response.body.data.flwMeta.chargeResponse === '00' && response.body.data.amount == req.body.response.tx.amount) {
