@@ -10,7 +10,9 @@ function LinearProgressWithLabel(props) {
         <LinearProgress variant="determinate" {...props} />
       </Box>
       <Box className="progress__text">
-        <p>{`${Math.round(props.value)} % complete`}</p>
+        <p>{`${Math.round(
+          props.value > 100 ? 100 : props.value
+        )} % complete`}</p>
       </Box>
     </Box>
   );
@@ -32,7 +34,7 @@ export default function LinearWithValueLabel(props) {
 
   return (
     <div className={classes.root}>
-      <LinearProgressWithLabel value={progress} />
+      <LinearProgressWithLabel value={progress > 100 ? 100 : progress} />
     </div>
   );
 }
