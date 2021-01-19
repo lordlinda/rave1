@@ -44,6 +44,7 @@ export const signUp = (user) => async (dispatch) => {
         payload: res.data,
       });
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("email", res.data.user);
       dispatch(loadUser());
     })
     .catch((err) => {
@@ -58,7 +59,9 @@ export const signUp = (user) => async (dispatch) => {
 export const signIn = (user) => async (dispatch) => {
   try {
     const res = await axios.post("/users/signin", user);
+    console.log(res);
     localStorage.setItem("token", res.data.token);
+    localStorage.setItem("email", res.data.user);
     dispatch({
       type: SIGN_IN,
       payload: res.data,

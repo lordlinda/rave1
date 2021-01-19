@@ -40,8 +40,7 @@
   align-items: flex-start;
   justify-content: space-between;
   background: var(--white);
-  margin-top: 16px;
-  padding: 8px 4px;
+  padding: 4px;
 }
 .plan__sub > p {
   background: var(--purple);
@@ -56,7 +55,7 @@
 }
 .plan__transactions > div > div {
   background-color: white;
-  padding: 16px;
+  padding: 12px 0px;
 }
 
 .MuiLinearProgress-barColorPrimary {

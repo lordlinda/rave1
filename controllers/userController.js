@@ -78,6 +78,7 @@ module.exports = {
       const token = createToken(user);
       res.status(200).json({
         token: token,
+        user: user.email,
       });
     } catch (err) {
       res.status(500).json({
@@ -128,7 +129,7 @@ module.exports = {
         const token = createToken(user);
         //! FIND OUT WHY WE RETURN USER HERE
         return res.status(200).json({
-          user: user,
+          user: user.email,
           token: token,
         });
       }
