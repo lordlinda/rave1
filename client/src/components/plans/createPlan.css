@@ -1,0 +1,52 @@
+.editPlan {
+  display: flex;
+  flex-direction: column;
+}
+
+.createPlan__header > h1 {
+  font-size: 30px;
+  margin-left: 20%;
+}
+
+.createPlan__header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.createPlan__body {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 16px;
+}
+.createPlan__body > .MuiFormControl-root {
+  margin-top: 8px;
+}
+
+.createPlan__button {
+  margin-top: 124px !important;
+  text-align: center;
+  background-color: var(--purple) !important;
+  color: white !important;
+}
+.createPlan__body > div > label {
+  font-size: 20px;
+}
+
+.createPlan__body > div > input {
+  display: block;
+  margin-top: 8px;
+  border-radius: 4px;
+  border: 0;
+  margin-bottom: 20px;
+  background: #fff;
+  padding: 12px 16px;
+  width: 90%;
+  border: 1px solid var(--gray-light);
+  font-size: 16px;
+}
+.createPlan__body {
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 16px;
+}

@@ -1,24 +1,25 @@
-import React from 'react'
+import React from "react";
 
-import Total from './Total.js'
-import Greeting from './Greetings.js'
-import Buttons from './PaymentButtons.js'
-import Plans from './Plans.js'
-import TransactionList from './TransactionList.js'
-const Dashboard = (props) => {
+import Total from "./Total.js";
+import Plans from "./Plans.js";
+import TransactionList from "./TransactionList.js";
+import LabelBottomNavigation from "../Reusables/BottomNavigation";
+import "./dashboard.css";
+import { motion } from "framer-motion";
+const Dashboard = () => {
   return (
-    <div className='container mx-auto px-5'>
-      <Greeting />
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+      className="dashboard"
+    >
       <Total />
-      <Buttons />
       <Plans />
       <TransactionList />
-    </div>
-  )
-}
+      <LabelBottomNavigation />
+    </motion.div>
+  );
+};
 
-
-
-
-
-export default Dashboard
+export default Dashboard;

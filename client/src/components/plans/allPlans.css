@@ -1,0 +1,60 @@
+.plans__button {
+  height: 40px !important;
+  width: 40px !important;
+  position: absolute !important;
+  bottom: 80px;
+  right: 8px;
+  background-color: var(--purple) !important;
+  color: white !important;
+}
+
+.plans h1 {
+  font-size: 32px;
+  padding: 0px 16px;
+  margin-top: 32px;
+  margin-left: 6px;
+}
+
+.plans__body > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.plans__body > div > div {
+  flex: 0.5;
+  background: var(--purple);
+  border-radius: 10px;
+  color: white;
+  margin: 16px 8px;
+  padding: 16px;
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+}
+.plans__plan > p {
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.plans__plan > span {
+  font-size: 20px;
+}
+
+.transaction {
+  margin: 60px;
+  padding: 20px;
+  box-shadow: 0px 20px 25px -10px rgba(0, 0, 0, 0.25);
+}
+
+.transaction > h1 {
+  font-size: 32px;
+}
+
+.transaction__amount {
+  font-size: 24px;
+  padding-top: 20px;
+}
+.transaction__date {
+  color: var(--black);
+  opacity: 0.7;
+}

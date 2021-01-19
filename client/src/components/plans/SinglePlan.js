@@ -1,113 +1,141 @@
-import React, { useEffect } from 'react'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import { connect } from 'react-redux'
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { numberWithCommas } from "../../helpers/middleware.js";
+import ProgressBar from "../Reusables/ProgressBar.js";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import BackArrow from "../Reusables/BackArrow.js";
+import { getPlan } from "../../redux/actions/plans";
+import "./plan.css";
+import FlipMove from "react-flip-move";
 
-
-
-import { numberWithCommas } from '../../helpers/middleware.js'
-import Button from '../Reusables/Button.js'
-import ProgressBar from '../Reusables/ProgressBar.js'
-import BackArrow from '../Reusables/BackArrow.js'
-import * as actions from '../../redux/actions/index.js'
-
+import AddIcon from "@material-ui/icons/Add";
+import Fab from "@material-ui/core/Fab";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import { Link } from "react-router-dom";
+import Dialog from "@material-ui/core/Dialog";
+import { DialogContent } from "@material-ui/core";
+import Transaction from "../transactions/Transaction.js";
 const SinglePlan = (props) => {
-  const [open, setOpen] = React.useState(false)
-
-  const handleToggle = () => {
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
     setOpen(!open);
-  }
-
-  const id = props.match.params.id
+  };
+  const id = props.match.params.id;
   useEffect(() => {
-    props.getPlan(id)
-  }, [id])
-
-  const cancelSubscription = (id, plan) => {
-    console.log(id, plan)
-    props.cancelSubscription(id, plan)
-    //console.log('clicked')
-  }
+    props.getPlan(id);
+  }, []);
+  const handleChange = (event) => {
+    console.log(event.target.value);
+    if (event.target.value === "single") {
+      props.history.push("/amount", { id });
+    } else {
+      props.history.push("/createSubscription", { id });
+    }
+  };
   //give the first subscriptions
   //we give a distance from the top one
   return (
     /*didnt use a w-1/2 because of no space between the boxes*/
-    <div className='bg-customPurple'>
-      {props.plan ?
-        <>
-          <div className='px-5'>
-            <BackArrow href='/plans' moreStyle='pt-2 text-white' />
-
-            <p className='text-2xl text-white pt-8 px-6'>{props.plan.name ? props.plan.name : "Checking account"}</p>
-            {props.plan.targetAmount ? <ProgressBar amount={props.plan.amount} targetAmount={props.plan.targetAmount} /> : null}
-            <div className='flex px-6 mt-4 items-baseline'>
-              <Button
-                isButton={true}
-                onClick={handleToggle}
-                title='TopUp'
-                moreStyle='text-customPurple bg-white rounded-md py-1 px-2'
-              />
-              <Dialog
-                open={open}
-                onClose={handleToggle}
-                className='plan__modal'>
-                <DialogTitle id="form-dialog-title">
-                  {/*on small screens since we dont have space the cancel button
-        we use baseline to ensure the text is on the same line*/}
-                  <p className='text-md'>Choose Payment Method</p>
-                </DialogTitle>
-                <div className='px-3 py-2'>
-                  <Button
-                    href={'/rave/' + props.plan._id}
-                    title='One time'
-                  />
-                  <Button
-                    href={'/createSubscription/' + props.plan._id}
-                    title='Automate Savings'
-                  />
-                </div>
-              </Dialog>
-              <Button
-                href={'/editplan/' + props.plan._id}
-                title='Edit'
-                moreStyle='bg-customPurple text-white rounded-md py-1 px-2 border ml-2'
-              />
-            </div>
+    <div className="plan">
+      <div className="plan__header">
+        <BackArrow goBack={props.history} />
+        <Link to={`/editplan/${id}`}>
+          <MoreVertIcon />
+        </Link>
+      </div>
+      <div className="plan__middle">
+        <h1>
+          {props.plan?.name}
+          {""}
+          <Fab aria-label="add" className="plan__button">
+            <AddIcon onClick={handleClose} />
+          </Fab>
+        </h1>
+        {props.plan?.amount && (
+          <p> Ugx {numberWithCommas(props.plan?.amount)}</p>
+        )}
+      </div>
+      <div className="plan__body">
+        <div className="plan__progressBar">
+          {props.plan?.targetAmount && (
+            <ProgressBar
+              amount={props.plan?.amount}
+              targetAmount={props.plan?.targetAmount}
+            />
+          )}
+        </div>
+        {props.plan?.subscriptions?.length > 0 && (
+          <div className="plan__subscriptions">
+            <h1>Subscriptions</h1>
+            <FlipMove>
+              {props.plan?.subscriptions.map((subscription) => (
+                <Link
+                  to={`/subscription/${subscription._id}`}
+                  key={subscription._id}
+                >
+                  <div className="plan__sub">
+                    <div>
+                      <h1>{props.plan?.name}</h1>
+                      <p>
+                        {subscription.currency} {subscription.subscAmt}
+                      </p>
+                    </div>
+                    <p>{subscription.interval}</p>
+                  </div>
+                </Link>
+              ))}
+            </FlipMove>
           </div>
-          <div className='rounded-t-lg bg-white px-5 py-2 mt-2'>
-            {/**this helps to deter an error as the goal is loading on the page */}
+        )}
 
-            <p className='text-lg mt-2'>Amount saved:{props.plan.currency}{props.plan.amount ? numberWithCommas(props.plan.amount) : null}</p>
-            {props.plan.targetAmount ? <p className='text-lg py-1'>Target Amount:{props.plan.currency}{numberWithCommas(props.plan.targetAmount)}</p> : null}
-
-            {
-              props.plan.description ?
-                <>
-                  <p className='text-lg mt-2'>Description</p>
-                  <p>{props.plan.description}</p>
-                </> : null
-            }
-
-            {
-              props.plan.planId || props.plan.status === 'Active' ?
-                <Button
-                  title='Cancel subscription'
-                  isButton={true}
-                  onClick={() => cancelSubscription(props.plan._id, props.plan.planId)}
-                  moreStyle='text-md text-red-700 mt-20'
-                /> : null
-            }
-          </div>
-        </>
-        : null}
-
+        <div className="plan__transactions">
+          {props.plan?.transactions?.length > 0 && (
+            <>
+              <h1>Transactions</h1>
+              <FlipMove>
+                {props.plan?.transactions.map((transaction) => (
+                  <Transaction
+                    key={transaction._id}
+                    transaction={transaction}
+                  />
+                ))}
+              </FlipMove>
+            </>
+          )}
+        </div>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogContent>
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="interval"
+                name="interval1"
+                onChange={handleChange}
+              >
+                <FormControlLabel
+                  value="single"
+                  control={<Radio />}
+                  label="Make a one-time payment"
+                />
+                <FormControlLabel
+                  value="schedule"
+                  control={<Radio />}
+                  label="Setup scheduled payments"
+                />
+              </RadioGroup>
+            </FormControl>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
-  )
-}
+  );
+};
 const mapStateToProps = (state) => {
   return {
-    plan: state.data.plan
-  }
-}
+    plan: state.plans.plan,
+  };
+};
 
-export default connect(mapStateToProps, actions)(SinglePlan)
+export default connect(mapStateToProps, { getPlan })(SinglePlan);

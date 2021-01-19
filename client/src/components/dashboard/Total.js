@@ -1,51 +1,57 @@
-import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
-
-import * as actions from '../../redux/actions/index.js'
-import Select from '../Reusables/select/Select.js'
-import { currencyOptionsArray } from '../Reusables/select/Options.js'
-import { calculateTotal } from '../../helpers/middleware.js'
-
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { getTotalBalance } from "../../redux/actions/plans";
+import { currencyOptionsArray } from "../Reusables/select/Options.js";
+import { numberWithCommas } from "../../helpers/middleware.js";
+import "./total.css";
+import { Button } from "@material-ui/core";
 const Total = (props) => {
-  const [total, setTotal] = useState('0')
-  const [currency, setCurrency] = useState('UGX')
-
+  const [currencySelected, setCurrency] = useState("");
   useEffect(() => {
-    props.getTransactions()
-    setTotal(calculateTotal(props.transactions))
-  }, [props.transactions.length])
+    props.getTotalBalance();
+  }, []);
 
-  const handleChange = (e) => {
-    setCurrency(e.target.value)
-  }
+  const handleChange = (currency) => {
+    setCurrency(currency);
+  };
   return (
-    <div className='bg-customPurple mt-5 rounded-md'>
+    <div className="total">
+      <div className="total__currency">
+        {currencyOptionsArray.map((currency) => (
+          <span
+            className={`select ${currency === currencySelected && "active"}`}
+            key={currency}
+            onClick={() => handleChange(currency)}
+          >
+            {currency}
+          </span>
+        ))}
+      </div>
       {/*the total container has a custom background color  and margin from the greeting with a border-radius*/}
-      <div className='px-6 pt-4 pb-12 font-bold'>
-        {/*the div above gives the text some distance from the borders*/}
-        <p className='text-3xl text-white'>{total}</p>
-
-        {/*we want to ensure the select group is directly underneath so we add a negative margin to the select group*/}
-
-        <div className='flex items-baseline -mt-4'>
-          <p className='text-white'> Total Balance in</p>
-          <Select
-            value={currency}
-            onChange={handleChange}
-            moreStyle='bg-customPurple text-white'
-            options={currencyOptionsArray}
-          />
-        </div>
+      {/*the div above gives the text some distance from the borders*/}
+      <div>Total Balance</div>
+      <h1> ${numberWithCommas(props.total)}</h1>
+      <div className="total__buttons">
+        <Button className="total__save" component={Link} to="/amount">
+          Save now
+        </Button>
+        <Button
+          className="total__automate"
+          component={Link}
+          to="/createSubscription"
+        >
+          Auto savings
+        </Button>
       </div>
     </div>
-  )
-
-}
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
-    transactions: state.data.transactions
-  }
-}
+    total: state.plans.total,
+  };
+};
 
-export default connect(mapStateToProps, actions)(Total)
+export default connect(mapStateToProps, { getTotalBalance })(Total);

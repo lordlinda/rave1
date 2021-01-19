@@ -1,0 +1,42 @@
+.datesPage__header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+.datesPage__header > h1 {
+  font-size: 30px;
+  margin-left: 20%;
+}
+.datesPage__body {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 16px;
+  width: 60%;
+  margin: 10px auto;
+}
+.datesPage__body > div > label {
+  margin-top: 24px;
+}
+
+.datesPage__body > div > input {
+  display: block;
+  border-radius: 4px;
+  border: 0;
+  background: #fff;
+  padding: 4px 10px;
+  border: 1px solid var(--gray-light);
+  font-size: 16px;
+  outline: none;
+}
+.datesPage__button {
+  margin-top: 144px !important;
+  margin-left: 50px;
+}
+
+.Mui-checked {
+  color: var(--purple) !important;
+}
+
+.intervalPage__button {
+  margin-top: 16px !important;
+}

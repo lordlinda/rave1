@@ -1,0 +1,54 @@
+.subscription__header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.subscription__details {
+  margin-top: 16px;
+}
+.subscription__details > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0px;
+}
+
+.subscription {
+  padding: 0px 16px;
+}
+
+.subscription__top {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+.subscription__top > h1 {
+  font-size: 25px;
+  margin-left: 15%;
+}
+
+.subscription__buttons {
+  text-align: center;
+  margin-top: 44px !important;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.subscription__form > div > input {
+  display: block;
+  border-radius: 4px;
+  border: 0;
+  background: #fff;
+  padding: 12px 16px;
+  width: 100%;
+  border: 1px solid var(--gray-light);
+  font-size: 16px;
+}
+.subscription__form > div > label {
+  font-size: 20px;
+  margin-left: 16px;
+  margin-top: 16px;
+}
+.MuiDialog-paperWidthSm {
+  width: 600px !important;
+}

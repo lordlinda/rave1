@@ -1,91 +1,87 @@
-import React, { useState } from 'react'
-import { toast } from 'react-toastify'
-import { connect } from 'react-redux'
-import Input from './Reusables/Input.js'
-import Button from './Reusables/Button.js'
-import { Redirect } from 'react-router-dom'
-
-import * as actions from '../redux/actions/index.js'
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { connect } from "react-redux";
+import Input from "./Reusables/Input.js";
+import Button from "./Reusables/Button.js";
+import { Redirect } from "react-router-dom";
+import "./login.css";
+import * as actions from "../redux/actions/index.js";
 
 const Signup = (props) => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
-  })
-  const { username, email, password } = formData
-  const handleChange = text => e => {
-    setFormData({ ...formData, [text]: e.target.value })
-  }
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const { username, email, password, confirmPassword } = formData;
+  const handleChange = (text) => (e) => {
+    setFormData({ ...formData, [text]: e.target.value });
+  };
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     //console.log(formData)
-    //we want to ensure that the user has filled in 
+    //we want to ensure that the user has filled in
     //all the fields
-    if (username && email && password) {
+    if (username && email && password && confirmPassword) {
       //we send the data to the backend
-      await props.signUp(formData)
-      //if the user is signed in sucessfully we send them to the 
-      //home page
+      if (confirmPassword !== password) {
+        toast.error("Password and confirm Password must match");
+      } else {
+        await props.signUp(formData);
+      }
 
+      //if the user is signed in sucessfully we send them to the
+      //home page
     } else {
-      toast.error('Please fill in all fields')
+      toast.error("Please fill in all fields");
     }
-  }
+  };
 
   return (
-    <div className='container mx-auto flex justify-center mt-12'>
-      {
-        props.isAuth ?
-          <Redirect to='/' />
-          : null
-      }
-      <div className='md:shadow-lg px-6 py-12 border'>
-        <h1 className='text-center text-2xl text-indigo-500 mb-5'>Signup with us!</h1>
+    <div className="siginIn">
+      <div>
+        {props.isAuth ? <Redirect to="/" /> : null}
+        <h1 className="">Welcome!</h1>
         <form onSubmit={handleSubmit}>
           <Input
-            type='text'
-            title='Username'
+            type="text"
+            label="Username"
             value={username}
-            onChange={handleChange('username')}
-            moreStyle='border-b border-indigo-500'
+            onChange={handleChange("username")}
           />
           <Input
-            type='email'
-            title='Email'
+            type="email"
+            label="Email"
             value={email}
-            onChange={handleChange('email')}
-            moreStyle='border-b border-indigo-500'
+            onChange={handleChange("email")}
           />
           <Input
-            type='password'
-            title='Password'
+            type="password"
+            label="Password"
             value={password}
-            onChange={handleChange('password')}
-            moreStyle='border-b border-indigo-500'
+            onChange={handleChange("password")}
           />
-          <Button
-            isButton={true}
-            type='submit'
-            title='Signup'
-            moreStyle='w-full leading-wider bg-indigo-400 rounded-md py-1 text-white shadow-md mt-3' />
+          <Input
+            type="password"
+            label="Confirm Password"
+            value={confirmPassword}
+            onChange={handleChange("confirmPassword")}
+          />
+          <Button isButton type="submit" title="Signup" />
         </form>
-        <div className='flex mt-5 text-sm'>
-          <span className='text-gray-500'>Already have an account ?</span>
-          <Button
-            title='Signin'
-            moreStyle='text-indigo-500'
-            href={'/signin'}
-          />
+        <div className="signIn__link">
+          <span>Already have an account ?</span>
+          <Button title="Signin" href={"/signin"} />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 const mapStateToProps = (state) => {
   return {
     isAuth: state.auth.isAuth,
-    name: state.auth.name
-  }
-}
-export default connect(mapStateToProps, actions)(Signup)
+    name: state.auth.name,
+  };
+};
+export default connect(mapStateToProps, actions)(Signup);

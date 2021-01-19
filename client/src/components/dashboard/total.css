@@ -1,0 +1,58 @@
+.total {
+  height: 174px;
+  border-radius: 6px;
+  display: flex;
+  /* here the directi
+  on allows the elements to be under each other*/
+  flex-direction: column;
+  justify-content: center;
+  /*this centers both the title and  currencylist*/
+  text-align: center;
+}
+.total h1 {
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.total__currency {
+  margin: 0 auto;
+  overflow-x: scroll;
+}
+.total__currency::-webkit-scrollbar {
+  display: none;
+}
+.total__currency > span {
+  /*space between the diff currencies*/
+  margin-left: 16px;
+  cursor: pointer;
+  display: none;
+}
+.total__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 8px;
+}
+.total__buttons > .MuiButton-root {
+  padding: 6px 16px;
+}
+.total__save {
+  background: var(--purple) !important;
+  border-radius: 25px !important;
+  font-size: 12px !important;
+  color: white !important;
+  padding: 10px 24px !important;
+}
+.total__automate {
+  border-radius: 25px !important;
+  font-size: 12px !important;
+  margin-left: 8px !important;
+  border: 1px solid indigo !important;
+}
+
+.active {
+  color: black;
+  background-color: white;
+  padding: 4px;
+  border-radius: 8px;
+}

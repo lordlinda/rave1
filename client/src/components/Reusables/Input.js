@@ -1,23 +1,26 @@
-import React from 'react'
+import React from "react";
 
-const Input =
-	({ title, type,
-		value, onChange,
-		moreStyle, placeholder,
-		labelStyle }) => {
-		const style = `appearance-none focus:outline-none ${moreStyle}`;
-		const label = `block text-gray-700 ${labelStyle}`
-		return (
-			<div className='mt-2'>
-				<label className={label}>{title}</label>
-				<input className={style}
-					type={type}
-					value={value}
-					onChange={onChange}
-					placeholder={placeholder}
-				/>
-			</div>
-		)
-
-	}
-export default Input
+const Input = ({
+  type,
+  value,
+  onChange,
+  placeholder,
+  label,
+  name,
+  disabled,
+}) => {
+  return (
+    <div>
+      <label htmlFor="">{label}</label>
+      <input
+        onChange={onChange}
+        placeholder={placeholder}
+        type={type}
+        value={value}
+        name={name}
+        disabled={disabled}
+      />
+    </div>
+  );
+};
+export default Input;

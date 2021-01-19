@@ -1,0 +1,30 @@
+.personalDetails__header > div {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+}
+.personalDetails__header > div > h1 {
+  font-size: 25px;
+  margin-left: 10%;
+}
+.personalDetails__form {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 16px;
+  width: 75%;
+  margin: 0 auto;
+}
+
+.personalDetails__form > div > input {
+  display: block;
+  border-radius: 4px;
+  border: 0;
+  background: #fff;
+  padding: 4px 10px;
+  border: 1px solid var(--gray-light);
+  font-size: 16px;
+  outline: none;
+}
+.personalDetails__form > div > label {
+  margin-top: 24px;
+}

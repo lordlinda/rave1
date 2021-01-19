@@ -1,255 +1,374 @@
-const unirest = require('unirest');
-const moment = require('moment')
-var request = require('request');
+const moment = require("moment");
+const fetch = require("node-fetch");
+const PaymentPlan = require("../models/PaymentPlan.js");
+const Transaction = require("../models/Transaction");
+const mongoose = require("mongoose");
+var cron = require("node-cron");
+const Subscription = require("../models/Subscription");
 
-const PaymentPlan = require('../models/PaymentPlan.js')
-const Transaction = require('../models/Transaction')
-
-const { createTransaction } = require('./transactionsController.js')
 module.exports = {
-  //@route     POST /payments/create
-  //@decription  create plan
-  //@access      Private
-  createPlan: (req, res) => {
-    /**pick data from the client and create  a new plan */
-    const { name, targetAmount, description } = req.body
-    const newPaymentPlan = new PaymentPlan({
-      user: req.user._id,
-      description: description,
-      name: name,
-      amount: 0,
-      targetAmount: targetAmount,
-      createdAt: moment(Date.now()).format("YYYY-MM-DD HH:mm"),
-    })
-
-    newPaymentPlan.save()
-      .then(plan => {
-        /**if the plan is created successfully,we return the plan to the client */
-        res.status(200).json({ plan: plan })
-      }).catch(err => {
-        res.status(500).json({ msg: err.message })
-      })
-  },
-
-
-
   //@route     POST /payments/makePayment
   //@decription  create  and update onetime payment user
   //@access      Private
-  makePayment: (req, res) => {
-    //console.log(req.body)
-    //create payload to verify payment
-    var payload = {
-      SECKEY: process.env.SECRET,
-      flw_ref: req.body.response.tx.flwRef
+  makePayment: async (req, res) => {
+    try {
+      //!dont forget to verify the VERIFY_URL
+      const { isVerified } = await verifyTransaction({
+        flwRef: req.body.flwRef,
+        amount: req.body.amount,
+      });
+      /**if the transaction is not verified we return an error */
+      if (!isVerified) {
+        return res.status(422).json({
+          error: "Wrong url or malicious payment",
+        });
+      }
+      /**2.Check if the user already has a payment plan
+       * by querying the payment plan collection for plans by the user
+       */
+      const planCount = await PaymentPlan.find({
+        user: req.user._id,
+      }).countDocuments();
+      /**if they dont have, their planCount will be zero */
+      //! ACID NEEDED HERE
+      if (planCount === 0) {
+        /**create  a wallet for user */
+        const { createdWallet } = await createWallet({
+          user: req.user._id,
+          currency: req.body.currency,
+        });
+        /**and add the amount to the wallet */
+        /**create a transaction for the payment */
+        /**return a successful response */
+        const { isSuccess } = await updateAmountAndCreateTransaction({
+          user: req.user._id,
+          id: createdWallet._id,
+          amount: req.body.amount,
+          paymentType: req.body.paymentType,
+          currency: req.body.currency,
+        });
+
+        if (!isSuccess) {
+          return res.status(500).json({
+            msg: "transaction failed,please try again",
+          });
+        }
+        return res.status(201).json({
+          msg: "Payment successful",
+        });
+      }
+      /**if the user already has a plan with us,the next step is to find out which plan to update */
+      /**if the user hasnt passed in an id ,we update the amount in the user wallet */
+      if (!req.body.id) {
+        /**if the user didnt choose which plan we update their wallet */
+        const Wallet = await PaymentPlan.findOne(
+          { name: "Wallet" },
+          { user: req.user._id }
+        );
+        /**if this is the user's first payment ,the amount is zero and therefore we update the currency */
+        if (Wallet.amount === 0) {
+          await Wallet.updateOne({ currency: req.body.currency });
+        }
+
+        if (Wallet) {
+          const { isSuccess } = await updateAmountAndCreateTransaction({
+            user: req.user._id,
+            id: Wallet._id,
+            amount: req.body.amount,
+            paymentType: req.body.paymentType,
+            currency: req.body.currency,
+          });
+          return res.status(201).json({
+            msg: "Payment successful",
+          });
+        }
+      }
+      /**we need to check the amount and update the currency */
+      const plan = await PaymentPlan.findById(req.body.id);
+      if (plan.amount === 0) {
+        await plan.updateOne({ currency: req.body.currency });
+      }
+      /**we update the plan the user has specified by id */
+      const { isSuccess } = await updateAmountAndCreateTransaction({
+        user: req.user._id,
+        id: req.body.id,
+        amount: req.body.amount,
+        paymentType: req.body.paymentType,
+        currency: req.body.currency,
+      });
+      /**if the mongodb transaction fails we dont , we dont update the user's account balance or create a transaction */
+      if (!isSuccess) {
+        return res.status(500).json({
+          msg: "transaction failed,please try again",
+        });
+      }
+      return res.status(201).json({
+        msg: "Payment successful",
+      });
+    } catch (error) {
+      /**we return an error message to the client */
+      res.status(500).json({ msg: error.message });
+    }
+  },
+  //@route         POST /payments/schedulePayment
+  //@decription  schedule subscription payment
+  //@access      Private
+  scheduleSubscription: async (req, res) => {
+    const { token } = await getUserToken(req.body.transactionId);
+    //TODO  we have to get the token from the transaction id to store in the subscription.
+    /**if we have the subscAmt it means the person has started and therefore the count is one otherwise it is zero */
+    let data = {
+      subscAmt: req.body.subscAmt ? req.body.subscAmt : req.body.amount,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      interval: req.body.interval,
+      txRef: req.body.txRef,
+      currency: req.body.currency,
+      subscId: req.body.subscId,
+      status: moment(req.body.startDate) > moment() ? "inactive" : "active",
+      token: token,
+      paymentType: req.body.paymentType,
+      count: moment(req.body.startDate) > moment() ? 0 : 1,
     };
 
-    //console.log(payload)
-
-    //make sure to change this to live verify url in production
-    var server_url = "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/flwv3-pug/getpaidx/api/verify";
-    //make a post request to the rave server to verify this payment
-    unirest
-      .post(server_url)
-      .headers({ "Content-Type": "application/json" })
-      .send(payload)
-      .end(function (response) {
-        /**1.Confirm payment from flutterwave */
-        if (response.body.status === "success" && response.body.data.flwMeta.chargeResponse === '00' && response.body.data.amount == req.body.response.tx.amount) {
-          //check if the amount is same as amount you wanted to charge just to be very sure
-          console.log('Payment sucessful')
-          /**2.Check if the user already has a payment plan */
-          return PaymentPlan.findOne({ user: req.user._id })
-            .then(plan => {
-              if (plan) {
-                /**3.Which plan does the user want to update */
-                if (req.body.id) {
-                  /**3.1 we update the plan the user if it has been identified */
-                  //the id of plan comes from the body
-                  PaymentPlan.updateOne({ _id: req.body.id }, { $inc: { amount: response.body.data.amount } }, { new: true })
-                    .then(plan => {
-                      //3.1.1 create a new transaction object
-                      createTransaction(req.body.response, req.body.id, req.user._id, res)
-                    }).catch(err => {
-                      /** 3.2.1 we inform the user that the plan was not updated */
-                      res.status(500).json({
-                        error: err.message
-                      })
-                    })
-                } else {
-                  /**if user has not specified id we update the checking account amount
-                   * the plan is null to show it is the checking account
-                   */
-                  updateCheckingAccountAmount(response.body.data.amount, req.body.response, null, req.user._id, res)
-                }
-              } else {
-                /**3.2 user has no plan and we create them a checking account */
-                newUserCheckingAccount(response.body.data.amount, req.body.response, req.user._id, res)
-
-              }
-            })
-
+    try {
+      //!dont forget to verify the VERIFY_URL
+      const { isVerified } = await verifyTransaction({
+        flwRef: req.body.flwRef,
+        amount: req.body.amount,
+      });
+      /**if the transaction is not verified we return an error */
+      if (!isVerified) {
+        return res.status(422).json({
+          error: "Wrong url or malicious payment",
+        });
+      }
+      //we first check if the user has a wallet with us or not
+      const planCount = await PaymentPlan.find({
+        user: req.user._id,
+      }).countDocuments();
+      /**if the user doesnt have an account with us ,we create one */
+      /**we will receive an object containing start date,end date and amount with currency */
+      /**the start date could be today or a day in the future so we keep that in mind setting up the wallet and transactions */
+      if (planCount === 0) {
+        /**we create a wallet for them */
+        const { createdWallet } = await createWallet({
+          user: req.user._id,
+          currency: req.body.currency,
+        });
+        /**now the amount we have here is that amount not for the subscription but to verify the payment method */
+        //! ACID NEEDED HERE
+        const {
+          isSuccess,
+        } = await updateAmountAndCreateTransactionAndSubscription({
+          user: req.user._id,
+          id: createdWallet._id,
+          amount: req.body.amount,
+          subscription: data,
+        });
+        if (!isSuccess) {
+          return res.status(500).json({
+            msg: "transaction failed,please try again",
+          });
         }
-        /**this is a malicious payment */
-        res.status(422).json({
-          error: 'Wrong url or malicious payment'
-        })
+        return res.status(201).json({
+          msg: "Payment successful",
+        });
+      }
 
+      /**if no id was specified ,then the subscription plan belongs to the wallet account*/
+      if (!req.body.id) {
+        /**if the user didnt choose which plan we know this subscription belongs to the user's wallet account */
+        /**even for scheduling we need to update the amount because there is some money we deduct from the user to verify the transaction to acquire the token */
+        //!ACID NEEDED HERE
+        const Wallet = await PaymentPlan.findOne(
+          { name: "Wallet" },
+          { user: req.user._id }
+        );
+        if (Wallet.amount === 0) {
+          await Wallet.updateOne({ currency: req.body.currency });
+        }
+        /**we update the wallet amount if we dont get an id from the client */
+        if (Wallet) {
+          const {
+            isSuccess,
+          } = await updateAmountAndCreateTransactionAndSubscription({
+            user: req.user._id,
+            id: Wallet._id,
+            amount: req.body.amount,
+            subscription: data,
+          });
 
-      })
+          if (!isSuccess) {
+            return res.status(500).json({
+              msg: "transaction failed,please try again",
+            });
+          }
 
-  },
-
-
-  //@route        GET /payments/makeSubscription
-  //@description  get  create new subscription
-  //@access        Public
-  makeSubscription: (req, res) => {
-    //console.log(req.body)
-    var payload = {
-      SECKEY: process.env.SECRET,
-      flw_ref: req.body.response.tx.flwRef
+          return res.status(201).json({
+            msg: "Payment successful",
+          });
+        }
+      }
+      /**we need to check the amount and update the currency */
+      const plan = await PaymentPlan.findById(req.body.id);
+      if (plan.amount === 0) {
+        await plan.updateOne({ currency: req.body.currency });
+      }
+      /**if the user choose the id i.e they selected plan they want to subscribe to,
+       * then we create a subscription with the plan specified  and create a transaction*/
+      /**we update the plan the user has specified by id */
+      //! ACID HERE
+      const {
+        isSuccess,
+      } = await updateAmountAndCreateTransactionAndSubscription({
+        user: req.user._id,
+        id: req.body.id,
+        amount: req.body.amount,
+        subscription: data,
+      });
+      /**if the mongodb transaction fails we dont , we dont update the user's account balance or create a transaction */
+      if (!isSuccess) {
+        return res.status(500).json({
+          msg: "transaction failed,please try again",
+        });
+      }
+      /**return a successful message to the client */
+      return res.status(201).json({
+        msg: "Subscription created successfully",
+      });
+    } catch (error) {
+      /**we return an error message to the client */
+      res.status(500).json({ msg: error.message });
     }
-    //make sure to change this to live verify url in production
-    var server_url = "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/flwv3-pug/getpaidx/api/verify";
-    //please make sure to change this to production url when you go live
-    /**Confrim if this is a true payment from flutterwave */
-    unirest
-      .post(server_url)
-      .headers({ "Content-Type": "application/json" })
-      .send(payload)
-      .end(function (response) {
-        console.log(response)
-        /**1.Confirm is this is a valid payment from flutterwave */
-        //check status is success.
-        if (response.body.status === "success" && response.body.data.flwMeta.chargeResponse === '00' && response.body.data.amount == req.body.response.tx.amount) {
-          console.log('Subscription sucessful')
-          /**2.Check if the user has a plan with us */
-          return PaymentPlan.findOne({ user: req.user._id })
-            .then(plan => {
-              if (plan) {
-                /**3.if they have a plan,check if they want to subscribe to a particular plan */
-                if (req.body.id) {
-                  /** 3.1 making a subscription to a particular plan */
-                  return PaymentPlan.updateOne({ _id: req.body.id },
-                    {
-                      $inc: { amount: response.body.data.amount },
-                      customerId: req.body.response.tx.txRef,
-                      planId: req.body.response.tx.paymentPlan,
-                      currency: req.body.response.tx.currency,
-                      installment: response.body.data.amount,
-                      status: 'Active',
-                    },
-                    { new: true })
-                    .then(plan => {
-
-                      /**create transaction */
-                      createTransaction(req.body.response, req.body.id, req.user._id, res)
-
-                    })
-                } else {
-                  /** 3.2 Subscribe to checking account this has no id and will return undefined when u create a transaction so i switch it to null*/
-                  updateCheckingAccountAmount(response.body.data.amount, req.body.response, null, req.user._id, res)
-
-                }
-              } else {
-                /**3.Create a  subscribed plan for user */
-                newUserCreateCheckingAccount(response.body.data.amount, req.body.response, req.user._id, res)
-
-              }
-
-            }).catch(err => {
-              console.log(err)
-              res.status(500).json({
-                error: err.message
-              })
-            })
-        }
-        /**Malicious payment */
-        res.status(422).json({
-          msg: 'Sorry,payment failed.Please try again'
-        })
-
-      })
-
   },
+  getPaymentPlan: async (req, res) => {
+    try {
+      const { subscId } = await createNewFlutterWavePaymentPlan({
+        interval: req.body.interval,
+        name: req.body.name,
+        currency: req.body.currency,
+        amount: req.body.amount,
+        duration: req.body.duration,
+      });
+      if (!subscId) {
+        return res.status(400).json({
+          msg: "Payment plan not created",
+        });
+      }
+      return res.status(200).json({
+        id: subscId,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: error.msg,
+      });
+    }
+  },
+  //@route        Put /payments/activateubscription
+  //@description    activate a cancelled subscription
+  //@access        Private
+  activateSubscription: async (req, res) => {
+    /**first we get the subscription  using the id */
+    const subscriptionPlan = await Subscription.findById({
+      _id: req.params.id,
+    });
+    if (subscriptionPlan.status !== "active") {
+      await Subscription.updateOne(
+        { _id: req.params.id },
+        { status: "reactivated" }
+      );
+      return res.status(200).json({
+        msg: "subscription activated successfully",
+      });
+    }
+    /**find the subscription in flutterwave  using the flutterwave api*/
+    const { subscriptions } = await getFlutterwaveSubscriptions();
+    /**from the list of plans we have
+     * since this is an array we have to pick the first item using array[0]
+     */
+    const subscriptionToActivate = subscriptions.filter(
+      (subscription) =>
+        subscription.plan === subscriptionPlan.subscId &&
+        subscription.amount === subscriptionPlan.subscAmt
+    )[0];
+    /**we activate the flutterwave subscription */
+    const { isSuccess } = await activateFlutterwaveSubscription(
+      subscriptionToActivate
+    );
+
+    /** update the status from active to inactive*/
+    if (!isSuccess) {
+      return res.status(422).json({
+        msg: "Plan not updated please try again",
+      });
+    }
+    /**after that we update the subscription status in our app to inactive */
+    await Subscription.updateOne({ _id: req.params.id }, { status: "active" });
+    res.status(201).json({
+      msg: "Congrats,subscription activated",
+    });
+  },
+
   //@route        Post /payments/cancelSubscription/:id
   //@description    cancel subscription
   //@access        Private
-  cancelSubscription: (req, res) => {
-    const id = req.params.id
-    const { plan } = req.body
-    /**pick the plan we want to cancel from flutterwave */
-    var server_url = `https://ravesandboxapi.flutterwave.com/v3/subscriptions?plan=${plan}&${req.user.email}&status=active`;
-    //we are getting so we use the get request
-    //seckey is stored as Authoristion header,it is required or the route wont work
-    unirest
-      .get(server_url)
-      .headers({
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.SECRET}`
-      })
-      .end(function (response) {
-        console.log(response.body.data)
-        //the response will basically  be an array ,so we map to find that customer id matching the one stored
-        //in our payment schema.
-        //console.log(response.body.data.filter(customer=>customer.amount == '50000')[0])
-        PaymentPlan.findOne({ _id: id })
-          .then(plan => {
-            //we find the subscriptions from rave and  pick the one created at the same time  with the plan we want to cancel to the minute detail since the 
-            //seconds vary by a few 
-            //and we do thsi with the help of moment
-            const subscription = response.body.data.filter(customer =>
-              moment(customer.created_at).format('YYYY-MM-DD HH') == moment(plan.createdAt).format('YYYY-MM-DD HH') && customer.customer.customer_email == req.user.email)[0]
-            if (subscription) {
-              //this is how the response will look like
-              /*[{ id: 6590, amount: 100, customer: { id: 451687, customer_email: 'user@example.com' },plan: 6847,status: 'active',created_at: '2020-08-28T07:35:16.000Z'
-               }]*/
-              //then we pick the id and cancel the subscription
-              //make sure to change this url to the production url
-              var server_url = `https://ravesandboxapi.flutterwave.com/v3/subscriptions/${subscription.id}/cancel`;
-              unirest
-                .put(server_url)
-                //in this case the secret key is in the auth header
-                .headers({
-                  "Content-Type": "application/json",
-                  "Authorization": `Bearer ${process.env.SECRET}`
-                })
-                .end(function (response) {
-                  //console.log(response.body.data)
-                  /*  raw_body: '{"status":"success","message":"Subscription cancelled",
-                  "data":{"id":6590,"amount":100,"customer":{"id":451687,"customer_email":"user@example.com"},
-                  "plan":6847,"status":"cancelled","created_at":"2020-08-28T07:35:16.000Z"}}'*/
-                  //after cancelling the  plan we set its status to inactive
-                  deactivateSubscription(id, res)
-
-                })//end of rave server response
-            } else {
-              res.status(400).json({
-                msg: 'Sorry subscription not cancelled'
-              })
-            }
-          }).catch(err => {
-            res.status(404).json({
-              msg: 'Sorry subscription not found'
-            })
-          })
-
-      })//end of finding subscriptions
-
-
+  cancelSubscription: async (req, res) => {
+    /**we recieve the id of the subscription we want to cancel */
+    const subscriptionPlan = await Subscription.findById({
+      _id: req.params.id,
+    });
+    /**we first have to check id this subscription is active or inactive because if it is inactive then we dont have to go to flutterwave */
+    if (subscriptionPlan.status !== "active") {
+      await Subscription.updateOne(
+        { _id: req.params.id },
+        { status: "deactivated" }
+      );
+      return res.status(200).json({
+        msg: "subscription cancelled successfully",
+      });
+    }
+    /**find the subscription in flutterwave  using the flutterwave api*/
+    const { subscriptions } = await getFlutterwaveSubscriptions();
+    /**from the list of plans we have
+     * since this is an array we have to pick the first item using array[0]
+     */
+    const subscriptionToCancel = subscriptions.filter(
+      (subscription) =>
+        subscription.plan === subscriptionPlan.subscId &&
+        subscription.amount === subscriptionPlan.subscAmt
+    )[0];
+    /**find the corresponsing flutterwave subscription anc cancel it */
+    //TODO if the subscription is not cancelled successfully then we will inform the client to retry
+    /**cancel the subscription from flutterwave */
+    const { isSuccess } = await cancelFlutterwaveSubscription(
+      subscriptionToCancel
+    );
+    /**if the subscription has not been cancelled we return an error to the client */
+    if (!isSuccess) {
+      return res.status(422).json({
+        msg: "Subscription has not been cancelled,please try again",
+      });
+    }
+    /**after that we update the subscription status in our app to inactive */
+    await Subscription.updateOne(
+      { _id: req.params.id },
+      { status: "deactivated" }
+    );
+    res.status(201).json({
+      msg: "Congrats,subscription cancelled",
+    });
   },
-  updateSubscription: (req, res) => {
+  updateSubscriptionFromFlutterwave: async (req, res) => {
     // retrieve the signature from the header
     var hash = req.headers["verif-hash"];
-    //console.log(hash)
+    //console.log(hash);
     if (!hash) {
-      console.log('not from flutterwave')
-      return res.status(422).json({ msg: 'not from flutterwave' })
+      return res.status(422).json({ msg: "not from flutterwave" });
     }
 
     if (hash !== process.env.MY_HASH) {
-      return res.status(422).json({ msg: 'not my hash' })
+      return res.status(422).json({ msg: "not my hash" });
     }
     //so in this route we want to update the users amount who has a subscription with us
     //every time the subscription is completed
@@ -267,176 +386,588 @@ module.exports = {
     //we check if the event is charge.completed
     //update the amount with the amount
 
-    console.log(req.body)
-    if (req.body.event == 'charge.completed' && req.body.data.narration === 'Charge for Hourly Savings' || 'Charge for Daily Savings' || 'Charge for Monthly Savings' || 'Charge for Weekly Savings' || 'Charge for Yearly Savings') {
-      const customer = req.body.data.customer.id
-      const amount = req.body.data.amount
-      console.log(customer, amount)
-      return PaymentPlan
-        .findOne({ $and: [{ customerId: { $in: [customer, req.body.data.tx_ref] } }, { installment: amount }] })
-        .then(plan => {
-          const Plan = plan
-          if (plan) {
-            return PaymentPlan.updateOne({ _id: plan._id }, { $inc: { amount: amount } }, { new: true })
-              .then(plan => {
-                //we create a transaction for every subscription that is paid successfully
-                //we save this transaction to our database and  return a sucess message to our client
-                const newTransaction = new Transaction({
-                  transactionId: req.body.data.id,
-                  amount: req.body.data.amount,
-                  paymentMethod: req.body.data.payment_type,
-                  currency: req.body.data.currency,
-                  date: moment(Date.now()).format("YYYY-MM-DD HH:mm"),
-                  paymentPlan: Plan._id,
-                  user: Plan.user
-                })
-
-                newTransaction.save()
-                  .then(transaction => {
-                    res.status(200).json({
-                      msg: 'Payment plan updated',
-                      message: 'Transaction history registered'
-                    })
-                  })
-                console.log('transaction saved')
-
-              }).catch(err => {
-                //if we fail to update the payment ,then we must show an error to the client
-                res.status(500).json({ error: err.message })
-              })
-          }
-          return res.status(422).json({ msg: 'updated plan not found' })
-        })
-
-    }//end of if statement
-    return res.status(422).json({ msg: 'This is not a subscription payment' })
-  },
-  editPlan: (req, res) => {
-    //so when editing a plan we update the targetAmount and the description and name
-    const id = req.params.id
-    const { name, targetAmount, description } = req.body
-    planisCheckingAccount(id, res)
-    //we first find the payment plan using the id
-    //then update  using the updateOne method
-    //it with the description and targetAmount
-    //if updated sucessfully,we send am messsage to the client
-    //otherwise we send and array
-    PaymentPlan.updateOne({ _id: id }, { name: name, targetAmount: targetAmount, description: description }, { new: true })
-      .then(plan => {
-        res.status(200).json({
-          msg: 'Updated sucessfully'
-        })
-      }).catch(err => {
-        res.status(400).json({
-          msg: 'plan not updated'
-        })
-      })
-  },
-  //@route     GET /payments/id
-  //@decription  get single plan
-  //@access      Private
-  getPlan: (req, res) => {
-    PaymentPlan.findOne({ _id: req.params.id })
-      .then(plan => {
-        res.status(200).json({
-          plan: plan
-        })
-      }).catch(err => {
-        res.status(500).json({
-          msg: err.message
-        })
-      })
-  },
-  //@route     GET/payments/
-  //@decription  get all plans
-  //@access      Private
-  getAllPlans: (req, res) => {
-    /**select all payment plans where the user is either the id or email address */
-    PaymentPlan.find({ $or: [{ user: req.user._id }, { email: req.user.email }] })
-      .then(plans => {
-        res.status(200).json({
-          plans: plans
-        })
-      }).catch(err => {
-        res.status(500).json({
-          msg: err.message
-        })
-      })
-  },
-
-
-}
-/**not exported functions */
-const newUserCheckingAccount = (amount, response, user, res) => {
-  const newPaymentPlan = new PaymentPlan({
-    name: 'Checking Account',
-    planId: response.tx.paymentPlan,
-    customerId: response.tx.txRef,
-    user: user,
-    amount: amount,
-    currency: response.tx.currency,
-    installment: response.tx.paymentPlan ? amount : 0,
-    status: response.tx.paymentPlan ? 'Active' : 'Inactive',
-    createdAt: moment(Date.now()).format("YYYY-MM-DD HH:mm")
-  })
-  /**Save checking account to database */
-  newPaymentPlan.save()
-    .then(plan => {
-      /**create transaction */
-      createTransaction(response, plan, user, res)
-    }).catch(err => {
-      res.status(500).json({
-        error: err.message
-      })
-    })
-}
-
-const updateCheckingAccountAmount = (amount, response, Plan, user, res) => {
-  PaymentPlan.updateOne({ $and: [{ name: 'Checking Account' }, { user: user }] },
-    {
-      $inc: { amount: amount },
-      planId: response.tx.paymentPlan,
-      customerId: response.tx.txRef,
-      installment: response.tx.paymentPlan ? amount : 0,
-      status: response.tx.paymentPlan ? 'Active' : 'Inactive',
-    }, { new: true })
-    .then(plan => {
-      //we store in our user history as transcation
-      //for each payment we create a new transaction object
-      //we save this transaction to our database and  return a sucess message to our client
-      createTransaction(response, Plan, user, res)
-    }).catch(err => {
-      //if we fail to update the payment ,then we must show an error to the client
-      res.status(500).json({
-        error: err.message
-      })
-    })
-}
-
-const deactivateSubscription = (id, res) => {
-  PaymentPlan.updateOne({ _id: id }, { $set: { status: 'Inactive', planId: '', customerId: '', installment: 0 } })
-    .then(plan => {
-      res.status(200).json({
-        msg: 'Plan subscription deactivated'
-      })
-    }).catch(err => {
-      res.status(500).json({
-        msg: err.message
-      })
-    })
-
-}
-const planisCheckingAccount = (id, res) => {
-  PaymentPlan.find({ _id: id })
-    .then(plan => {
-      if (plan.name == 'Checking Account') {
-        return res.status(422).json({
-          msg: "Sorry can/'t update checking account "
-        })
+    //console.log(req.body);
+    if (
+      req.body.data.narration === "Charge for Hourly Savings" ||
+      "Charge for Daily Savings" ||
+      "Charge for Monthly Savings" ||
+      "Charge for Weekly Savings" ||
+      "Charge for Yearly Savings"
+    ) {
+      /**we check if the transaction was successful or not  */
+      if (req.body.event !== "charge.completed") {
+        /**if it wasnt successful,then we find that subscription and increase the count to show that the subscription was actually intitiated ,it just failed */
+        const subscription = await Subscription.findOne({
+          trnsxn_ref: req.body.data.tx_ref,
+        });
+        /**if it wasnt  found we return an error message to flutterwave to retry */
+        if (!subscription) {
+          return res.status(422).json({
+            msg: "Subscription not found",
+          });
+        }
+        await Subscription.updateOne(
+          { _id: subscription._id },
+          { $inc: { count: 1 } }
+        );
+        return res.status(400).json({
+          msg: "Subscription wasnt successful",
+        });
       }
+      /**if the charge has been completed successfully ,then first we find the subscription whose transaction ref matches the one received by the response
+       * this is because the transacation refernce at the point of the subscription creation is what they send,so it is what we
+       */
+      /**we first find the subscription */
+      /**with the subscription ,we acquire the plan and user to update the wallet and create a transaction */
+      console.log(req.body.data.tx_ref);
+      const subscription = await Subscription.findOne({
+        trnsxn_ref: req.body.data.tx_ref,
+      });
+      /**if it wasnt  found we return an error message to flutterwave to retry */
+      if (!subscription) {
+        return res.status(422).json({
+          msg: "Subscription not found",
+        });
+      }
+      /**if the subscription exits ,lets
+      /* then we use a MONGODB ACID transaction to update the wallet and create a transaction */
+      const { isSuccess } = await updateAmountAndCreateTransaction({
+        user: subscription.user,
+        id: subscription.plan,
+        amount: req.body.data.amount,
+        paymentType: req.body.data.payment_type.slice(0, 11),
+        currency: req.body.data.currency,
+      });
 
-    })
+      if (!isSuccess) {
+        return res.status(500).json({
+          msg: "transaction failed",
+        });
+      }
+      /**we update the subscription count */
+      await subscription.updateOne({ $inc: { count: 1 } });
+      return res.status(200).json({
+        msg: "Payment successful",
+      });
+    } //end of if statement
+    return res.status(422).json({ msg: "This is not a subscription payment" });
+  },
 
-}
+  /**this route is for when the client wants to change subscription details such as startDate,endDate,amount,interval */
+  updateUserSubscription: async (req, res) => {
+    /**so the first step is to pick the id of the subscription the user wants to subscribe to */
+    let findArgs = {};
+    for (let key in req.body) {
+      findArgs[key] = req.body[key];
+    }
+    const subscriptionPlan = await Subscription.findById({
+      _id: req.params.id,
+    });
+    /**we first have to check id this subscription is active or inactive because if it is inactive then we dont have to go to flutterwave */
+    if (subscriptionPlan.status !== "active") {
+      await Subscription.updateOne(
+        { _id: req.params.id },
+        { ...findArgs, subscId: "" }
+      );
+      return res.status(200).json({
+        msg: "subscription updated successfully",
+      });
+    }
+    /**find the subscription in flutterwave  using the flutterwave api*/
+    const { subscriptions } = await getFlutterwaveSubscriptions();
+    /**from the list of plans we have
+     * since this is an array we have to pick the first item using array[0]
+     */
+    const subscriptionToCancel = subscriptions.filter(
+      (subscription) =>
+        subscription.plan === subscriptionPlan.subscId &&
+        subscription.amount === subscriptionPlan.subscAmt
+    )[0];
+    //TODO if the subscription is not cancelled successfully then we will inform the client to retry
+    /**cancel the subscription from flutterwave */
+    const { isSuccess } = await cancelFlutterwaveSubscription(
+      subscriptionToCancel
+    );
+    /**if the subscription has not been cancelled we return an error to the client */
+    if (!isSuccess) {
+      return res.status(422).json({
+        msg: "Plan not updated please try again",
+      });
+    }
+    /**create a new payment plan  */
+    //TODO here is where we gonna calculate the new startDate
+    /**the new start date becomes the next due date of the previous subscription */
+    const { dueDate } = calculateDueDate({
+      startDate: subscriptionPlan.startDate,
+      endDate: subscriptionPlan.endDate,
+      interval: subscriptionPlan.interval,
+      count: subscriptionPlan.count,
+    });
+    console.log(moment(dueDate).format("DD MMMM YYYY HH:mmm"));
+    /** otherwise update our personal subscription */
+    /**update the status and remove the old subscId */
+    await Subscription.updateOne(
+      { _id: req.params.id },
+      {
+        ...findArgs,
+        status: "reactivated",
+        subscId: "",
+        startDate: moment(dueDate).format("DD MMMM YYYY HH:mmm"),
+      }
+    );
 
+    res.status(201).json({
+      msg: "subscription updated successfuly",
+    });
+  },
+};
 
+/**not exported functions */
+/**we create a wallet for a new user */
+const createWallet = async (data) => {
+  let createdWallet;
+  createdWallet = new PaymentPlan({
+    name: "Wallet",
+    user: data.user,
+    amount: 0,
+    currency: data.currency,
+  });
+  /**Save checking account to database */
+  await createdWallet.save();
+  return {
+    createdWallet,
+  };
+};
+
+/**we run this function we make  a transaction with flutterwave to ensure it is a valid transaction */
+const verifyTransaction = async (data) => {
+  let isVerified;
+
+  const response = await fetch(`${process.env.VERIFY_URL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      SECKEY: process.env.SECKEY,
+      flw_ref: data.flwRef,
+    }),
+  });
+  const res = await response.json();
+  if (
+    res.status === "success" &&
+    res.data.flwMeta.chargeResponse === "00" &&
+    res.data.amount == data.amount
+  ) {
+    isVerified = true;
+  } else {
+    isVerified = false;
+  }
+  return {
+    isVerified,
+  };
+};
+
+const getFlutterwaveSubscriptions = async () => {
+  let subscriptions;
+  let errors;
+  try {
+    const response = await fetch(`${process.env.BASE_API_URL}/subscriptions`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.SECKEY}`,
+      },
+    });
+    const json = await response.json();
+    subscriptions = json.data;
+  } catch (error) {
+    errors = error.msg;
+  }
+  return {
+    subscriptions,
+    errors,
+  };
+};
+
+/**this is an api request to flutterwave to cancel a subscription */
+/**what is needed is the subscription to cancl */
+const cancelFlutterwaveSubscription = async (subscription) => {
+  let isSuccess;
+  if (subscription) {
+    const response = await fetch(
+      `${process.env.BASE_API_URL}/subscriptions/${subscription.id}/cancel`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.SECKEY}`,
+        },
+      }
+    );
+    const data = await response.json();
+    /**if we get any error we return false to client */
+    if (data.status === "error") {
+      isSuccess = false;
+    } else {
+      isSuccess = true;
+    }
+  } else {
+    isSuccess = false;
+  }
+  return {
+    isSuccess,
+  };
+};
+
+/**this function enables us to acquire a user's card token such that we can charge them for subsequent transactions */
+const getUserToken = async (id) => {
+  let token;
+  let isSuccess;
+
+  try {
+    const response = await fetch(
+      `${process.env.BASE_API_URL}/transactions/${id}/verify`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.SECKEY}`,
+        },
+      }
+    );
+    const res = await response.json();
+    if (res.status === "success" && res.data.payment_type === "card") {
+      isSuccess = true;
+      token = res.data.card.token;
+    } else {
+      isSuccess = false;
+    }
+  } catch (error) {
+    isSuccess = false;
+  }
+  return {
+    token,
+    isSuccess,
+  };
+};
+
+/**this function creates a NEW FLUUTERWAVE PAYMENT PLAN  */
+const createNewFlutterWavePaymentPlan = async (data) => {
+  let subscId = "";
+  //TODO This is a perfect opportunity to cancel the old payment plan as well
+  //! currency is a must here
+  try {
+    const response = await fetch(`${process.env.BASE_API_URL}/payment-plans`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.SECKEY}`,
+      },
+      body: JSON.stringify({
+        name: data.name,
+        interval: data.interval,
+        duration: data.duration,
+        amount: data.amount,
+        currency: data.currency,
+      }),
+    });
+    const res = await response.json();
+    if (res.status === "success") {
+      subscId = res.data.id;
+    }
+  } catch (error) {
+    subscId = null;
+  }
+  return {
+    subscId,
+  };
+};
+
+const calculateDuration = ({ startDate, endDate, interval }) => {
+  let duration;
+  let numberOfMonths;
+  if (interval === "hourly") {
+    duration = moment(endDate, "DD MMMM YYYY").diff(
+      moment(startDate, "DD MMMM YYYY"),
+      "hours"
+    );
+  } else if (interval === "weekly") {
+    duration = moment(endDate, "DD MMMM YYYY").diff(
+      moment(startDate, "DD MMMM YYYY"),
+      "weeks"
+    );
+  } else if (interval === "monthly") {
+    duration = moment(endDate, "DD MMMM YYYY").diff(
+      moment(startDate, "DD MMMM YYYY"),
+      "months"
+    );
+  } else if (interval === "yearly") {
+    duration = moment(endDate, "DD MMMM YYYY").diff(
+      moment(startDate, "DD MMMM YYYY"),
+      "years"
+    );
+  } else if (interval === "quarterly") {
+    numberOfMonths = moment(endDate, "DD MMMM YYYY").diff(
+      moment(startDate, "DD MMMM YYYY"),
+      "months"
+    );
+    duration = numberOfMonths / 4;
+  } else {
+    /**this is for every 6 months */
+    numberOfMonths = moment(endDate, "DD MMMM YYYY").diff(
+      moment(startDate, "DD MMMM YYYY"),
+      "months"
+    );
+    duration = numberOfMonths / 6;
+  }
+  return {
+    duration,
+  };
+};
+
+const activateFlutterwaveSubscription = async (subscription) => {
+  let isSuccess;
+  try {
+    if (subscription) {
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/subscriptions/${subscription.id}/activate`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.SECKEY}`,
+          },
+        }
+      );
+      const res = await response.json();
+      if (res.status === "success") {
+        isSuccess = true;
+      } else {
+        isSuccess = false;
+      }
+    }
+  } catch (error) {
+    isSuccess = false;
+  }
+  return {
+    isSuccess,
+  };
+};
+
+const updateAmountAndCreateTransaction = async (data) => {
+  let isSuccess;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const opts = { session, new: true };
+    const plan = await PaymentPlan.findOneAndUpdate(
+      { _id: data.id },
+      { $inc: { amount: data.amount } },
+      opts
+    );
+    await Transaction.create({
+      user: data.user,
+      paymentPlan: data.id,
+      amount: data.amount,
+      currency: data.currency,
+      type: "income",
+      pymnt_Mthd: data.paymentType,
+    });
+
+    await session.commitTransaction();
+    session.endSession();
+    isSuccess = true;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    isSuccess = false;
+  }
+  return { isSuccess };
+};
+
+const updateAmountAndCreateTransactionAndSubscription = async (data) => {
+  let isSuccess;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const opts = { session, new: true };
+    const plan = await PaymentPlan.findOneAndUpdate(
+      { _id: data.id },
+      { $inc: { amount: data.amount } },
+      opts
+    );
+    const transaction = await Transaction.create({
+      user: data.user,
+      paymentPlan: data.id,
+      amount: data.amount,
+      currency: data.subscription.currency,
+      type: "income",
+      pymnt_Mthd: data.subscription.paymentType,
+    });
+    const subscription = await Subscription.create({
+      user: data.user,
+      plan: data.id,
+      subscAmt: data.subscription.subscAmt,
+      trnsxn_ref: data.subscription.txRef,
+      interval: data.subscription.interval,
+      startDate: moment(data.subscription.startDate).format(
+        "DD MMMM YYYY HH:mm"
+      ),
+      endDate: moment(data.subscription.endDate).format("DD MMMM YYYY HH:mm"),
+      subscId: data.subscription.subscId,
+      subscToken: data.subscription.token,
+      status: data.subscription.status,
+      currency: data.subscription.currency,
+      count: data.subscription.count,
+    });
+
+    await session.commitTransaction();
+    session.endSession();
+    isSuccess = true;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    isSuccess = false;
+  }
+  return { isSuccess };
+};
+/**every midnight  "0 0 0 * * *"*/
+//schedule susbscriptions to run every midnight
+cron.schedule("*/20 * * * *", async () => {
+  console.log("running a task every midnight");
+  /**we look through our subscriptions to find the subscriptions whose start state is today and has a status of inactive */
+  const subscriptions = await Subscription.find({
+    $and: [
+      {
+        startDate: {
+          $lte: moment().endOf("day").format("DD MMMM YYYY HH:mm"),
+          $gte: moment().startOf("day").format("DD MMMM YYYY HH:mm"),
+        },
+      },
+      { status: { $in: ["inactive", "reactivated"] } },
+    ],
+  }).populate("user", "email");
+  console.log("subs", subscriptions);
+  /**using the token stored in the subsciption,we create flutterwave subscriptions */
+  /**we loop through the subscriptions  every after a given time interval because flutterwave doesnt support bulk writes*/
+  for (var i = 1; i <= subscriptions.length; i++) {
+    (function (i) {
+      setTimeout(function () {
+        const subscription = subscriptions[i - 1];
+        console.log(subscription);
+        /** we check if the subscription has a subscId or not*/
+        if (subscription.subscId) {
+          /**we make a request to create a flutterwave subscription */
+          createNewFlutterWaveSubscription(subscription);
+        } else {
+          createNewFlutterWavePaymentPlanAndSubscription(subscription);
+        }
+      }, 50000 * i);
+    })(i);
+  }
+  /**for each successful subscriptions,we update the status to active */
+});
+
+//! DONT FORGET TO PASS IN THE SUBSCRID
+const createNewFlutterWaveSubscription = async (subscription) => {
+  //! currency is a must here
+  try {
+    const response = await fetch(
+      `${process.env.BASE_API_URL}/tokenized-charges`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.SECKEY}`,
+        },
+        body: JSON.stringify({
+          token: subscription.subscToken,
+          amount: subscription.subscAmt,
+          email: subscription.user.email,
+          tx_ref: Date.parse(new Date()),
+          payment_plan: subscription.subscId,
+          currency: subscription.currency,
+        }),
+      }
+    );
+    const res = await response.json();
+    console.log(res);
+    if (res.status === "success") {
+      /**we ran acid that updates the client's amount,create a transaction */
+      const { isSuccess } = await updateAmountAndCreateTransaction({
+        user: subscription.user,
+        id: subscription.plan,
+        amount: subscription.subscAmt,
+        //! add currency and payment type
+        paymentType: res.data.payment_type,
+        currency: res.data.currency,
+      });
+      /**this transaction needs the plan to be updated ,the user the transaction belongs to and the amount */
+      /**afterwards we update the status of the subscription to active */
+      /**here we need the subscription id and increase the count
+       */
+      if (isSuccess) {
+        const sub = await Subscription.updateOne(
+          { _id: subscription._id },
+          { status: "active", $inc: { count: 1 } }
+        );
+      }
+    }
+  } catch (error) {
+    throw Error("subscription failed");
+  }
+};
+
+const calculateDueDate = ({ startDate, count, endDate, interval }) => {
+  /**the first thing we do is to add */
+
+  let dueDate;
+  if (interval === "hourly") {
+    dueDate = moment(startDate, "DD MMMM YYYY").add(count, "hours");
+  } else if (interval === "weekly") {
+    dueDate = moment(startDate, "DD MMMM YYYY").add(count, "weeks");
+  } else if (interval === "monthly") {
+    dueDate = moment(startDate, "DD MMMM YYYY").add(count, "months");
+  } else if (interval === "yearly") {
+    dueDate = moment(startDate, "DD MMMM YYYY").add(count, "years");
+  } else if (interval === "quarterly") {
+    dueDate = moment(startDate, "DD MMMM YYYY").add(count * 4, "months");
+  } else {
+    /**this is for every 6 months */
+    dueDate = moment(startDate, "DD MMMM YYYY").add(count * 6, "months");
+  }
+  if (dueDate > endDate) {
+    dueDate = endDate;
+  }
+  return {
+    dueDate,
+  };
+};
+
+const createNewFlutterWavePaymentPlanAndSubscription = async (subscription) => {
+  /**we get the duration */
+  const { duration } = await calculateDuration({
+    startDate: subscription.startDate,
+    endDate: subscription.endDate,
+    interval: subscription.interval,
+  });
+  const { subscId } = await createNewFlutterWavePaymentPlan({
+    interval: subscription.interval,
+    name: "MyWallet",
+    currency: subscription.currency,
+    amount: subscription.subscAmt,
+    duration: duration,
+  });
+  if (!subscId) {
+    return res.status(400).json({
+      msg: "Payment plan not created",
+    });
+  }
+  await Subscription.updateOne({ _id: subscription._id }, { subscId });
+  const updatedSubscription = await Subscription.findById({
+    _id: subscription._id,
+  }).populate("user", "email");
+  console.log("-----------------------", updatedSubscription);
+  createNewFlutterWaveSubscription(updatedSubscription);
+};

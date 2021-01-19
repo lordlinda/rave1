@@ -1,26 +1,39 @@
-import React from 'react';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import HomeSharpIcon from '@material-ui/icons/HomeSharp';
-import BookSharpIcon from '@material-ui/icons/BookSharp';
-import ReceiptSharpIcon from '@material-ui/icons/ReceiptSharp';
-import { Link, withRouter } from 'react-router-dom'
+import React from "react";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import HomeSharpIcon from "@material-ui/icons/HomeSharp";
+import SwapHorizSharpIcon from "@material-ui/icons/SwapHorizSharp";
+import { withRouter } from "react-router-dom";
 
+function LabelBottomNavigation(props) {
+  const [value, setValue] = React.useState("recents");
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    props.history.push(newValue);
+  };
 
-const SimpleBottomNavigation = (props) => {
-
-  const isActive = (history, path) => {
-    if (history.location.pathname === path) {
-      return 'link__active';
-    } else {
-      return '';
-    }
-  }
   return (
-    <div className='bottomNavigation'>
-      <Link to='/' className={`bottomMenuLink ${isActive(props.history, '/')}`}><HomeSharpIcon /> <span className='block text-xs'>Home</span></Link>
-      <Link to='/plans' className={`bottomMenuLink ${isActive(props.history, '/plans')}`}><BookSharpIcon /> <span className='block text-xs'>Plans</span></Link>
-      <Link to='/transactions' className={`bottomMenuLink ${isActive(props.history, '/transactions')}`}><ReceiptSharpIcon /> <span className='block text-xs'>Transactions</span></Link>
-    </div>
+    <BottomNavigation value={value} onChange={handleChange}>
+      <BottomNavigationAction label="Home" value="/" icon={<HomeSharpIcon />} />
+      <BottomNavigationAction
+        label="Plans"
+        value="/plans"
+        icon={<FavoriteIcon />}
+      />
+      <BottomNavigationAction
+        label="Transactions"
+        value="/transactions"
+        icon={<SwapHorizSharpIcon />}
+      />
+      <BottomNavigationAction
+        label="Profile"
+        value="/profile"
+        icon={<AccountCircleIcon />}
+      />
+    </BottomNavigation>
   );
 }
-export default withRouter(SimpleBottomNavigation)
+
+export default withRouter(LabelBottomNavigation);

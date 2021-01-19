@@ -1,17 +1,13 @@
-import React from 'react'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import { Link } from 'react-router-dom'
+import React from "react";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import { IconButton } from "@material-ui/core";
+const BackArrow = (props) => {
+  return (
+    /*some distance from the top*/
+    <IconButton onClick={() => props.goBack.goBack()}>
+      <ArrowBackIosIcon fontSize="small" />
+    </IconButton>
+  );
+};
 
-const BackArrow = ({ href, moreStyle }) => {
-	const style = `${moreStyle}`
-	return (
-		/*some distance from the top*/
-		<div className={style}>
-			<Link to={href}>
-				<ArrowBackIcon />
-			</Link>
-		</div>
-	)
-}
-
-export default BackArrow
+export default BackArrow;

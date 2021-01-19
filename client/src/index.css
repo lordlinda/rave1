@@ -1,72 +1,57 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding: 0;
-  font-family: 'Lora', serif;
-
-
-}
-html {
-  margin:0;
-  padding: 0;
-
+  font-family: "Lora", serif;
+  background-color: #f9fafb;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.MuiBottomNavigation-root {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  outline-width: 0;
+}
+:root {
+  --purple-dark: #463c6a;
+  /* lighter shades of primary color */
+  --purple: #613eea;
+  --purple-disabled: #e8e2fc;
+  --purple-light: #f0ebfb;
 
-.panel{
-	/*color:red;*/
-	width:100px;
-}
-.main{
-  background-color: '#f1f7ff'
-}
-.menu__list{
-  margin-top: 50px !important;
-  padding:20px !important;
-}
-.plan__modal{
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: center !important;
-}
-.menu__sidebar{
-  background-color: aliceblue;
-  margin-top: 10px !important;
-}
- 
-.bottomNavigation{
-  display: flex;
-  justify-content: space-between;
-  position:sticky;
- 
-}
-/*menu link for bottom navigation*/
-.bottomMenuLink{
-  padding:0px 20px;
-}
-.bottomMenuLink:hover{
-  color:#A577EE !important;
+  /* darkest grey - used for headings */
+  --black: #171d33;
+  --black-light: #3b414b;
+  --dark-gray: #757f8c;
+  /* grey used for paragraphs */
+  --gray: #a6aab4;
+  --gray-btn: #a0a4b0;
+  --gray-light: #d6d9e4;
+  --gray-divider: #e8e9ec;
+  --green: #04ff85;
+  --red: #d23b;
+  --white: #fff;
 }
 
- 
-.link__active{
-  border-radius: 100%;
-  color:#A577EE !important
+button {
+  border: none;
 }
-
-.plusContainer > .MuiSvgIcon-root{
-  color:white;
-  font-size:30px;
-  padding:3px;
-  background-color:#8080df;
-  border-radius: 50%;
+.profileBio__imageInput {
+  display: none;
 }
-

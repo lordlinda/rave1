@@ -1,0 +1,73 @@
+.transactions__header {
+  padding-top: 32px;
+}
+
+.MuiOutlinedInput-input {
+  padding: 8px 27px 8px 12px !important;
+  background: #fff;
+  font-size: 14px !important;
+}
+
+.transactions__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 16px;
+}
+.transactions__top > h1 {
+  font-size: 32px;
+  color: var(--black);
+}
+
+.filterInput > select {
+  margin-left: 16px;
+  margin-top: 16px;
+  border-radius: 15px;
+  outline-width: 0;
+  background: #fafafa;
+  border: 1px solid var(--gray-btn);
+  text-align: center;
+  padding: 10px 4px;
+}
+.transactions__list {
+  margin-top: 32px;
+}
+.transactions__list > div > div {
+  background: var(--white);
+  padding: 16px;
+  margin: 8px 16px;
+}
+
+.transactions {
+  background: #f1f2f7;
+  margin-bottom: 56px;
+}
+.transactions__transaction > div > h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--black);
+  opacity: 0.9;
+}
+.transactions__transaction > div > span {
+  color: var(--black);
+  opacity: 0.6;
+}
+.filterInput {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+.DateRangePicker {
+  margin-top: 24px;
+}
+.DateInput_input__focused {
+  border-bottom: 2px solid var(--purple);
+}
+
+.transactions__transaction {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}

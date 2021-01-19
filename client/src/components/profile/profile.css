@@ -1,0 +1,55 @@
+.profile__header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 36px;
+}
+.MuiAvatar-root {
+  width: 70px !important;
+  height: 70px !important;
+  background-color: var(--purple-disabled) !important;
+  text-transform: uppercase;
+  color: var(--purple) !important;
+}
+.profile__details > a {
+  display: flex;
+  margin-top: 16px;
+  justify-content: space-between;
+  padding: 8px 16px;
+  align-items: center;
+  width: 80%;
+  margin: 10px auto;
+}
+.profile__details {
+  margin-top: 24px;
+}
+.profile__details > span {
+  display: flex;
+  padding: 0px 16px;
+  margin-top: 16px;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 36px;
+}
+.profile__details > span > p {
+  margin-left: 16px;
+  font-size: 16px;
+}
+
+.profile__detail > div {
+  display: flex;
+  align-items: center;
+}
+.profile__detail > div > p {
+  margin-left: 16px;
+  font-size: 16px;
+}
+.profile__detail > .MuiSvgIcon-root {
+  font-size: 1rem !important;
+}
+.MuiBadge-badge > .MuiSvgIcon-root {
+  font-size: 1.5rem !important;
+  color: var(--purple);
+  cursor: pointer;
+}

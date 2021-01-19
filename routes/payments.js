@@ -1,48 +1,67 @@
-const express = require('express')
-const router =express.Router()
-const passport=require('passport')
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
 
 //import Controllers
-const {makePayment,makeSubscription,cancelSubscription,updateSubscription,editPlan,getPlan,createPlan,getAllPlans} =require('../controllers/paymentsController.js')
-
-//@route     POST /payments/create
-//@decription  create a plan
-//@access      Private
-router.post('/create',passport.authenticate('jwt', { session: false }),createPlan)
+const {
+  makePayment,
+  cancelSubscription,
+  activateSubscription,
+  scheduleSubscription,
+  updateUserSubscription,
+  getPaymentPlan,
+  updateSubscriptionFromFlutterwave,
+} = require("../controllers/paymentsController.js");
 
 //@route     POST /payments/makePayment
 //@decription  create  and update onetime payment user
 //@access      Private
-router.post('/makePayment',passport.authenticate('jwt', { session: false }),makePayment)
+router.post(
+  "/makePayment",
+  passport.authenticate("jwt", { session: false }),
+  makePayment
+);
 
-//@route        Post /payments/makeSubscription
-//@description    create new subscription
+//@route        Post /payments/schedulePayment
+//@description    schedule new subscription
 //@access        Private
-router.post('/makeSubscription',passport.authenticate('jwt', { session: false }),makeSubscription)
-
+router.post(
+  "/schedulePayment",
+  passport.authenticate("jwt", { session: false }),
+  scheduleSubscription
+);
+//@route        Post /payments/activateSubscription/:id
+//@description    activate a cancelled subscription
+//@access        Private
+router.put(
+  "/activateSubscription/:id",
+  passport.authenticate("jwt", { session: false }),
+  activateSubscription
+);
 //@route        Post /payments/cancelSubscription/:id
 //@description    cancel subscription
 //@access        Private
-router.post('/cancelSubscription/:id',passport.authenticate('jwt', { session: false }),cancelSubscription)
+router.put(
+  "/cancelSubscription/:id",
+  passport.authenticate("jwt", { session: false }),
+  cancelSubscription
+);
 
-//@route        Post /payments/makeSubscription
+//@route        Post /payments/updateSubscription
 //@description    update  subscription
 //@access        Private
-//Note this has to be post not put or patch because it is a webhook
-router.post('/updateSubscription',updateSubscription)
+//!Note this has to be post not put or patch because it is a webhook
+router.post("/updateSubscription", updateSubscriptionFromFlutterwave);
 
-//@route        Put /payments/editplan/:id
-//@description    update  payment plan
+//@route        Post /payments/updateUserSubscription
+//@description    update  subscription
 //@access        Private
-router.put('/editplan/:id',passport.authenticate('jwt', { session: false }),editPlan)
+router.put("/updateUserSubscription/:id", updateUserSubscription);
 
-//@route        Get /payments/:id
-//@description    get payment plan
-//@access        Private
-router.get('/:id',passport.authenticate('jwt', { session: false }),getPlan)
+router.post(
+  "/getPaymentPlan",
+  passport.authenticate("jwt", { session: false }),
+  getPaymentPlan
+);
 
-//@route        Get /payments/
-//@description    get payment plans
-//@access        Private
-router.get('/',passport.authenticate('jwt', { session: false }),getAllPlans)
-module.exports =router
+module.exports = router;

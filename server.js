@@ -1,35 +1,39 @@
-const express = require('express')
-const unirest = require('unirest');
-const cors = require('cors')
-require('dotenv').config()
-var bodyParser = require('body-parser')
-const moment = require('moment')
-const morgan = require('morgan')
-const path = require('path')
+const express = require("express");
+const unirest = require("unirest");
+const cors = require("cors");
+require("dotenv").config();
+var bodyParser = require("body-parser");
+const moment = require("moment");
+const morgan = require("morgan");
+const path = require("path");
 //connect to mongodb
-const connectDB = require('./db.js')
+const connectDB = require("./db.js");
 
-const app = express()
+const app = express();
 /**middlewares */
 /**cors allows cross site requests */
-app.use(cors())
+app.use(cors());
 /**parse req.body */
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-app.use(morgan('dev'))
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(morgan("dev"));
 
 //For routes
-app.use('/users', require('./routes/users.js'))
-app.use('/payments', require('./routes/payments.js'))
-app.use('/transactions', require('./routes/transactions.js'))
-
+app.use("/users", require("./routes/users.js"));
+app.use("/payments", require("./routes/payments.js"));
+app.use("/transactions", require("./routes/transactions.js"));
+app.use("/plans", require("./routes/plans"));
+app.use("/subscriptions", require("./routes/subscriptions"));
+//use this to show the image you have in node js server to client (react js)
+//https://stackoverflow.com/questions/48914987/send-image-path-from-node-js-express-server-to-react-client
+app.use("/uploads", express.static("uploads"));
 /**serve static files */
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/client/build/index.html'));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname + "/client/build/index.html"));
   });
 }
-console.log(moment('2020-10-12T18:20:31.000Z').format('YYYY-MM-DD HH:mm'))
-const port = process.env.PORT || 5000
-app.listen(port, () => console.log('server is listening'))
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`server is listening on port ${port}`));

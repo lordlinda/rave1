@@ -1,0 +1,27 @@
+.confirmPage__header {
+  display: flex;
+  padding: 16px;
+}
+
+.confirmPage__header > h1 {
+  font-size: 30px;
+  margin-left: 20%;
+}
+
+.confirmPage__details > div {
+  display: flex;
+  padding: 8px 16px;
+  justify-content: space-between;
+}
+.confirmPage {
+  text-align: center;
+}
+
+.confirmPage > button {
+  background: var(--purple);
+  padding: 8px 16px;
+  color: white;
+  width: 70%;
+  margin-top: 32px;
+  border-radius: 6px;
+}
