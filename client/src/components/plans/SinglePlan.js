@@ -7,7 +7,7 @@ import BackArrow from "../Reusables/BackArrow.js";
 import { getPlan } from "../../redux/actions/plans";
 import "./plan.css";
 import FlipMove from "react-flip-move";
-
+import { motion } from "framer-motion";
 import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
 import Radio from "@material-ui/core/Radio";
@@ -27,19 +27,25 @@ const SinglePlan = (props) => {
   useEffect(() => {
     props.getPlan(id);
   }, []);
+
   const handleChange = (event) => {
-    console.log(event.target.value);
     if (event.target.value === "single") {
       props.history.push("/amount", { id });
     } else {
       props.history.push("/createSubscription", { id });
     }
   };
+
   //give the first subscriptions
   //we give a distance from the top one
   return (
     /*didnt use a w-1/2 because of no space between the boxes*/
-    <div className="plan">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+      className="plan"
+    >
       <div className="plan__header">
         <BackArrow goBack={props.history} />
         <Link to={`/editplan/${id}`}>
@@ -55,7 +61,10 @@ const SinglePlan = (props) => {
           </Fab>
         </h1>
         {props.plan?.amount && (
-          <p> Ugx {numberWithCommas(props.plan?.amount)}</p>
+          <p>
+            {" "}
+            {props.plan.currency} {numberWithCommas(props.plan?.amount)}
+          </p>
         )}
       </div>
       <div className="plan__body">
@@ -129,7 +138,7 @@ const SinglePlan = (props) => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </motion.div>
   );
 };
 const mapStateToProps = (state) => {

@@ -16,6 +16,7 @@ import {
 import moment from "moment";
 import { calculateDueDate } from "../../helpers/middleware";
 import Input from "../Reusables/Input";
+import { motion } from "framer-motion";
 
 function Subscription(props) {
   const [open, setOpen] = React.useState(false);
@@ -42,7 +43,10 @@ function Subscription(props) {
   const id = props.match.params.id;
   const fetchData = async () => {
     await props.getSubscription(id);
-    await setChecked(props.subscription.status !== "inactive" ? true : false);
+    if (props.subscription.status) {
+      await setChecked(props.subscription?.status !== "inactive");
+    }
+
     await setFormData({
       ...formData,
       startDate: props.subscription?.startDate,
@@ -54,7 +58,8 @@ function Subscription(props) {
   const { startDate, endDate, interval, subscAmt } = formData;
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [props.subscription.startDate]);
+  console.log(checked);
 
   const handleChange = () => {
     if (checked === true) {
@@ -93,11 +98,15 @@ function Subscription(props) {
   };
   const updateSubscription = () => {
     handleClose();
-    console.log(formData);
     props.updateSubscription({ id, ...formData });
   };
   return (
-    <div className="subscription">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+      className="subscription"
+    >
       <div className="subscription__top">
         <BackArrow goBack={props.history} />
         <h1>Subscription</h1>
@@ -229,7 +238,7 @@ function Subscription(props) {
           )}
         </DialogActions>
       </Dialog>
-    </div>
+    </motion.div>
   );
 }
 

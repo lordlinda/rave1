@@ -17,6 +17,7 @@ export const makePayment = (data) => async (dispatch) => {
     toast.success("Payment Successful");
     dispatch({
       type: MAKE_PAYMENT,
+      payload: data.amount,
     });
   } catch (error) {
     console.log(error);
@@ -27,6 +28,10 @@ export const schedulePayment = (data) => async (dispatch) => {
   try {
     await axios.post("/payments/schedulePayment", data);
     toast.success("successful payment");
+    dispatch({
+      type: MAKE_PAYMENT,
+      payload: data.amount,
+    });
   } catch (error) {
     console.log(error);
     toast.error(error);

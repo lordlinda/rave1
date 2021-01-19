@@ -12,6 +12,7 @@ import { signOut, loadUser, imageUpload } from "../../redux/actions/index";
 import { motion } from "framer-motion";
 import Badge from "@material-ui/core/Badge";
 import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
+
 function Profile(props) {
   const photoUpload = (e) => {
     if (e.target.files[0]) {

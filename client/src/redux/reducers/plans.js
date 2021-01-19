@@ -5,6 +5,7 @@ import {
   DELETE_PLAN,
   GET_PLAN,
   GET_SUBSCRIPTION,
+  MAKE_PAYMENT,
 } from "../actions/types.js";
 
 const initialState = {
@@ -48,7 +49,11 @@ export default (state = initialState, action) => {
         ...state,
         subscription: action.payload,
       };
-
+    case MAKE_PAYMENT:
+      return {
+        ...state,
+        total: state.total + action.payload,
+      };
     default:
       return state;
   }

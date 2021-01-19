@@ -71,3 +71,6 @@
   align-items: flex-start;
   justify-content: space-between;
 }
+.transactions {
+  height: 92vh;
+}

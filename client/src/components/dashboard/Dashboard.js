@@ -1,5 +1,4 @@
 import React from "react";
-
 import Total from "./Total.js";
 import Plans from "./Plans.js";
 import TransactionList from "./TransactionList.js";
