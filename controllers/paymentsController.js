@@ -47,7 +47,6 @@ module.exports = {
           paymentType: req.body.paymentType,
           currency: req.body.currency,
         });
-
         if (!isSuccess) {
           return res.status(500).json({
             msg: "transaction failed,please try again",
@@ -60,6 +59,7 @@ module.exports = {
       /**if the user already has a plan with us,the next step is to find out which plan to update */
       /**if the user hasnt passed in an id ,we update the amount in the user wallet */
       if (!req.body.id) {
+        console.log(req.user);
         /**if the user didnt choose which plan we update their wallet */
         const Wallet = await PaymentPlan.findOne(
           { name: "Wallet" },
@@ -69,7 +69,6 @@ module.exports = {
         if (Wallet.amount === 0) {
           await Wallet.updateOne({ currency: req.body.currency });
         }
-
         if (Wallet) {
           const { isSuccess } = await updateAmountAndCreateTransaction({
             user: req.user._id,
@@ -541,7 +540,6 @@ const createWallet = async (data) => {
 
 /**we run this function we make  a transaction with flutterwave to ensure it is a valid transaction */
 const verifyTransaction = async (data) => {
-  console.log(data);
   let isVerified;
 
   const response = await fetch(`${process.env.VERIFY_URL}`, {
@@ -555,7 +553,6 @@ const verifyTransaction = async (data) => {
     }),
   });
   const res = await response.json();
-  console.log(res);
   if (
     res.status === "success" &&
     res.data.flwMeta.chargeResponse === "00" &&
@@ -764,7 +761,7 @@ const updateAmountAndCreateTransaction = async (data) => {
   try {
     const opts = { session, new: true };
     const plan = await PaymentPlan.findOneAndUpdate(
-      { _id: data.id },
+      { _id: data.id, user: data.user },
       { $inc: { amount: data.amount } },
       opts
     );
@@ -970,6 +967,5 @@ const createNewFlutterWavePaymentPlanAndSubscription = async (subscription) => {
   const updatedSubscription = await Subscription.findById({
     _id: subscription._id,
   }).populate("user", "email");
-  console.log("-----------------------", updatedSubscription);
   createNewFlutterWaveSubscription(updatedSubscription);
 };

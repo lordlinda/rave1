@@ -123,8 +123,7 @@ module.exports = {
   //@access      Private
   getDashboardPlans: async (req, res) => {
     try {
-      const plans = await PaymentPlan.find({ user: req.user._id })
-      .limit(3);
+      const plans = await PaymentPlan.find({ user: req.user._id }).limit(3);
       res.status(200).json({
         plans,
       });
