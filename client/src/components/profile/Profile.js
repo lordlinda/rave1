@@ -26,7 +26,8 @@ function Profile(props) {
   };
   useEffect(() => {
     props.loadUser();
-  }, []);
+  }, [props.url]);
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <div className="profile__header">

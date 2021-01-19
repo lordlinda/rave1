@@ -31,7 +31,7 @@ const Total = (props) => {
       {/*the total container has a custom background color  and margin from the greeting with a border-radius*/}
       {/*the div above gives the text some distance from the borders*/}
       <div>Total Balance</div>
-      <h1> ${numberWithCommas(props.total)}</h1>
+      <h1> {numberWithCommas(props.total)}</h1>
       <div className="total__buttons">
         <Button className="total__save" component={Link} to="/amount">
           Save now

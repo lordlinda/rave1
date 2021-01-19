@@ -9,7 +9,7 @@ import FlipMove from "react-flip-move";
 const Plans = (props) => {
   useEffect(() => {
     props.getDashboardPlans();
-  }, []);
+  }, [props.plans.length]);
 
   return (
     <div className="plansDashboard">

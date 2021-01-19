@@ -9,7 +9,7 @@ import { numberWithCommas } from "../../helpers/middleware";
 const TransactionList = (props) => {
   useEffect(() => {
     props.getDashboardTransactions();
-  }, []);
+  }, [props.transactions.length]);
   return (
     <div className="transactionsDashboard">
       {/*the plans title*/}
