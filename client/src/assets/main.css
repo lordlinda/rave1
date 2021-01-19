@@ -261,8 +261,6 @@ template {
 
 
 h1,
-h2,
-h5,
 p {
   margin: 0;
 }
@@ -360,9 +358,7 @@ button {
   cursor: pointer;
 }
 
-h1,
-h2,
-h5 {
+h1 {
   font-size: inherit;
   font-weight: inherit;
 }

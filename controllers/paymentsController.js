@@ -541,6 +541,7 @@ const createWallet = async (data) => {
 
 /**we run this function we make  a transaction with flutterwave to ensure it is a valid transaction */
 const verifyTransaction = async (data) => {
+  console.log(data);
   let isVerified;
 
   const response = await fetch(`${process.env.VERIFY_URL}`, {
@@ -554,6 +555,7 @@ const verifyTransaction = async (data) => {
     }),
   });
   const res = await response.json();
+  console.log(res);
   if (
     res.status === "success" &&
     res.data.flwMeta.chargeResponse === "00" &&

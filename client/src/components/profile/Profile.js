@@ -13,11 +13,9 @@ import { motion } from "framer-motion";
 import Badge from "@material-ui/core/Badge";
 import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
 function Profile(props) {
-  const [filePath, setFilePath] = useState();
   const photoUpload = (e) => {
     if (e.target.files[0]) {
       props.imageUpload(e.target.files[0]);
-      setFilePath(props.filePath);
     }
   };
 
@@ -41,7 +39,7 @@ function Profile(props) {
         >
           <Avatar
             alt={props.username}
-            src={`http://localhost:5000/${props.url}`}
+            src={`${process.env.REACT_APP_URL}${props.url}`}
           />
         </Badge>
         <input
