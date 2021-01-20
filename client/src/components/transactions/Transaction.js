@@ -14,7 +14,7 @@ const Transaction = forwardRef(({ transaction }, ref) => {
           </div>
 
           <p className={`${transaction.type === "income" ? "green" : "red"}`}>
-            {transaction.currency} {numberWithCommas(transaction.amount)}
+            {transaction.currency} {numberWithCommas(transaction?.amount)}
           </p>
         </div>
       </div>
