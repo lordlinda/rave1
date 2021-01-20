@@ -59,12 +59,10 @@ module.exports = {
       /**if the user already has a plan with us,the next step is to find out which plan to update */
       /**if the user hasnt passed in an id ,we update the amount in the user wallet */
       if (!req.body.id) {
-        console.log(req.user);
         /**if the user didnt choose which plan we update their wallet */
-        const Wallet = await PaymentPlan.findOne(
-          { name: "Wallet" },
-          { user: req.user._id }
-        );
+        const Wallet = await PaymentPlan.findOne({
+          $and: [{ name: "Wallet" }, { user: req.user._id }],
+        });
         /**if this is the user's first payment ,the amount is zero and therefore we update the currency */
         if (Wallet.amount === 0) {
           await Wallet.updateOne({ currency: req.body.currency });
@@ -179,11 +177,9 @@ module.exports = {
       if (!req.body.id) {
         /**if the user didnt choose which plan we know this subscription belongs to the user's wallet account */
         /**even for scheduling we need to update the amount because there is some money we deduct from the user to verify the transaction to acquire the token */
-        //!ACID NEEDED HERE
-        const Wallet = await PaymentPlan.findOne(
-          { name: "Wallet" },
-          { user: req.user._id }
-        );
+        const Wallet = await PaymentPlan.findOne({
+          $and: [{ name: "Wallet" }, { user: req.user._id }],
+        });
         if (Wallet.amount === 0) {
           await Wallet.updateOne({ currency: req.body.currency });
         }
