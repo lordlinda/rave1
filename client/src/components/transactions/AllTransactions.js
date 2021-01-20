@@ -10,11 +10,16 @@ import "./transactions.css";
 import { motion } from "framer-motion";
 import Transaction from "./Transaction.js";
 import FlipMove from "react-flip-move";
+import emptyTransaction from "../../images/undraw_wallet_aym5.svg";
+import Button from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
+import { PulseLoader } from "react-spinners";
 
 const Transactions = (props) => {
   useEffect(() => {
     props.getTransactions();
   }, []);
+  console.log(props.loading);
   const [duration, setDuration] = React.useState("today");
   const options = ["today", "this week", "this month"];
   return (
@@ -23,6 +28,11 @@ const Transactions = (props) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
+      {props.loading && (
+        <div className="plan__loading">
+          <PulseLoader color={"#613eea"} />
+        </div>
+      )}
       <div className="transactions__header">
         <div className="transactions__top">
           <h1>Transactions</h1>
@@ -45,12 +55,25 @@ const Transactions = (props) => {
         {/**all ,paymenttype,date icome or expense */}
       </div>
       <div className="transactions__list">
-        <FlipMove>
-          {props.transactions &&
-            props.transactions.map((transaction) => (
-              <Transaction key={transaction._id} transaction={transaction} />
-            ))}
-        </FlipMove>
+        {props.transactions.length > 0 ? (
+          <FlipMove>
+            {props.transactions &&
+              props.transactions.map((transaction) => (
+                <Transaction key={transaction._id} transaction={transaction} />
+              ))}
+          </FlipMove>
+        ) : (
+          <div className="empty__transaction">
+            <img src={emptyTransaction} alt="no transactions" />
+            <p>
+              Start saving with pasbanc to see records of your daily
+              transactions
+            </p>
+            <Button component={Link} to="/amount" className="editButton">
+              Start Now
+            </Button>
+          </div>
+        )}
       </div>
       <LabelBottomNavigation />
     </motion.div>
@@ -60,6 +83,7 @@ const Transactions = (props) => {
 const mapStateToProps = (state) => {
   return {
     transactions: state.data.transactions,
+    loading: state.data.loading,
   };
 };
 

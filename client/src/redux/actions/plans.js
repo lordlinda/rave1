@@ -26,6 +26,18 @@ export const getTotalBalance = () => async (dispatch) => {
   }
 };
 
+export const convertCurrency = (data) => async (dispatch) => {
+  try {
+    const res = await axios.post("/plans/convert", data);
+    dispatch({
+      type: GET_TOTAL,
+      payload: res.data.total,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getDashboardPlans = () => async (dispatch) => {
   try {
     const res = await axios.get("/plans/plans/dashboard");

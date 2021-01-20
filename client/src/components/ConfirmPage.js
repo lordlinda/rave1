@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Divider } from "@material-ui/core";
+import { Button, Divider } from "@material-ui/core";
 import React from "react";
 import { RaveProvider, RavePaymentButton } from "react-ravepayment";
 import { connect } from "react-redux";
@@ -9,6 +9,8 @@ import {
 } from "../redux/actions/payments";
 import BackArrow from "./Reusables/BackArrow.js";
 import "./confirmPage.css";
+import { numberWithCommas } from "../helpers/middleware";
+
 import moment from "moment";
 import { calculateDuration } from "../helpers/middleware";
 import Dialog from "@material-ui/core/Dialog";
@@ -24,7 +26,7 @@ class Subscription extends React.Component {
       currency: "",
       PBFPubKey: "FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X",
       production: false,
-      payment_options: "card, mobilemoneyghana, ussd",
+      payment_options: "card",
       payment_plan: "",
       open: false,
       loading: false,
@@ -53,11 +55,9 @@ class Subscription extends React.Component {
         console.log(data);
 
         if (this.props.location.state.start) {
-          this.props.schedulePayment(data);
-          this.props.history.push("/");
+          this.props.schedulePayment(data, this.props.history);
         } else {
-          this.props.makePayment(data);
-          this.props.history.push("/");
+          this.props.makePayment(data, this.props.history);
         }
       },
       onClose: () => {
@@ -169,7 +169,7 @@ class Subscription extends React.Component {
             <p>Amount</p>
             <p>
               {this.props.location.state?.currency}{" "}
-              {this.props.location.state?.amount}
+              {numberWithCommas(this.props.location.state?.amount)}
             </p>
           </div>
           <div>
@@ -181,7 +181,7 @@ class Subscription extends React.Component {
             <p>Total</p>
             <p>
               {this.props.location.state?.currency}{" "}
-              {this.props.location.state?.amount}
+              {numberWithCommas(this.props.location.state?.amount)}
             </p>
           </div>
         </div>

@@ -16,4 +16,4 @@ export const currencyOptionsArray = [
   "CAD",
 ];
 
-export const paymentOptions = ["all", "mobilemoney", "card"];
+export const paymentOptions = ["mobilemoney", "card"];

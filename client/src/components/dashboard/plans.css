@@ -42,3 +42,16 @@
   font-size: 24px;
   font-weight: 600;
 }
+.plans__empty {
+  border: 1px dotted var(--gray);
+  height: 100px;
+  color: var(--black);
+  display: grid;
+  place-items: center;
+  margin-top: 12px;
+}
+.plans__empty > a > span > .MuiSvgIcon-root {
+  width: 2em;
+  height: 2em;
+  color: var(--purple);
+}

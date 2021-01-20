@@ -6,6 +6,8 @@ import BackArrow from "../Reusables/BackArrow";
 import { connect } from "react-redux";
 import { loadUser } from "../../redux/actions/index";
 import { editUser } from "../../redux/actions/index";
+import { PulseLoader } from "react-spinners";
+
 function PersonalDetails(props) {
   const [formData, setFormData] = useState({
     username: "",
@@ -27,7 +29,7 @@ function PersonalDetails(props) {
   useEffect(() => {
     fetchData();
   }, []);
-
+  console.log(props.loading);
   const handleDataChange = (e) => {
     setFormData({
       ...formData,
@@ -39,6 +41,11 @@ function PersonalDetails(props) {
   };
   return (
     <div>
+      {props.loading && (
+        <div className="plan__loading">
+          <PulseLoader color={"#613eea"} />
+        </div>
+      )}
       <div className="personalDetails__header">
         <div>
           <BackArrow goBack={props.history} />
@@ -88,6 +95,7 @@ const mapStateToProps = (state) => {
   return {
     filePath: state.data.filePath,
     user: state.data.user,
+    loading: state.data.loading,
   };
 };
 export default connect(mapStateToProps, { loadUser, editUser })(

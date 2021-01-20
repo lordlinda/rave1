@@ -4,12 +4,11 @@ import {
   SEARCH_TRANSACTIONS,
   GET_TRANSACTION,
   GET_DASHBOARD_TRANSACTIONS,
-  UPLOAD_IMAGE,
+  MAKE_PAYMENT,
 } from "../actions/types.js";
 
 const initialState = {
   loading: true,
-  filePath: "",
   transactions: [],
   user: {},
   transaction: {},
@@ -45,10 +44,11 @@ export default (state = initialState, action) => {
         ...state,
         dashboardTransactions: action.payload,
       };
-    case UPLOAD_IMAGE:
+
+    case MAKE_PAYMENT:
       return {
         ...state,
-        filePath: action.payload,
+        dashboardTransactions: [action.payload, ...state.dashboardTransactions],
       };
     default:
       return state;

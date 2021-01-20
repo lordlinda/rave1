@@ -58,3 +58,23 @@
   color: var(--black);
   opacity: 0.7;
 }
+.empty__goals {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  margin-top: 64px;
+}
+.empty__goals > img {
+  height: 150px;
+  width: 100%;
+}
+.empty__goals > h4 {
+  padding-left: 16px;
+  color: var(--black-light);
+}
+.empty__goals > p {
+  font-weight: 700;
+  font-size: 20px;
+  padding: 24px;
+  color: var(--black-light);
+}

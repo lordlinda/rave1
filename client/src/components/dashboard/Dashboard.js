@@ -5,7 +5,11 @@ import TransactionList from "./TransactionList.js";
 import LabelBottomNavigation from "../Reusables/BottomNavigation";
 import "./dashboard.css";
 import { motion } from "framer-motion";
-const Dashboard = () => {
+import { PulseLoader } from "react-spinners";
+import { connect } from "react-redux";
+
+const Dashboard = (props) => {
+  console.log(props.loading);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -13,6 +17,11 @@ const Dashboard = () => {
       transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
       className="dashboard"
     >
+      {props.loading && (
+        <div className="plan__loading">
+          <PulseLoader color={"#613eea"} />
+        </div>
+      )}
       <Total />
       <Plans />
       <TransactionList />
@@ -20,5 +29,9 @@ const Dashboard = () => {
     </motion.div>
   );
 };
-
-export default Dashboard;
+const mapStateToProps = (state) => {
+  return {
+    loading: state.plans.loading,
+  };
+};
+export default connect(mapStateToProps)(Dashboard);

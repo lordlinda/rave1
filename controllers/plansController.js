@@ -1,14 +1,18 @@
 const PaymentPlan = require("../models/PaymentPlan.js");
 const Subscription = require("../models/Subscription");
 const Transaction = require("../models/Transaction");
+const fetch = require("node-fetch");
+
 module.exports = {
   //@route            GET /plans/total
   //@description       get user total balance
   //@access            Private
   calculateTotalBalance: async (req, res) => {
     /**we map through all the user's plan and get the amount of each plan and add them together */
-    const plans = await PaymentPlan.find({ user: req.user._id });
-    const total = plans.reduce((acc, curr) => acc + curr.amount, 0);
+    const transactions = await Transaction.find({
+      $and: [{ type: "income" }, { user: req.user._id }],
+    });
+    const { total } = await convertCurrencies(transactions);
     return res.status(200).json({
       total,
     });
@@ -133,6 +137,32 @@ module.exports = {
       });
     }
   },
+  convertCurrency: async (req, res) => {
+    let total;
+    try {
+      const response = await fetch(
+        `${process.env.FIXER_URL}?access_key=${process.env.ACCESS_KEY}
+      `,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      total = req.body.amount / data.rates[req.body.from];
+
+      total = total * data.rates[req.body.to];
+      res.status(200).json({
+        total,
+      });
+    } catch (error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
+  },
 };
 
 /**not exported functions */
@@ -148,5 +178,31 @@ const isPlanWallet = async (id) => {
   }
   return {
     isWallet,
+  };
+};
+
+const convertCurrencies = async (transactions) => {
+  let total = 0;
+  try {
+    const response = await fetch(
+      `${process.env.FIXER_URL}?access_key=${process.env.ACCESS_KEY}
+      `,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const res = await response.json();
+    transactions.map((transaction) => {
+      total += transaction.amount / res.rates[transaction.currency];
+    });
+    total = total * res.rates.USD;
+  } catch (error) {
+    console.log(error);
+  }
+  return {
+    total,
   };
 };

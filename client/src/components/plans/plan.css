@@ -85,3 +85,30 @@
 .plan__body {
   margin-bottom: 20px;
 }
+
+.empty__plan > img {
+  height: 150px;
+  width: 100%;
+  text-align: center;
+}
+.empty__plan {
+  margin-top: 30%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.empty__plan > p {
+  font-weight: 700;
+  font-size: 20px;
+  padding: 24px;
+  color: var(--black-light);
+}
+
+/**this feels the entire page*/
+.plan__loading {
+  color: red;
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+}

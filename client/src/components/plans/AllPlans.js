@@ -9,12 +9,14 @@ import LabelBottomNavigation from "../Reusables/BottomNavigation";
 import { motion } from "framer-motion";
 import FlipMove from "react-flip-move";
 import Plan from "./Plan";
+import image from "../../images/undraw_stepping_up_g6oo.svg";
+import { PulseLoader } from "react-spinners";
 
 const AllPlans = (props) => {
   useEffect(() => {
     props.getAllPlans();
   }, []);
-
+  console.log(props.loading);
   const getCompletedPlans = () => {
     const completedPlans = props.plans.filter(
       (plan) => plan.targetAmount === plan.amount
@@ -34,22 +36,34 @@ const AllPlans = (props) => {
       transition={{ duration: 0.5 }}
       className="plans"
     >
+      {props.loading && (
+        <div className="plan__loading">
+          <PulseLoader color={"#613eea"} />
+        </div>
+      )}
       <div className="plans__header">
         <h1>Your Plans</h1>
       </div>
       {/*mapout our plans*/}
-      <div className="plans__body">
-        <FlipMove
-          enterAnimation={{
-            from: customEnterAnimation,
-            to: {},
-          }}
-        >
-          {props.plans.map((plan) => (
-            <Plan plan={plan} key={plan._id} />
-          ))}
-        </FlipMove>
-      </div>
+      {props.plans.length > 0 ? (
+        <div className="plans__body">
+          <FlipMove
+            enterAnimation={{
+              from: customEnterAnimation,
+              to: {},
+            }}
+          >
+            {props.plans.map((plan) => (
+              <Plan plan={plan} key={plan._id} />
+            ))}
+          </FlipMove>
+        </div>
+      ) : (
+        <div className="empty__goals">
+          <img src={image} alt="empty plans" />
+          <p> Start saving with Pasbanc to achieve your financial goals !</p>
+        </div>
+      )}
 
       <Fab
         aria-label="add"
@@ -67,6 +81,7 @@ const AllPlans = (props) => {
 const mapStateToProps = (state) => {
   return {
     plans: state.plans.plans,
+    loading: state.plans.loading,
   };
 };
 

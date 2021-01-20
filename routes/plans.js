@@ -11,6 +11,7 @@ const {
   getAllPlans,
   calculateTotalBalance,
   getDashboardPlans,
+  convertCurrency,
 } = require("../controllers/plansController");
 
 //@route            GET /plans/total
@@ -59,6 +60,11 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), getPlan);
 //@access        Private
 router.get("/", passport.authenticate("jwt", { session: false }), getAllPlans);
 
+router.post(
+  "/convert",
+  passport.authenticate("jwt", { session: false }),
+  convertCurrency
+);
 //@route        Get /plans/dashboard
 //@description    get plans to display on dashbaord
 //@access        Private

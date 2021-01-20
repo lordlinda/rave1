@@ -75,3 +75,19 @@
 .transactions {
   height: 92vh;
 }
+.empty__transaction {
+  margin-top: 42px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.empty__transaction > img {
+  height: 150px;
+  width: 100%;
+}
+.empty__transaction > p {
+  font-size: 20px;
+  margin-top: 24px;
+  color: var(--black-light);
+  padding: 16px;
+}

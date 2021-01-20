@@ -17,7 +17,14 @@ function AmountPage(props) {
   const handleAmount = (e) => {
     props.setAmount(e.target.value);
   };
+  const getCurrency = () => {
+    const plan = props.plans.find((plan) => plan.name === "Wallet");
+    if (plan) {
+      return plan.currency;
+    }
+  };
 
+  getCurrency();
   const handleClick = () => {
     const data = {
       ...props.location.state,
@@ -66,6 +73,7 @@ const mapStateToProps = (state) => {
     email: state.data.email,
     amount: state.filter.amount,
     currency: state.filter.currency,
+    plans: state.plans.dashboardPlans,
   };
 };
 export default connect(mapStateToProps, {

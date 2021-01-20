@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import Button from "../Reusables/Button.js";
 import { getDashboardTransactions } from "../../redux/actions/transactions";
 import "./transactions.css";
-import moment from "moment";
-import { numberWithCommas } from "../../helpers/middleware";
+import FlipMove from "react-flip-move";
+import Transaction from "../transactions/Transaction.js";
 
 const TransactionList = (props) => {
   useEffect(() => {
@@ -19,26 +19,16 @@ const TransactionList = (props) => {
       </div>
       <div className="transactionsDashboard__transactions">
         {/*mapout our transactions*/}
-        {props.transactions.map((transaction) => (
-          <div
-            className="transactionDashboard__transaction"
-            key={transaction._id}
-          >
-            <div>
-              <div className="transaction__details">
-                <h1>{transaction.paymentPlan?.name}</h1>
-                <span>
-                  {moment(transaction.createdAt).format("DD MMM YYYY")}
-                </span>
-              </div>
-              <p
-                className={`${transaction.type === "income" ? "green" : "red"}`}
-              >
-                {transaction.currency} {numberWithCommas(transaction.amount)}
-              </p>
-            </div>
-          </div>
-        ))}
+        {props.transactions.length > 0 ? (
+          <FlipMove>
+            {props.transactions &&
+              props.transactions.map((transaction) => (
+                <Transaction key={transaction._id} transaction={transaction} />
+              ))}
+          </FlipMove>
+        ) : (
+          <p className="transanctions__empty">No transactions yet</p>
+        )}
       </div>
     </div>
   );

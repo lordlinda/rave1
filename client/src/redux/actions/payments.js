@@ -11,22 +11,25 @@ import { toast } from "react-toastify";
 /**this route is to get the total balance of the client
  * it was calculated from the client
  */
-export const makePayment = (data) => async (dispatch) => {
+export const makePayment = (data, history) => async (dispatch) => {
   try {
-    await axios.post("/payments/makePayment", data);
+    const res = await axios.post("/payments/makePayment", data);
+    history.push("/");
     toast.success("Payment Successful");
+    console.log(res);
     dispatch({
       type: MAKE_PAYMENT,
-      payload: data.amount,
+      payload: res.data.transaction,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const schedulePayment = (data) => async (dispatch) => {
+export const schedulePayment = (data, history) => async (dispatch) => {
   try {
     await axios.post("/payments/schedulePayment", data);
+    history.push("/");
     toast.success("successful payment");
     dispatch({
       type: MAKE_PAYMENT,
@@ -41,7 +44,6 @@ export const schedulePayment = (data) => async (dispatch) => {
 export const getPaymentPlan = (data) => async (dispatch) => {
   try {
     const res = await axios.post("/payments/getPaymentPlan", data);
-    console.log(res);
     dispatch({
       type: GET_PAYMENT_PLAN,
       payload: res.data.id,

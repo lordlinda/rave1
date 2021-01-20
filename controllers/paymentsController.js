@@ -40,7 +40,10 @@ module.exports = {
         /**and add the amount to the wallet */
         /**create a transaction for the payment */
         /**return a successful response */
-        const { isSuccess } = await updateAmountAndCreateTransaction({
+        const {
+          isSuccess,
+          transaction,
+        } = await updateAmountAndCreateTransaction({
           user: req.user._id,
           id: createdWallet._id,
           amount: req.body.amount,
@@ -53,6 +56,7 @@ module.exports = {
           });
         }
         return res.status(201).json({
+          transaction,
           msg: "Payment successful",
         });
       }
@@ -68,7 +72,10 @@ module.exports = {
           await Wallet.updateOne({ currency: req.body.currency });
         }
         if (Wallet) {
-          const { isSuccess } = await updateAmountAndCreateTransaction({
+          const {
+            isSuccess,
+            transaction,
+          } = await updateAmountAndCreateTransaction({
             user: req.user._id,
             id: Wallet._id,
             amount: req.body.amount,
@@ -76,6 +83,7 @@ module.exports = {
             currency: req.body.currency,
           });
           return res.status(201).json({
+            transaction,
             msg: "Payment successful",
           });
         }
@@ -86,13 +94,15 @@ module.exports = {
         await plan.updateOne({ currency: req.body.currency });
       }
       /**we update the plan the user has specified by id */
-      const { isSuccess } = await updateAmountAndCreateTransaction({
-        user: req.user._id,
-        id: req.body.id,
-        amount: req.body.amount,
-        paymentType: req.body.paymentType,
-        currency: req.body.currency,
-      });
+      const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
+        {
+          user: req.user._id,
+          id: req.body.id,
+          amount: req.body.amount,
+          paymentType: req.body.paymentType,
+          currency: req.body.currency,
+        }
+      );
       /**if the mongodb transaction fails we dont , we dont update the user's account balance or create a transaction */
       if (!isSuccess) {
         return res.status(500).json({
@@ -100,6 +110,7 @@ module.exports = {
         });
       }
       return res.status(201).json({
+        transaction,
         msg: "Payment successful",
       });
     } catch (error) {
@@ -157,6 +168,7 @@ module.exports = {
         //! ACID NEEDED HERE
         const {
           isSuccess,
+          transaction,
         } = await updateAmountAndCreateTransactionAndSubscription({
           user: req.user._id,
           id: createdWallet._id,
@@ -169,6 +181,7 @@ module.exports = {
           });
         }
         return res.status(201).json({
+          transaction,
           msg: "Payment successful",
         });
       }
@@ -187,6 +200,7 @@ module.exports = {
         if (Wallet) {
           const {
             isSuccess,
+            transaction,
           } = await updateAmountAndCreateTransactionAndSubscription({
             user: req.user._id,
             id: Wallet._id,
@@ -201,6 +215,7 @@ module.exports = {
           }
 
           return res.status(201).json({
+            transaction,
             msg: "Payment successful",
           });
         }
@@ -216,6 +231,7 @@ module.exports = {
       //! ACID HERE
       const {
         isSuccess,
+        transaction,
       } = await updateAmountAndCreateTransactionAndSubscription({
         user: req.user._id,
         id: req.body.id,
@@ -230,6 +246,7 @@ module.exports = {
       }
       /**return a successful message to the client */
       return res.status(201).json({
+        transaction,
         msg: "Subscription created successfully",
       });
     } catch (error) {
@@ -752,6 +769,7 @@ const activateFlutterwaveSubscription = async (subscription) => {
 
 const updateAmountAndCreateTransaction = async (data) => {
   let isSuccess;
+  let transaction;
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
@@ -761,7 +779,7 @@ const updateAmountAndCreateTransaction = async (data) => {
       { $inc: { amount: data.amount } },
       opts
     );
-    await Transaction.create({
+    transaction = await Transaction.create({
       user: data.user,
       paymentPlan: data.id,
       amount: data.amount,
@@ -778,11 +796,12 @@ const updateAmountAndCreateTransaction = async (data) => {
     session.endSession();
     isSuccess = false;
   }
-  return { isSuccess };
+  return { isSuccess, transaction };
 };
 
 const updateAmountAndCreateTransactionAndSubscription = async (data) => {
   let isSuccess;
+  let transaction;
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
@@ -792,7 +811,7 @@ const updateAmountAndCreateTransactionAndSubscription = async (data) => {
       { $inc: { amount: data.amount } },
       opts
     );
-    const transaction = await Transaction.create({
+    transaction = await Transaction.create({
       user: data.user,
       paymentPlan: data.id,
       amount: data.amount,
@@ -825,7 +844,7 @@ const updateAmountAndCreateTransactionAndSubscription = async (data) => {
     session.endSession();
     isSuccess = false;
   }
-  return { isSuccess };
+  return { isSuccess, transaction };
 };
 /**every midnight  "0 0 0 * * *"*/
 //schedule susbscriptions to run every midnight
@@ -887,7 +906,6 @@ const createNewFlutterWaveSubscription = async (subscription) => {
       }
     );
     const res = await response.json();
-    console.log(res);
     if (res.status === "success") {
       /**we ran acid that updates the client's amount,create a transaction */
       const { isSuccess } = await updateAmountAndCreateTransaction({

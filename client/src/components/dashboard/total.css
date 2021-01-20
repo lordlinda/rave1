@@ -15,8 +15,9 @@
 }
 
 .total__currency {
-  margin: 0 auto;
+  margin: 4px auto;
   overflow-x: scroll;
+  width: 40%;
 }
 .total__currency::-webkit-scrollbar {
   display: none;
@@ -25,7 +26,6 @@
   /*space between the diff currencies*/
   margin-left: 16px;
   cursor: pointer;
-  display: none;
 }
 .total__buttons {
   display: flex;
@@ -51,8 +51,8 @@
 }
 
 .active {
-  color: black;
-  background-color: white;
+  color: #fff;
+  background-color: var(--purple);
   padding: 4px;
   border-radius: 8px;
 }

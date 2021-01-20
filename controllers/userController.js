@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
 const multer = require("multer");
+const PaymentPlan = require("../models/PaymentPlan.js");
 
 const { validationResult } = require("express-validator");
 
@@ -73,7 +74,14 @@ module.exports = {
         email,
         password,
       });
+
       await user.save();
+      /**create wallet for user */
+      await PaymentPlan.create({
+        name: "Wallet",
+        user: user._id,
+        amount: 0,
+      });
       /**create token */
       const token = createToken(user);
       res.status(200).json({

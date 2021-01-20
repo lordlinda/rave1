@@ -9,7 +9,10 @@ const Plan = forwardRef(({ plan }, ref) => {
         <Link to={`/plan/${plan._id}`}>
           <div className="plans__plan">
             <p>{plan.name}</p>
-            <span> Ugx {numberWithCommas(plan.amount)}</span>
+            <span>
+              {" "}
+              {plan.currency} {numberWithCommas(plan.amount)}
+            </span>
           </div>
         </Link>
       </div>

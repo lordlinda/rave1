@@ -17,6 +17,7 @@ import moment from "moment";
 import { calculateDueDate } from "../../helpers/middleware";
 import Input from "../Reusables/Input";
 import { motion } from "framer-motion";
+import { PulseLoader } from "react-spinners";
 
 function Subscription(props) {
   const [open, setOpen] = React.useState(false);
@@ -107,6 +108,11 @@ function Subscription(props) {
       transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
       className="subscription"
     >
+      {props.loading && (
+        <div className="plan__loading">
+          <PulseLoader color={"#613eea"} />
+        </div>
+      )}
       <div className="subscription__top">
         <BackArrow goBack={props.history} />
         <h1>Subscription</h1>
@@ -245,6 +251,7 @@ function Subscription(props) {
 const mapStateToProps = (state) => {
   return {
     subscription: state.plans.subscription,
+    loading: state.plans.loading,
   };
 };
 export default connect(mapStateToProps, {

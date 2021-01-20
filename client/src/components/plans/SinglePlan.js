@@ -18,6 +18,9 @@ import { Link } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import { DialogContent } from "@material-ui/core";
 import Transaction from "../transactions/Transaction.js";
+import activityImage from "../../images/undraw_Finance_re_gnv2.svg";
+import { PulseLoader } from "react-spinners";
+
 const SinglePlan = (props) => {
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -43,9 +46,15 @@ const SinglePlan = (props) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+      transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
       className="plan"
     >
+      {props.loading && (
+        <div className="plan__loading">
+          <PulseLoader color={"#613eea"} />
+        </div>
+      )}
+
       <div className="plan__header">
         <BackArrow goBack={props.history} />
         <Link to={`/editplan/${id}`}>
@@ -101,7 +110,7 @@ const SinglePlan = (props) => {
         )}
 
         <div className="plan__transactions">
-          {props.plan?.transactions?.length > 0 && (
+          {props.plan?.transactions?.length > 0 ? (
             <>
               <h1>Transactions</h1>
               <FlipMove>
@@ -113,6 +122,11 @@ const SinglePlan = (props) => {
                 ))}
               </FlipMove>
             </>
+          ) : (
+            <div className="empty__plan">
+              <img src={activityImage} alt="no activity" />
+              <p>{`Start saving,your goal is just one step away`}</p>
+            </div>
           )}
         </div>
         <Dialog open={open} onClose={handleClose}>
@@ -144,6 +158,7 @@ const SinglePlan = (props) => {
 const mapStateToProps = (state) => {
   return {
     plan: state.plans.plan,
+    loading: state.plans.loading,
   };
 };
 
