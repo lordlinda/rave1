@@ -29,7 +29,6 @@ function PersonalDetails(props) {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log(props.loading);
   const handleDataChange = (e) => {
     setFormData({
       ...formData,

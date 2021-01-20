@@ -13,7 +13,6 @@ const Total = (props) => {
   }, []);
 
   const handleChange = (currency) => {
-    console.log(currency, currencySelected);
     const data = {
       amount: props.total,
       from: currencySelected,

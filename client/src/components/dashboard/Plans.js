@@ -10,10 +10,8 @@ import { IconButton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 const Plans = (props) => {
   useEffect(() => {
-    console.log("updated");
     props.getDashboardPlans();
   }, []);
-  console.log(props.plans);
 
   return (
     <div className="plansDashboard">

@@ -11,7 +11,6 @@ const Transaction = (props) => {
   useEffect(() => {
     props.getTransaction(id);
   }, [id]);
-  console.log(props);
 
   return (
     <div>

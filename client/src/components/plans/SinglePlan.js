@@ -158,7 +158,7 @@ const SinglePlan = (props) => {
 const mapStateToProps = (state) => {
   return {
     plan: state.plans.plan,
-    loading: state.plans.loading,
+    loading: state.plans.isPlanLoading,
   };
 };
 

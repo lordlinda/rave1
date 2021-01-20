@@ -60,7 +60,6 @@ function Subscription(props) {
   useEffect(() => {
     fetchData();
   }, [props.subscription.startDate]);
-  console.log(checked);
 
   const handleChange = () => {
     if (checked === true) {

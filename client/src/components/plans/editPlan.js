@@ -9,7 +9,6 @@ import { connect } from "react-redux";
 import { getPlan, editPlan, deletePlan } from "../../redux/actions/plans";
 import DialogTitle from "@material-ui/core/DialogTitle";
 function EditPlan(props) {
-  console.log(props);
   const [amount, setAmount] = useState(0);
   const [name, setName] = useState("");
   const [open, setOpen] = React.useState(false);
@@ -36,7 +35,6 @@ function EditPlan(props) {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(name, amount);
     props.editPlan({
       id,
       name,

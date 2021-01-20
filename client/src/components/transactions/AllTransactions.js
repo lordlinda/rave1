@@ -19,7 +19,6 @@ const Transactions = (props) => {
   useEffect(() => {
     props.getTransactions();
   }, []);
-  console.log(props.loading);
   const [duration, setDuration] = React.useState("today");
   const options = ["today", "this week", "this month"];
   return (

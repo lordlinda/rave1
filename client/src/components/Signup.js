@@ -20,7 +20,6 @@ const Signup = (props) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //console.log(formData)
     //we want to ensure that the user has filled in
     //all the fields
     if (username && email && password && confirmPassword) {

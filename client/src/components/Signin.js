@@ -18,10 +18,8 @@ const Signin = (props) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    //console.log(formData)
     //we want to ensure that the user has filled in
     //all the fields
-    console.log(formData);
     if (email && password) {
       //we send the data to the backend
       props.signIn(formData);

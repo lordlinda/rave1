@@ -31,7 +31,6 @@ class FilterInput extends Component {
     this.props.searchTransactions(this.props.filters);
   };
   showCalender = () => {
-    console.log(this.state.show);
     this.setState({ show: !this.state.show });
   };
   render() {

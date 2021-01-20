@@ -16,7 +16,6 @@ const AllPlans = (props) => {
   useEffect(() => {
     props.getAllPlans();
   }, []);
-  console.log(props.loading);
   const getCompletedPlans = () => {
     const completedPlans = props.plans.filter(
       (plan) => plan.targetAmount === plan.amount
@@ -81,7 +80,7 @@ const AllPlans = (props) => {
 const mapStateToProps = (state) => {
   return {
     plans: state.plans.plans,
-    loading: state.plans.loading,
+    loading: state.plans.isPlansLoading,
   };
 };
 

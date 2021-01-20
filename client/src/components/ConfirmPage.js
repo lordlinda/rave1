@@ -52,7 +52,6 @@ class Subscription extends React.Component {
           paymentType: response.tx.paymentType.slice(0, 11),
           id: this.props.location.state.id,
         };
-        console.log(data);
 
         if (this.props.location.state.start) {
           this.props.schedulePayment(data, this.props.history);
