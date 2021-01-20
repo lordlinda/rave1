@@ -30,7 +30,7 @@ const SinglePlan = (props) => {
   useEffect(() => {
     props.getPlan(id);
   }, []);
-
+  console.log(props.loading);
   const handleChange = (event) => {
     if (event.target.value === "single") {
       props.history.push("/amount", { id });
@@ -49,109 +49,111 @@ const SinglePlan = (props) => {
       transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
       className="plan"
     >
-      {props.loading && (
+      {props.loading ? (
         <div className="plan__loading">
           <PulseLoader color={"#613eea"} />
         </div>
-      )}
-
-      <div className="plan__header">
-        <BackArrow goBack={props.history} />
-        <Link to={`/editplan/${id}`}>
-          <MoreVertIcon />
-        </Link>
-      </div>
-      <div className="plan__middle">
-        <h1>
-          {props.plan?.name}
-          {""}
-          <Fab aria-label="add" className="plan__button">
-            <AddIcon onClick={handleClose} />
-          </Fab>
-        </h1>
-        {props.plan?.amount && (
-          <p>
-            {" "}
-            {props.plan.currency} {numberWithCommas(props.plan?.amount)}
-          </p>
-        )}
-      </div>
-      <div className="plan__body">
-        <div className="plan__progressBar">
-          {props.plan?.targetAmount && (
-            <ProgressBar
-              amount={props.plan?.amount}
-              targetAmount={props.plan?.targetAmount}
-            />
-          )}
-        </div>
-        {props.plan?.subscriptions?.length > 0 && (
-          <div className="plan__subscriptions">
-            <h1>Subscriptions</h1>
-            <FlipMove>
-              {props.plan?.subscriptions.map((subscription) => (
-                <Link
-                  to={`/subscription/${subscription._id}`}
-                  key={subscription._id}
-                >
-                  <div className="plan__sub">
-                    <div>
-                      <h1>{props.plan?.name}</h1>
-                      <p>
-                        {subscription.currency} {subscription.subscAmt}
-                      </p>
-                    </div>
-                    <p>{subscription.interval}</p>
-                  </div>
-                </Link>
-              ))}
-            </FlipMove>
+      ) : (
+        <>
+          <div className="plan__header">
+            <BackArrow goBack={props.history} />
+            <Link to={`/editplan/${id}`}>
+              <MoreVertIcon />
+            </Link>
           </div>
-        )}
-
-        <div className="plan__transactions">
-          {props.plan?.transactions?.length > 0 ? (
-            <>
-              <h1>Transactions</h1>
-              <FlipMove>
-                {props.plan?.transactions.map((transaction) => (
-                  <Transaction
-                    key={transaction._id}
-                    transaction={transaction}
-                  />
-                ))}
-              </FlipMove>
-            </>
-          ) : (
-            <div className="empty__plan">
-              <img src={activityImage} alt="no activity" />
-              <p>{`Start saving,your goal is just one step away`}</p>
+          <div className="plan__middle">
+            <h1>
+              {props.plan?.name}
+              {""}
+              <Fab aria-label="add" className="plan__button">
+                <AddIcon onClick={handleClose} />
+              </Fab>
+            </h1>
+            {props.plan?.amount && (
+              <p>
+                {" "}
+                {props.plan.currency} {numberWithCommas(props.plan?.amount)}
+              </p>
+            )}
+          </div>
+          <div className="plan__body">
+            <div className="plan__progressBar">
+              {props.plan?.targetAmount && (
+                <ProgressBar
+                  amount={props.plan?.amount}
+                  targetAmount={props.plan?.targetAmount}
+                />
+              )}
             </div>
-          )}
-        </div>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogContent>
-            <FormControl component="fieldset">
-              <RadioGroup
-                aria-label="interval"
-                name="interval1"
-                onChange={handleChange}
-              >
-                <FormControlLabel
-                  value="single"
-                  control={<Radio />}
-                  label="Make a one-time payment"
-                />
-                <FormControlLabel
-                  value="schedule"
-                  control={<Radio />}
-                  label="Setup scheduled payments"
-                />
-              </RadioGroup>
-            </FormControl>
-          </DialogContent>
-        </Dialog>
-      </div>
+            {props.plan?.subscriptions?.length > 0 && (
+              <div className="plan__subscriptions">
+                <h1>Subscriptions</h1>
+                <FlipMove>
+                  {props.plan?.subscriptions.map((subscription) => (
+                    <Link
+                      to={`/subscription/${subscription._id}`}
+                      key={subscription._id}
+                    >
+                      <div className="plan__sub">
+                        <div>
+                          <h1>{props.plan?.name}</h1>
+                          <p>
+                            {subscription.currency} {subscription.subscAmt}
+                          </p>
+                        </div>
+                        <p>{subscription.interval}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </FlipMove>
+              </div>
+            )}
+
+            <div className="plan__transactions">
+              {props.plan?.transactions?.length > 0 ? (
+                <>
+                  <h1>Transactions</h1>
+                  <FlipMove>
+                    {props.plan?.transactions.map((transaction) => (
+                      <Transaction
+                        key={transaction._id}
+                        transaction={transaction}
+                      />
+                    ))}
+                  </FlipMove>
+                </>
+              ) : (
+                <div className="empty__plan">
+                  <img src={activityImage} alt="no activity" />
+                  <p>{`Start saving,your goal is just one step away`}</p>
+                </div>
+              )}
+            </div>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogContent>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="interval"
+                    name="interval1"
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value="single"
+                      control={<Radio />}
+                      label="Make a one-time payment"
+                    />
+                    <FormControlLabel
+                      value="schedule"
+                      control={<Radio />}
+                      label="Setup scheduled payments"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </>
+      )}
     </motion.div>
   );
 };

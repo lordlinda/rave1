@@ -16,14 +16,18 @@ const Dashboard = (props) => {
       transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
       className="dashboard"
     >
-      {props.loading && (
+      {props.loading ? (
         <div className="plan__loading">
           <PulseLoader color={"#613eea"} />
         </div>
+      ) : (
+        <>
+          <Total />
+          <Plans />
+          <TransactionList />
+        </>
       )}
-      <Total />
-      <Plans />
-      <TransactionList />
+
       <LabelBottomNavigation />
     </motion.div>
   );

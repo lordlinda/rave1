@@ -5,7 +5,6 @@ import {
   DELETE_PLAN,
   GET_PLAN,
   GET_SUBSCRIPTION,
-  MAKE_PAYMENT,
 } from "../actions/types.js";
 
 const initialState = {
@@ -17,6 +16,7 @@ const initialState = {
   loading: true,
   isPlanLoading: true,
   isPlansLoading: true,
+  isSubscriptionLoading: true,
 };
 
 //the reducer has the inital state and alters it based on the action
@@ -54,13 +54,10 @@ export default (state = initialState, action) => {
     case GET_SUBSCRIPTION:
       return {
         ...state,
+        isSubscriptionLoading: false,
         subscription: action.payload,
       };
-    case MAKE_PAYMENT:
-      return {
-        ...state,
-        total: state.total + action.payload.amount,
-      };
+
     default:
       return state;
   }

@@ -4,6 +4,7 @@ import {
   ACTIVATE_SUBSCRIPTION,
   CANCEL_SUBSCRIPTION,
   UPDATE_SUBSCRIPTION,
+  CONFIRM_PAYMENT,
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -12,6 +13,9 @@ import { toast } from "react-toastify";
  * it was calculated from the client
  */
 export const makePayment = (data, history) => async (dispatch) => {
+  dispatch({
+    type: CONFIRM_PAYMENT,
+  });
   try {
     const res = await axios.post("/payments/makePayment", data);
     history.push("/");
@@ -26,13 +30,16 @@ export const makePayment = (data, history) => async (dispatch) => {
 };
 
 export const schedulePayment = (data, history) => async (dispatch) => {
+  dispatch({
+    type: CONFIRM_PAYMENT,
+  });
   try {
-    await axios.post("/payments/schedulePayment", data);
+    const res = await axios.post("/payments/schedulePayment", data);
     history.push("/");
     toast.success("successful payment");
     dispatch({
       type: MAKE_PAYMENT,
-      payload: data.amount,
+      payload: res.data.transaction,
     });
   } catch (error) {
     console.log(error);

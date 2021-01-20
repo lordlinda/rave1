@@ -10,7 +10,7 @@ import {
 import BackArrow from "./Reusables/BackArrow.js";
 import "./confirmPage.css";
 import { numberWithCommas } from "../helpers/middleware";
-
+import { PulseLoader } from "react-spinners";
 import moment from "moment";
 import { calculateDuration } from "../helpers/middleware";
 import Dialog from "@material-ui/core/Dialog";
@@ -129,67 +129,76 @@ class Subscription extends React.Component {
   render() {
     return (
       <div className="confirmPage">
-        <div className="confirmPage__header">
-          <BackArrow goBack={this.props.history} />
-          <h1>Confirm</h1>
-        </div>
-        <div className="confirmPage__details">
-          <div>
-            {this.props.location.state?.start && (
-              <>
-                <p>Start Date</p>
+        {this.props.loading ? (
+          <div className="plan__loading">
+            <PulseLoader color={"#613eea"} />
+          </div>
+        ) : (
+          <>
+            <div className="confirmPage__header">
+              <BackArrow goBack={this.props.history} />
+              <h1>Confirm</h1>
+            </div>
+            <div className="confirmPage__details">
+              <div>
+                {this.props.location.state?.start && (
+                  <>
+                    <p>Start Date</p>
+                    <p>
+                      {moment(this.props.location.state?.start).format(
+                        "DD MMM YYYY"
+                      )}
+                    </p>
+                  </>
+                )}
+              </div>
+              <div>
+                {this.props.location.state?.end && (
+                  <>
+                    <p>End Date</p>
+                    <p>
+                      {moment(this.props.location.state?.end).format(
+                        "DD MMM YYYY"
+                      )}
+                    </p>
+                  </>
+                )}
+              </div>
+              <div>
+                {this.props.location.state?.interval && (
+                  <>
+                    <p>Interval</p>
+                    <p>{this.props.location.state?.interval}</p>
+                  </>
+                )}
+              </div>
+              <div>
+                <p>Amount</p>
                 <p>
-                  {moment(this.props.location.state?.start).format(
-                    "DD MMM YYYY"
-                  )}
+                  {this.props.location.state?.currency}{" "}
+                  {numberWithCommas(this.props.location.state?.amount)}
                 </p>
-              </>
-            )}
-          </div>
-          <div>
-            {this.props.location.state?.end && (
-              <>
-                <p>End Date</p>
+              </div>
+              <div>
+                <p>Charges</p>
+                <p>0.00</p>
+              </div>
+              <Divider variant="middle" />
+              <div>
+                <p>Total</p>
                 <p>
-                  {moment(this.props.location.state?.end).format("DD MMM YYYY")}
+                  {this.props.location.state?.currency}{" "}
+                  {numberWithCommas(this.props.location.state?.amount)}
                 </p>
-              </>
-            )}
-          </div>
-          <div>
-            {this.props.location.state?.interval && (
-              <>
-                <p>Interval</p>
-                <p>{this.props.location.state?.interval}</p>
-              </>
-            )}
-          </div>
-          <div>
-            <p>Amount</p>
-            <p>
-              {this.props.location.state?.currency}{" "}
-              {numberWithCommas(this.props.location.state?.amount)}
-            </p>
-          </div>
-          <div>
-            <p>Charges</p>
-            <p>0.00</p>
-          </div>
-          <Divider variant="middle" />
-          <div>
-            <p>Total</p>
-            <p>
-              {this.props.location.state?.currency}{" "}
-              {numberWithCommas(this.props.location.state?.amount)}
-            </p>
-          </div>
-        </div>
-
-        <RaveProvider {...this.state}>
-          <RavePaymentButton type="submit" disabled={this.state.loading}>
-            Pay
-          </RavePaymentButton>
-        </RaveProvider>
+              </div>
+            </div>
+            <RaveProvider {...this.state}>
+              <RavePaymentButton type="submit" disabled={this.state.loading}>
+                Pay
+              </RavePaymentButton>
+            </RaveProvider>
+          </>
+        )}
 
         <Dialog open={this.state.open} onClose={this.handleClose}>
           <DialogTitle>
@@ -211,6 +220,7 @@ class Subscription extends React.Component {
 const mapStateToProps = (state) => {
   return {
     id: state.payment.id,
+    loading: state.data.isLoading,
   };
 };
 export default connect(mapStateToProps, {

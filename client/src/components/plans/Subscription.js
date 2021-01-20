@@ -107,70 +107,76 @@ function Subscription(props) {
       transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
       className="subscription"
     >
-      {props.loading && (
+      {props.loading ? (
         <div className="plan__loading">
           <PulseLoader color={"#613eea"} />
         </div>
+      ) : (
+        <>
+          <div className="subscription__top">
+            <BackArrow goBack={props.history} />
+            <h1>Subscription</h1>
+          </div>
+          <div className="subscription__header">
+            <div>
+              <p>Next Due</p>
+              <p>
+                {props.subscription.startDate &&
+                  moment(
+                    calculateDueDate({
+                      startDate: props.subscription?.startDate,
+                      endDate: props.subscription?.endDate,
+                      count: props.subscription?.count,
+                      interval: props.subscription?.interval,
+                    }).dueDate
+                  ).format("DD MMM YYYY")}
+              </p>
+            </div>
+            <div>
+              <div>
+                <p>Start Date</p>
+                <p>{moment(startDate).format("DD MMM YYYY")}</p>
+              </div>
+              <div>
+                <p>End Date</p>
+                <p>{moment(endDate).format("DD MMM YYYY")}</p>
+              </div>
+            </div>
+          </div>
+          <div className="subscription__details">
+            <div>
+              <p>Recurring</p>
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                color="primary"
+              />
+            </div>
+            <div>
+              <p>Amount</p>
+              <p>
+                {props.subscription.currency} {subscAmt}
+              </p>
+            </div>
+            <div>
+              <p>Interval</p>
+              <p>{interval}</p>
+            </div>
+          </div>
+          <div className="subscription__buttons">
+            <Button
+              variant="contained"
+              className="editButton"
+              onClick={editSubscription}
+            >
+              Edit
+            </Button>
+            <Button onClick={onDelete} color="secondary">
+              Delete
+            </Button>
+          </div>
+        </>
       )}
-      <div className="subscription__top">
-        <BackArrow goBack={props.history} />
-        <h1>Subscription</h1>
-      </div>
-
-      <div className="subscription__header">
-        <div>
-          <p>Next Due</p>
-          <p>
-            {props.subscription.startDate &&
-              moment(
-                calculateDueDate({
-                  startDate: props.subscription?.startDate,
-                  endDate: props.subscription?.endDate,
-                  count: props.subscription?.count,
-                  interval: props.subscription?.interval,
-                }).dueDate
-              ).format("DD MMM YYYY")}
-          </p>
-        </div>
-        <div>
-          <div>
-            <p>Start Date</p>
-            <p>{moment(startDate).format("DD MMM YYYY")}</p>
-          </div>
-          <div>
-            <p>End Date</p>
-            <p>{moment(endDate).format("DD MMM YYYY")}</p>
-          </div>
-        </div>
-      </div>
-      <div className="subscription__details">
-        <div>
-          <p>Recurring</p>
-          <Switch checked={checked} onChange={handleChange} color="primary" />
-        </div>
-        <div>
-          <p>Amount</p>
-          <p>
-            {props.subscription.currency} {subscAmt}
-          </p>
-        </div>
-        <div>
-          <p>Interval</p>
-          <p>{interval}</p>
-        </div>
-      </div>
-      <div className="subscription__buttons">
-        <Button
-          variant="contained"
-          className="editButton"
-          onClick={editSubscription}
-        >
-          Edit
-        </Button>
-        <Button onClick={onDelete} color="secondary">
-          Delete
-        </Button>
-      </div>
 
       <Dialog open={open} onClose={handleClose}>
         {deleted && (
@@ -250,7 +256,7 @@ function Subscription(props) {
 const mapStateToProps = (state) => {
   return {
     subscription: state.plans.subscription,
-    loading: state.plans.loading,
+    loading: state.plans.isSubscriptionLoading,
   };
 };
 export default connect(mapStateToProps, {

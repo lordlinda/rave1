@@ -5,6 +5,7 @@ import {
   GET_TRANSACTION,
   GET_DASHBOARD_TRANSACTIONS,
   MAKE_PAYMENT,
+  CONFIRM_PAYMENT,
 } from "../actions/types.js";
 
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
   user: {},
   transaction: {},
   dashboardTransactions: [],
+  isLoading: false,
 };
 
 //the reducer has the inital state and alters it based on the action
@@ -48,7 +50,13 @@ export default (state = initialState, action) => {
     case MAKE_PAYMENT:
       return {
         ...state,
+        isLoading: false,
         dashboardTransactions: [action.payload, ...state.dashboardTransactions],
+      };
+    case CONFIRM_PAYMENT:
+      return {
+        ...state,
+        isLoading: false,
       };
     default:
       return state;

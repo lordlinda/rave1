@@ -1,5 +1,4 @@
 import React, { forwardRef } from "react";
-import { Link } from "react-router-dom";
 import moment from "moment";
 import { numberWithCommas } from "../../helpers/middleware";
 
@@ -14,7 +13,8 @@ const Transaction = forwardRef(({ transaction }, ref) => {
           </div>
 
           <p className={`${transaction.type === "income" ? "green" : "red"}`}>
-            {transaction.currency} {numberWithCommas(transaction?.amount)}
+            {transaction.currency}{" "}
+            {transaction?.amount && numberWithCommas(transaction.amount)}
           </p>
         </div>
       </div>
