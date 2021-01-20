@@ -37,7 +37,6 @@ export const setpaymentMethod = (paymentMethod) => {
 
 export const searchTransactions = (filters) => async (dispatch) => {
   await axios.post("/transactions", filters).then((res) => {
-    //console.log(res.data)
     dispatch({
       type: "SEARCH_TRANSACTIONS",
       payload: res.data.transactions,

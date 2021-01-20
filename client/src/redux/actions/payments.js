@@ -16,7 +16,6 @@ export const makePayment = (data, history) => async (dispatch) => {
     const res = await axios.post("/payments/makePayment", data);
     history.push("/");
     toast.success("Payment Successful");
-    console.log(res);
     dispatch({
       type: MAKE_PAYMENT,
       payload: res.data.transaction,

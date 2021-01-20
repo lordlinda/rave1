@@ -29,7 +29,6 @@ export const loadUser = () => async (dispatch) => {
       localStorage.setItem("name", res.data.user.username);
     })
     .catch((err) => {
-      //console.log(err)
       dispatch({
         type: AUTH_ERROR,
       });
@@ -59,7 +58,6 @@ export const signUp = (user) => async (dispatch) => {
 export const signIn = (user) => async (dispatch) => {
   try {
     const res = await axios.post("/users/signin", user);
-    console.log(res);
     localStorage.setItem("token", res.data.token);
     localStorage.setItem("email", res.data.user);
     dispatch({
@@ -116,7 +114,6 @@ export const imageUpload = (data) => async (dispatch) => {
   const config = {
     header: { "content-type": "multipart/form-data" },
   };
-  //console.log(files);
   formData.append("file", data);
   try {
     const res = await axios.post("/users/uploadImage", formData, config);

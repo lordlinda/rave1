@@ -9,7 +9,7 @@ const Transaction = forwardRef(({ transaction }, ref) => {
       <div>
         <div className="transactions__transaction">
           <div>
-            <h1>{transaction?.paymentPlan.name}</h1>
+            <h1>{transaction?.paymentPlan?.name}</h1>
             <span>{moment(transaction.createdAt).format("DD MMM YYYY")}</span>
           </div>
 

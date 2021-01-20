@@ -11,6 +11,7 @@ module.exports = {
   //@decription  create  and update onetime payment user
   //@access      Private
   makePayment: async (req, res) => {
+    console.log(req.body);
     try {
       //!dont forget to verify the VERIFY_URL
       const { isVerified } = await verifyTransaction({
@@ -67,6 +68,7 @@ module.exports = {
         const Wallet = await PaymentPlan.findOne({
           $and: [{ name: "Wallet" }, { user: req.user._id }],
         });
+        console.log(Wallet);
         /**if this is the user's first payment ,the amount is zero and therefore we update the currency */
         if (Wallet.amount === 0) {
           await Wallet.updateOne({ currency: req.body.currency });
@@ -768,6 +770,7 @@ const activateFlutterwaveSubscription = async (subscription) => {
 };
 
 const updateAmountAndCreateTransaction = async (data) => {
+  console.log(data);
   let isSuccess;
   let transaction;
   const session = await mongoose.startSession();
