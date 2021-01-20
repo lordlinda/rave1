@@ -9,6 +9,7 @@ import { PulseLoader } from "react-spinners";
 import { connect } from "react-redux";
 
 const Dashboard = (props) => {
+  console.log(props.loading);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -34,7 +35,7 @@ const Dashboard = (props) => {
 };
 const mapStateToProps = (state) => {
   return {
-    loading: state.plans.loading,
+    loading: state.plans.isDashLoading,
   };
 };
 export default connect(mapStateToProps)(Dashboard);

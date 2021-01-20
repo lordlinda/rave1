@@ -13,10 +13,11 @@ const initialState = {
   plans: [],
   plan: {},
   subscription: {},
-  loading: true,
+  loading: false,
   isPlanLoading: true,
   isPlansLoading: true,
   isSubscriptionLoading: true,
+  isDashLoading: false,
 };
 
 //the reducer has the inital state and alters it based on the action
@@ -25,13 +26,12 @@ export default (state = initialState, action) => {
     case GET_TOTAL:
       return {
         ...state,
-        loading: false,
         total: action.payload,
       };
     case GET_DASHBOARD_PLANS:
       return {
         ...state,
-        loading: false,
+        isDashLoading: false,
         dashboardPlans: action.payload,
       };
     case GET_ALLPLANS:

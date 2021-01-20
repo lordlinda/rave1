@@ -13,9 +13,6 @@ import { toast } from "react-toastify";
  * it was calculated from the client
  */
 export const makePayment = (data, history) => async (dispatch) => {
-  dispatch({
-    type: CONFIRM_PAYMENT,
-  });
   try {
     const res = await axios.post("/payments/makePayment", data);
     history.push("/");
@@ -30,9 +27,6 @@ export const makePayment = (data, history) => async (dispatch) => {
 };
 
 export const schedulePayment = (data, history) => async (dispatch) => {
-  dispatch({
-    type: CONFIRM_PAYMENT,
-  });
   try {
     const res = await axios.post("/payments/schedulePayment", data);
     history.push("/");
