@@ -941,6 +941,8 @@ const calculateDueDate = ({ startDate, count, endDate, interval }) => {
   let dueDate;
   if (interval === "hourly") {
     dueDate = moment(startDate, "DD MMMM YYYY").add(count, "hours");
+  } else if (interval === "daily") {
+    dueDate = moment(startDate).add(count, "days");
   } else if (interval === "weekly") {
     dueDate = moment(startDate, "DD MMMM YYYY").add(count, "weeks");
   } else if (interval === "monthly") {

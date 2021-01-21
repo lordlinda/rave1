@@ -35,7 +35,7 @@ const Dashboard = (props) => {
 };
 const mapStateToProps = (state) => {
   return {
-    loading: state.plans.isDashLoading,
+    loading: state.plans.loading,
   };
 };
 export default connect(mapStateToProps)(Dashboard);
