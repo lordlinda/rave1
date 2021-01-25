@@ -16,7 +16,6 @@ function MobileTransfer(props) {
   const [from, setFrom] = useState("");
   const [phone, setPhone] = useState("");
   const mobile = () => {
-    console.log(phone, from, amount);
     if (!phone || !from || !amount) {
       toast.error("Please fill in all fields");
     } else if (phone.length < 10) {
@@ -40,6 +39,11 @@ function MobileTransfer(props) {
   useEffect(() => {
     props.loadUser();
   }, []);
+  useEffect(() => {
+    if (props.history.location.state) {
+      setFrom(props.history.location.state.id);
+    }
+  }, [props.plans]);
   const getFrom = (plan) => {
     setFrom(plan._id);
   };

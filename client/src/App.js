@@ -32,6 +32,24 @@ import BankTransfer from "./components/transfers/BankTransfer";
 import AddBank from "./components/transfers/AddBank";
 
 function App() {
+  const PageRoutes = () => {
+    return (
+      <div>
+        <Switch>
+          <Route exact path="/" component={authGuard(Dashboard)} />
+          <Route
+            exact
+            path="/transactions"
+            component={authGuard(Transactions)}
+          />
+          <Route exact path="/transfers" component={authGuard(Transfers)} />
+          <Route exact path="/profile" component={authGuard(Profile)} />
+          <Route exact path="/plans" component={authGuard(AllPlans)} />
+        </Switch>
+        <LabelBottomNavigation />
+      </div>
+    );
+  };
   return (
     <div>
       <Provider store={store}>
@@ -81,17 +99,8 @@ function App() {
             <Route exact path="/mobile" component={authGuard(MobileTransfer)} />
             <Route exact path="/bank" component={authGuard(BankTransfer)} />
             <Route exact path="/addBank" component={authGuard(AddBank)} />
-            <Route exact path="/" component={authGuard(Dashboard)} />
-            <Route exact path="/plans" component={authGuard(AllPlans)} />
-            <Route exact path="/transfers" component={authGuard(Transfers)} />
-            <Route exact path="/profile" component={authGuard(Profile)} />
-            <Route
-              exact
-              path="/transactions"
-              component={authGuard(Transactions)}
-            />
+            <Route component={PageRoutes} />
           </Switch>
-          <LabelBottomNavigation />
         </AnimatePresence>
       </Provider>
     </div>

@@ -21,8 +21,11 @@ import Transaction from "../transactions/Transaction.js";
 import activityImage from "../../images/undraw_Finance_re_gnv2.svg";
 import { PulseLoader } from "react-spinners";
 import RemoveIcon from "@material-ui/icons/Remove";
+
 const SinglePlan = (props) => {
   const [open, setOpen] = useState(false);
+  const [topUp, setTopUp] = useState(false);
+  const [withdraw, setWithdraw] = useState(false);
   const handleClose = () => {
     setOpen(!open);
   };
@@ -30,19 +33,26 @@ const SinglePlan = (props) => {
   useEffect(() => {
     props.getPlan(id);
   }, []);
-  console.log(props.loading);
-  const handleChange = (event) => {
-    if (event.target.value === "single") {
-      props.history.push("/amount", { id });
-    } else {
-      props.history.push("/createSubscription", { id });
-    }
+
+  const handleTopUp = () => {
+    setWithdraw(false);
+    setTopUp(true);
+    setOpen(!open);
+  };
+
+  const handleWithdraw = () => {
+    setTopUp(false);
+    setWithdraw(true);
+    setOpen(!open);
+  };
+
+  const handleChange = (e) => {
+    props.history.push(e.target.value, { id });
   };
 
   //give the first subscriptions
   //we give a distance from the top one
   return (
-    /*didnt use a w-1/2 because of no space between the boxes*/
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -62,19 +72,26 @@ const SinglePlan = (props) => {
             </Link>
           </div>
           <div className="plan__middle">
-            <h1>
-              {props.plan?.name}
-              {""}
-              <Fab aria-label="add" className="add__button">
-                <AddIcon onClick={handleClose} />
-              </Fab>
-            </h1>
+            <h1>{props.plan?.name}</h1>
             {props.plan?.amount && (
               <p>
-                {" "}
                 {props.plan.currency} {numberWithCommas(props.plan?.amount)}
               </p>
             )}
+            <div className="plan__actions">
+              <div>
+                <Fab aria-label="add">
+                  <AddIcon onClick={handleTopUp} />
+                </Fab>
+                <p>Topup</p>
+              </div>
+              <div>
+                <Fab aria-label="remove">
+                  <RemoveIcon onClick={handleWithdraw} />
+                </Fab>
+                <p>Withdraw</p>
+              </div>
+            </div>
           </div>
           <div className="plan__body">
             <div className="plan__progressBar">
@@ -137,16 +154,39 @@ const SinglePlan = (props) => {
                     name="interval1"
                     onChange={handleChange}
                   >
-                    <FormControlLabel
-                      value="single"
-                      control={<Radio />}
-                      label="Make a one-time payment"
-                    />
-                    <FormControlLabel
-                      value="schedule"
-                      control={<Radio />}
-                      label="Setup scheduled payments"
-                    />
+                    {topUp && (
+                      <>
+                        <FormControlLabel
+                          value="/amount"
+                          control={<Radio />}
+                          label="Make a one-time payment"
+                        />
+                        <FormControlLabel
+                          value="/createSubscription"
+                          control={<Radio />}
+                          label="Setup scheduled payments"
+                        />
+                      </>
+                    )}
+                    {withdraw && (
+                      <>
+                        <FormControlLabel
+                          value="/account"
+                          control={<Radio />}
+                          label="Account Transfer"
+                        />
+                        <FormControlLabel
+                          value="/mobile"
+                          control={<Radio />}
+                          label="Mobile Transfer"
+                        />
+                        <FormControlLabel
+                          value="/bank"
+                          control={<Radio />}
+                          label="Bank Transfer"
+                        />
+                      </>
+                    )}
                   </RadioGroup>
                 </FormControl>
               </DialogContent>

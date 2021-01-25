@@ -11,8 +11,8 @@ export const accountTransfer = (data, history) => async (dispatch) => {
     console.log(res);
     toast.success(res.data.msg);
   } catch (error) {
-    toast.error(error.msg);
     console.log(error);
+    toast.error("Transfer failed,please try again");
   }
 };
 
@@ -24,6 +24,7 @@ export const mobileTransfer = (data, history) => async (dispatch) => {
     toast.success(res.data.msg);
   } catch (error) {
     console.log(error);
+    toast.error("Transfer failed,please try again");
   }
 };
 
@@ -31,10 +32,10 @@ export const bankTransfer = (data, history) => async (dispatch) => {
   try {
     const res = await axios.post("/transfers/bank", data);
     history.push("/transfers");
-    console.log(res);
     toast.success(res.data.msg);
   } catch (error) {
     console.log(error);
+    toast.error("Transfer failed,please try again");
   }
 };
 

@@ -6,6 +6,8 @@ import Button from "./Reusables/Button.js";
 import { Redirect } from "react-router-dom";
 import "./login.css";
 import * as actions from "../redux/actions/index.js";
+import GoogleLogin from "react-google-login";
+import FacebookLogin from "react-facebook-login";
 
 const Signup = (props) => {
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ const Signup = (props) => {
   const handleChange = (text) => (e) => {
     setFormData({ ...formData, [text]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     //we want to ensure that the user has filled in
@@ -36,6 +39,20 @@ const Signup = (props) => {
       toast.error("Please fill in all fields");
     }
   };
+
+  {
+    /**
+    const responseGoogle = (res) => {
+    //console.log(res)
+    this.props.oauthGoogle(res.accessToken);
+  };
+
+  const responseFacebook = (res) => {
+    //console.log(res)
+    this.props.oauthFacebook(res.accessToken);
+  };
+   */
+  }
 
   return (
     <div className="siginIn">
@@ -73,6 +90,24 @@ const Signup = (props) => {
           <span>Already have an account ?</span>
           <Button title="Signin" href={"/signin"} />
         </div>
+        {/**
+         *<div>
+          <FacebookLogin
+            appId="2636632776598777"
+            textButton="facebook"
+            fields="name,email,picture"
+            callback={responseFacebook}
+            
+          />
+          {/*google login component*
+          <GoogleLogin
+            clientId="490182146410-n4p1v19co66t9r0lv387o5dpm8cmoi5f.apps.googleusercontent.com"
+            buttonText="Google"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+          />
+        </div>
+         */}
       </div>
     </div>
   );

@@ -16,6 +16,12 @@ function AccountTransfer(props) {
   const [to, setTo] = useState("");
   const [from, setFrom] = useState("");
 
+  useEffect(() => {
+    if (props.history.location.state) {
+      setFrom(props.history.location.state.id);
+    }
+  }, [props.plans]);
+
   const account = () => {
     if (from === to) {
       toast.error("Cant transfer money to the same account");

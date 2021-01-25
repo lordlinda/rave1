@@ -13,7 +13,7 @@ import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import { bankTransfer } from "../../redux/actions/transfers";
 import { toast } from "react-toastify";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-
+import { Link } from "react-router-dom";
 function BankTransfer(props) {
   useEffect(() => {
     props.getAllPlans();
@@ -46,6 +46,11 @@ function BankTransfer(props) {
     }
     /**transfer money */
   };
+  useEffect(() => {
+    if (props.history.location.state) {
+      setFrom(props.history.location.state.id);
+    }
+  }, [props.plans]);
   return (
     <div className="bankTransfer">
       <div className="accountTransfer__header">
@@ -56,29 +61,38 @@ function BankTransfer(props) {
         <p>From</p>
         <FlipMove>
           {props.plans.map((plan) => (
-            <Account plan={plan} key={plan._id} id={from._id} getId={getFrom} />
+            <Account
+              plan={plan}
+              key={plan._id}
+              id={from._id ? from._id : from}
+              getId={getFrom}
+            />
           ))}
         </FlipMove>
       </div>
       <div className="accountTransfer__plans">
         <p>to</p>
         <div>
-          {props.accounts?.map((account) => (
-            <div
-              className="bankAcct"
-              onClick={() => setTo(account)}
-              key={account.id}
-            >
-              <IconButton>
-                <AccountBalanceIcon />
-              </IconButton>
-              <div>
-                <p>{account.account_name}</p>
-                <p>{account.account_number}</p>
+          {props.accounts?.length > 0 ? (
+            props.accounts?.map((account) => (
+              <div
+                className="bankAcct"
+                onClick={() => setTo(account)}
+                key={account.id}
+              >
+                <IconButton>
+                  <AccountBalanceIcon />
+                </IconButton>
+                <div>
+                  <p>{account.account_name}</p>
+                  <p>{account.account_number}</p>
+                </div>
+                <div>{account === to && <CheckCircleIcon />}</div>
               </div>
-              <div>{account === to && <CheckCircleIcon />}</div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <Link to="/addBank">Add Bank Account</Link>
+          )}
         </div>
       </div>
       <div className="accountTransfer__amount">

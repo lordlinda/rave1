@@ -50,6 +50,7 @@ module.exports = {
       name: req.user.username,
       phone: req.body.phone,
     });
+    console.log(isSuccess);
     if (!isSuccess) {
       return res.status(500).json({
         msg: "transaction failed,please try again",
@@ -220,6 +221,19 @@ module.exports = {
         msg: "Sorry,failed to add bank Account",
       });
     }
+  },
+  deleteBankAcct: async (req, res) => {
+    /**we get the user's bank accounts and filter out this is */
+    const user = await User.findById(req.user._id);
+    /**we update the user's bank accounts */
+    const accounts = await user.bankAccounts.filter(
+      (account) => account !== req.body
+    );
+    console.log(accounts);
+    await User.updateOne({ _id: req.user._id }, { bankAccounts: accounts });
+    res.status(200).json({
+      msg: "Bank Account removed successfully",
+    });
   },
 };
 
