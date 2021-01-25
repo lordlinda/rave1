@@ -24,6 +24,13 @@ import Contact from "./components/profile/Contact";
 import Subscription from "./components/plans/Subscription";
 import IntervalPage from "./components/IntervalPage";
 import { AnimatePresence } from "framer-motion";
+import LabelBottomNavigation from "./components/Reusables/BottomNavigation";
+import Transfers from "./components/transfers/Transfers";
+import AccountTransfer from "./components/transfers/AccountTransfer";
+import MobileTransfer from "./components/transfers/MobileTransfer";
+import BankTransfer from "./components/transfers/BankTransfer";
+import AddBank from "./components/transfers/AddBank";
+
 function App() {
   return (
     <div>
@@ -53,10 +60,7 @@ function App() {
               path="/transaction/:id"
               component={authGuard(Transaction)}
             />
-            <Route exact path="/" component={authGuard(Dashboard)} />
             <Route exact path="/confirm" component={authGuard(ConfirmPage)} />
-            <Route exact path="/profile" component={authGuard(Profile)} />
-            <Route exact path="/plans" component={authGuard(AllPlans)} />
             <Route exact path="/contact" component={authGuard(Contact)} />
             <Route exact path="/interval" component={authGuard(IntervalPage)} />
             <Route
@@ -71,10 +75,23 @@ function App() {
             />
             <Route
               exact
+              path="/account"
+              component={authGuard(AccountTransfer)}
+            />
+            <Route exact path="/mobile" component={authGuard(MobileTransfer)} />
+            <Route exact path="/bank" component={authGuard(BankTransfer)} />
+            <Route exact path="/addBank" component={authGuard(AddBank)} />
+            <Route exact path="/" component={authGuard(Dashboard)} />
+            <Route exact path="/plans" component={authGuard(AllPlans)} />
+            <Route exact path="/transfers" component={authGuard(Transfers)} />
+            <Route exact path="/profile" component={authGuard(Profile)} />
+            <Route
+              exact
               path="/transactions"
               component={authGuard(Transactions)}
             />
           </Switch>
+          <LabelBottomNavigation />
         </AnimatePresence>
       </Provider>
     </div>

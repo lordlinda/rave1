@@ -73,7 +73,7 @@
   padding-top: 12px;
   padding-left: 10px;
 }
-.plan__button {
+.add__button {
   height: 40px !important;
   width: 40px !important;
   float: right !important;
@@ -81,6 +81,15 @@
   color: white !important;
   position: absolute;
   right: 20px !important;
+}
+.remove__button {
+  height: 40px !important;
+  width: 40px !important;
+  float: left !important;
+  background-color: var(--purple) !important;
+  color: white !important;
+  position: absolute;
+  left: 20px !important;
 }
 .plan__body {
   margin-bottom: 20px;

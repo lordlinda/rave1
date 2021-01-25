@@ -4,7 +4,6 @@ import {
   ACTIVATE_SUBSCRIPTION,
   CANCEL_SUBSCRIPTION,
   UPDATE_SUBSCRIPTION,
-  CONFIRM_PAYMENT,
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";

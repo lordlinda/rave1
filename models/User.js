@@ -14,7 +14,14 @@ const userSchema = mongoose.Schema(
     },
     dateOfBirth: String,
     photoUrl: String,
-    phoneNumber: Number,
+    phoneNumber: {
+      type: Array,
+      default: [],
+    },
+    bankAccounts: {
+      type: Array,
+      default: [],
+    },
   },
   { timestamps: true }
 );

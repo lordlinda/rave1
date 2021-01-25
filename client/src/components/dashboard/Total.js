@@ -6,20 +6,24 @@ import { currencyOptionsArray } from "../Reusables/select/Options.js";
 import { numberWithCommas } from "../../helpers/middleware.js";
 import "./total.css";
 import { Button } from "@material-ui/core";
+import { motion } from "framer-motion";
+
 const Total = (props) => {
-  const [currencySelected, setCurrency] = useState("USD");
+  const [currencySelected, setCurrency] = useState("UGX");
   useEffect(() => {
     props.getTotalBalance();
   }, []);
 
-  const handleChange = (currency) => {
-    const data = {
-      amount: props.total,
-      from: currencySelected,
-      to: currency,
-    };
-    props.convertCurrency(data);
-    setCurrency(currency);
+  const handleChange = async (currency) => {
+    if (!props.loading && props.total > 0 && currency !== currencySelected) {
+      await setCurrency(currency);
+      const data = {
+        amount: props.total,
+        from: currencySelected,
+        to: currency,
+      };
+      await props.convertCurrency(data);
+    }
   };
   return (
     <div className="total">
@@ -39,7 +43,13 @@ const Total = (props) => {
           </span>
         ))}
       </div>
-      <h1>{numberWithCommas(props.total.toFixed(2))}</h1>
+      <motion.h1
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+      >
+        {numberWithCommas(props.total.toFixed(2))}
+      </motion.h1>
       <div className="total__buttons">
         <Button className="total__save" component={Link} to="/amount">
           Save now
@@ -59,6 +69,7 @@ const Total = (props) => {
 const mapStateToProps = (state) => {
   return {
     total: state.plans.total,
+    loading: state.plans.isTotalLoading,
   };
 };
 

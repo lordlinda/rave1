@@ -5,9 +5,6 @@ import Button from "../Reusables/Button.js";
 import "./plans.css";
 import Plan from "./Plan";
 import FlipMove from "react-flip-move";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { IconButton } from "@material-ui/core";
-import { Link } from "react-router-dom";
 const Plans = (props) => {
   useEffect(() => {
     props.getDashboardPlans();
@@ -22,7 +19,7 @@ const Plans = (props) => {
       </div>
       <div className="plansDashboard__plans">
         {/*mapout our plans*/}
-        {props.plans.length > 0 ? (
+        {props.plans.length > 0 && (
           <FlipMove>
             {
               /*we want to display only two plans on dashboard*/
@@ -31,12 +28,6 @@ const Plans = (props) => {
               })
             }
           </FlipMove>
-        ) : (
-          <div className="plans__empty">
-            <IconButton component={Link} to="/createPlan">
-              <AddCircleOutlineIcon />
-            </IconButton>
-          </div>
         )}
       </div>
     </div>

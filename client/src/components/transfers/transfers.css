@@ -1,0 +1,145 @@
+.transfers > h1 {
+  font-size: 32px;
+  padding: 0px 16px;
+  margin-top: 32px;
+  margin-left: 6px;
+}
+.transfers__icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32px;
+}
+.transfers__phoneNumbers,
+.transfers__accounts {
+  margin-top: 32px;
+  padding: 0px 16px;
+  min-height: 50px;
+}
+.transfers_phoneNumbersHeader,
+.transfers_accountsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 16px;
+}
+.transfers__accountsHeader > h1,
+.transfers__phoneNumbersHeader > h1 {
+  color: var(--black);
+  font-size: 20px;
+  opacity: 0.8;
+  padding-left: 8px;
+}
+.transfers__accountsHeader > a {
+  font-size: 16px;
+  color: var(--black);
+  opacity: 0.6;
+  padding-right: 8px;
+}
+.accountTransfer {
+  padding: 16px;
+}
+.accountTransfer__header {
+  display: flex;
+  align-items: center;
+}
+.accountTransfer__header > h1 {
+  font-size: 25px;
+  margin-left: 10%;
+}
+.accountTransfer__plans {
+  padding: 16px;
+}
+.accountTransfer__plans > div {
+  display: flex;
+  overflow-x: scroll;
+}
+.accountTransfer__plans > div::-webkit-scrollbar {
+  display: none;
+}
+.accountTransfer__amount {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  padding: 0px 16px;
+}
+.accountTransfer__plan {
+  background: var(--purple);
+  width: 180px;
+  padding: 16px;
+  color: #fff;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+.accountTransfer__plan > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.accountTransfer__plans > div > .bankAcct > div > .MuiSvgIcon-root {
+  fill: var(--purple);
+}
+
+.bankAcct {
+  display: flex;
+  background: #fff;
+  padding: 12px 4px;
+  align-items: center;
+  margin-top: 8px;
+}
+.bankAcct > div {
+  margin-left: 16px;
+}
+.bankAcct > div > p {
+  font-size: 20px;
+  color: var(--black);
+  opacity: 0.9;
+}
+.bankAcct > div > span {
+  font-size: 16px;
+  color: var(--black);
+  opacity: 0.7;
+}
+.bankAcct > button > span > .MuiSvgIcon-root {
+  fill: var(--purple);
+}
+
+.banks {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+}
+.banks > .MuiFormControl-root {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.banks__header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 16px;
+}
+.banks__header > h1 {
+  margin-left: 20%;
+}
+.transfers__icons > div {
+  margin-left: 32px;
+}
+
+.transfers__icons > div > .MuiIconButton-root {
+  background: var(--purple) !important;
+}
+
+.transfers__icons > div > .MuiIconButton-root > span > .MuiSvgIcon-root {
+  fill: var(--white);
+}
+.mobile,
+.bankTransfer {
+  padding: 16px;
+}
+.bankTransferAcct {
+  width: 200px;
+}
+.buttonContainer {
+  text-align: center;
+}

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../redux/actions/index.js";
 import FilterInput from "./FilterInput";
-import LabelBottomNavigation from "../Reusables/BottomNavigation";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
@@ -80,8 +79,6 @@ const Transactions = (props) => {
           </div>
         </>
       )}
-
-      <LabelBottomNavigation />
     </motion.div>
   );
 };

@@ -400,7 +400,7 @@ module.exports = {
     //we check if the event is charge.completed
     //update the amount with the amount
 
-    //console.log(req.body);
+    console.log(req.body);
     if (
       req.body.data.narration === "Charge for Hourly Savings" ||
       "Charge for Daily Savings" ||
@@ -782,6 +782,9 @@ const updateAmountAndCreateTransaction = async (data) => {
       { $inc: { amount: data.amount } },
       opts
     );
+    if (!plan) {
+      throw new Error("No plan found");
+    }
     transaction = await Transaction.create({
       user: data.user,
       paymentPlan: data.id,
@@ -814,6 +817,9 @@ const updateAmountAndCreateTransactionAndSubscription = async (data) => {
       { $inc: { amount: data.amount } },
       opts
     );
+    if (!plan) {
+      throw new Error("No plan found");
+    }
     transaction = await Transaction.create({
       user: data.user,
       paymentPlan: data.id,
@@ -970,6 +976,7 @@ const createNewFlutterWavePaymentPlanAndSubscription = async (subscription) => {
     endDate: subscription.endDate,
     interval: subscription.interval,
   });
+
   const { subscId } = await createNewFlutterWavePaymentPlan({
     interval: subscription.interval,
     name: "MyWallet",
@@ -977,6 +984,7 @@ const createNewFlutterWavePaymentPlanAndSubscription = async (subscription) => {
     amount: subscription.subscAmt,
     duration: duration,
   });
+
   if (!subscId) {
     return res.status(400).json({
       msg: "Payment plan not created",

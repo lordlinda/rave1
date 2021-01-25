@@ -7,6 +7,7 @@ import {
   GET_PLAN,
   DELETE_PLAN,
   GET_SUBSCRIPTION,
+  CONVERT_CURRENCY,
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -28,6 +29,9 @@ export const getTotalBalance = () => async (dispatch) => {
 
 export const convertCurrency = (data) => async (dispatch) => {
   try {
+    dispatch({
+      type: CONVERT_CURRENCY,
+    });
     const res = await axios.post("/plans/convert", data);
     dispatch({
       type: GET_TOTAL,

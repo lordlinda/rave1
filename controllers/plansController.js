@@ -138,6 +138,7 @@ module.exports = {
     }
   },
   convertCurrency: async (req, res) => {
+    console.log(req.body);
     let total;
     try {
       const response = await fetch(
@@ -198,7 +199,7 @@ const convertCurrencies = async (transactions) => {
     transactions.map((transaction) => {
       total += transaction.amount / res.rates[transaction.currency];
     });
-    total = total * res.rates.USD;
+    total = total * res.rates.UGX;
   } catch (error) {
     console.log(error);
   }

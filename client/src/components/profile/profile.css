@@ -20,6 +20,7 @@
   align-items: center;
   width: 80%;
   margin: 10px auto;
+  background: #fff;
 }
 .profile__details {
   margin-top: 24px;
@@ -30,7 +31,9 @@
   margin-top: 16px;
   align-items: center;
   cursor: pointer;
-  margin-left: 36px;
+  width: 80%;
+  margin: 10px auto;
+  background: #fff;
 }
 .profile__details > span > p {
   margin-left: 16px;

@@ -5,7 +5,6 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import "./allPlans.css";
 import { Link } from "react-router-dom";
-import LabelBottomNavigation from "../Reusables/BottomNavigation";
 import { motion } from "framer-motion";
 import FlipMove from "react-flip-move";
 import Plan from "./Plan";
@@ -42,7 +41,7 @@ const AllPlans = (props) => {
       ) : (
         <>
           <div className="plans__header">
-            <h1>Your Plans</h1>
+            <h1>Plans</h1>
           </div>
           {props.plans.length > 0 ? (
             <div className="plans__body">
@@ -79,7 +78,6 @@ const AllPlans = (props) => {
       >
         <AddIcon />
       </Fab>
-      <LabelBottomNavigation />
     </motion.div>
   );
 };

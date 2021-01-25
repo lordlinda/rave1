@@ -12,16 +12,14 @@ function PersonalDetails(props) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    phoneNumber: "",
     dateOfBirth: "",
   });
-  const { username, email, phoneNumber, dateOfBirth } = formData;
+  const { username, email, dateOfBirth } = formData;
   const fetchData = async () => {
     await props.loadUser();
     await setFormData({
       ...formData,
       username: props.user?.username,
-      phoneNumber: props.user?.phoneNumber,
       email: props.user?.email,
       dateOfBirth: props.user?.dateOfBirth,
     });
@@ -66,13 +64,7 @@ function PersonalDetails(props) {
           value={email}
           onChange={handleDataChange}
         />
-        <Input
-          label="Phone number"
-          type="number"
-          name="phoneNumber"
-          value={phoneNumber}
-          onChange={handleDataChange}
-        />
+
         <Input
           label="Birthday"
           type="date"

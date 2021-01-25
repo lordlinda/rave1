@@ -20,7 +20,7 @@ import { DialogContent } from "@material-ui/core";
 import Transaction from "../transactions/Transaction.js";
 import activityImage from "../../images/undraw_Finance_re_gnv2.svg";
 import { PulseLoader } from "react-spinners";
-
+import RemoveIcon from "@material-ui/icons/Remove";
 const SinglePlan = (props) => {
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -65,7 +65,7 @@ const SinglePlan = (props) => {
             <h1>
               {props.plan?.name}
               {""}
-              <Fab aria-label="add" className="plan__button">
+              <Fab aria-label="add" className="add__button">
                 <AddIcon onClick={handleClose} />
               </Fab>
             </h1>

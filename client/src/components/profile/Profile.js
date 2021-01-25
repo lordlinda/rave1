@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import LabelBottomNavigation from "../Reusables/BottomNavigation";
+import React, { useEffect } from "react";
 import HelpOutlineOutlinedIcon from "@material-ui/icons/HelpOutlineOutlined";
 import PermIdentityOutlinedIcon from "@material-ui/icons/PermIdentityOutlined";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
@@ -68,12 +67,11 @@ function Profile(props) {
 
           <ArrowForwardIosIcon />
         </Link>
-        <span onClick={() => props.signOut()}>
+        <span onClick={() => props.signOut()} className="profile__detail">
           <ExitToAppOutlinedIcon />
           <p>Logout</p>
         </span>
       </div>
-      <LabelBottomNavigation />
     </motion.div>
   );
 }

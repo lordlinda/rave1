@@ -6,7 +6,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import HomeSharpIcon from "@material-ui/icons/HomeSharp";
 import SwapHorizSharpIcon from "@material-ui/icons/SwapHorizSharp";
 import { withRouter } from "react-router-dom";
-
+import PaymentIcon from "@material-ui/icons/Payment";
 function LabelBottomNavigation(props) {
   const [value, setValue] = React.useState("recents");
   const handleChange = (event, newValue) => {
@@ -21,6 +21,11 @@ function LabelBottomNavigation(props) {
         label="Plans"
         value="/plans"
         icon={<FavoriteIcon />}
+      />
+      <BottomNavigationAction
+        label="Transfers"
+        value="/transfers"
+        icon={<PaymentIcon />}
       />
       <BottomNavigationAction
         label="Transactions"

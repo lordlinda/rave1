@@ -23,6 +23,7 @@ app.use("/users", require("./routes/users.js"));
 app.use("/payments", require("./routes/payments.js"));
 app.use("/transactions", require("./routes/transactions.js"));
 app.use("/plans", require("./routes/plans"));
+app.use("/transfers", require("./routes/transfers"));
 app.use("/subscriptions", require("./routes/subscriptions"));
 //use this to show the image you have in node js server to client (react js)
 //https://stackoverflow.com/questions/48914987/send-image-path-from-node-js-express-server-to-react-client
