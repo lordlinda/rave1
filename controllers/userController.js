@@ -10,13 +10,14 @@ const { validationResult } = require("express-validator");
 function createToken(user) {
   return jwt.sign(
     {
-      sub: user.id,
+      sub: user._id,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1d" }
   );
 }
-function createRefreshToken() {
+/**
+ * function createRefreshToken() {
   return res.cookie(
     "refreshToken",
     jwt.sign(
@@ -31,6 +32,8 @@ function createRefreshToken() {
     }
   );
 }
+ */
+
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -70,7 +73,6 @@ module.exports = {
       }
       /**otherwise we create a new user and send it to the database */
       user = new User({
-        methods: "local",
         username,
         email,
         password,
@@ -135,6 +137,7 @@ module.exports = {
       //if we find a user with that email,we now compare if the passwords match
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
+        console.log(user._id);
         const token = createToken(user);
         //! FIND OUT WHY WE RETURN USER HERE
         return res.status(200).json({
