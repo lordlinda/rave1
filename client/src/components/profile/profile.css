@@ -6,8 +6,8 @@
   margin-top: 36px;
 }
 .MuiAvatar-root {
-  width: 70px !important;
-  height: 70px !important;
+  width: 100px !important;
+  height: 100px !important;
   background-color: var(--purple-disabled) !important;
   text-transform: uppercase;
   color: var(--purple) !important;

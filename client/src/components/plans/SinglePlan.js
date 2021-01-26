@@ -129,7 +129,7 @@ const SinglePlan = (props) => {
             <div className="plan__transactions">
               {props.plan?.transactions?.length > 0 ? (
                 <>
-                  <h1>Transactions</h1>
+                  <h1> Recent Transactions</h1>
                   <FlipMove>
                     {props.plan?.transactions.map((transaction) => (
                       <Transaction
