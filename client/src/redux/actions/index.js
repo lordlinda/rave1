@@ -127,3 +127,15 @@ export const imageUpload = (data) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const oauthGoogle = (token) => async (dispatch) => {
+  try {
+    const res = await axios.post("/users/google", { access_token: token });
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("email", res.data.user);
+    dispatch({
+      type: SIGN_IN,
+      payload: res.data,
+    });
+  } catch (error) {}
+};

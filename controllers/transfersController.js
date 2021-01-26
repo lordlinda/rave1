@@ -238,7 +238,6 @@ module.exports = {
 };
 
 const makeFlutterWaveMobileTransfer = async (data) => {
-  console.log(data);
   let isSuccess;
   try {
     const response = await fetch(`${process.env.BASE_API_URL}/transfers`, {
@@ -259,7 +258,6 @@ const makeFlutterWaveMobileTransfer = async (data) => {
       }),
     });
     const res = await response.json();
-    console.log(res);
     if (res.status === "success") {
       isSuccess = true;
     } else {

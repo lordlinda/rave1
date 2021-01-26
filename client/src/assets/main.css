@@ -80,6 +80,11 @@ b {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
 
+code {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
 /**
  * Add the correct font size in all browsers.
  */
@@ -404,6 +409,11 @@ select {
  * 'mono' font family.
  */
 
+
+code {
+  font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
 /**
  * Make replaced elements `display: block` by default as that's
  * the behavior you want almost all of the time. Inspired by
@@ -542,10 +552,6 @@ img {
 
 .w-5 {
   width: 1.25rem;
-}
-
-.w-1\/2 {
-  width: 50%;
 }
 
 .transition {

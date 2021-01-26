@@ -70,6 +70,7 @@ module.exports = {
       }
       /**otherwise we create a new user and send it to the database */
       user = new User({
+        methods: "local",
         username,
         email,
         password,
@@ -90,7 +91,7 @@ module.exports = {
       });
     } catch (err) {
       res.status(500).json({
-        msg: error.msg,
+        msg: err.msg,
       });
     }
   },
@@ -161,6 +162,24 @@ module.exports = {
           fileName: res.req.file.filename,
         });
       });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  googleOAuth: async (req, res) => {
+    try {
+      const user = req.user;
+      const token = createToken(user);
+      res.status(200).json({ token, email: user.email });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  facebookAuth: async (req, res) => {
+    try {
+      const user = req.user;
+      const token = createToken(user);
+      res.status(200).json({ token, email: user.email });
     } catch (error) {
       console.log(error);
     }

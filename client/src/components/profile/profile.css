@@ -21,6 +21,8 @@
   width: 80%;
   margin: 10px auto;
   background: #fff;
+  min-height: 20px;
+  cursor: pointer;
 }
 .profile__details {
   margin-top: 24px;
@@ -33,6 +35,7 @@
   cursor: pointer;
   width: 80%;
   margin: 10px auto;
+  min-height: 40px;
   background: #fff;
 }
 .profile__details > span > p {

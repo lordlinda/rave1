@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const userSchema = mongoose.Schema(
   {
+    methods: {
+      type: String,
+      enum: ["local", "google", "facebook"],
+      required: true,
+    },
     email: {
       type: String,
       unique: true,
@@ -10,6 +15,9 @@ const userSchema = mongoose.Schema(
       type: String,
     },
     username: {
+      type: String,
+    },
+    id: {
       type: String,
     },
     dateOfBirth: String,
@@ -28,6 +36,9 @@ const userSchema = mongoose.Schema(
 //for this case using an arrow function gives an error
 //terming this as undefined
 userSchema.pre("save", function (next) {
+  if (this.methods !== "local") {
+    return next();
+  }
   //2. we generate a salt  and hash the password
   //we use this.local.password because the password is now nested
   //in the local object

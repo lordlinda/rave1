@@ -8,6 +8,7 @@ const {
   signin,
   updateUser,
   upload,
+  googleOAuth,
 } = require("../controllers/userController.js");
 
 const { validateRegister } = require("../middleware.js");
@@ -38,5 +39,14 @@ router.post(
 //@description  get user
 //@acess        Private
 router.post("/signin", signin);
+
+//@route          users/auth/google
+//@description      logging in using google
+//this post route only takes in the access_token from the client
+router.post(
+  "/google",
+  passport.authenticate("google-token", { session: false }),
+  googleOAuth
+);
 
 module.exports = router;

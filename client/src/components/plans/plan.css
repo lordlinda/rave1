@@ -21,7 +21,8 @@
   align-items: center;
 }
 .plan__actions > div {
-  margin-left: 42px;
+  margin-top: 16px;
+  min-width: 100px;
 }
 .plan__actions > div > button {
   height: 40px !important;
