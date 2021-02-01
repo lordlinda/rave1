@@ -59,12 +59,17 @@
   padding: 8px;
   margin-top: 8px;
 }
-.plan__sub > p {
+.plan_subInterval {
+  display: flex;
+  align-items: center;
+}
+.plan_subInterval > p {
   background: var(--purple);
   color: var(--white);
   padding: 4px;
   border-radius: 6px;
   font-size: 12px;
+  margin-right: 12px;
 }
 .plan__sub > div > h1 {
   font-size: 18px;

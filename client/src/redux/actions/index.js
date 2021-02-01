@@ -1,5 +1,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import { getTotalBalance, getDashboardPlans } from "./plans";
+import { getDashboardTransactions } from "./transactions";
 
 //this written here below are action creators
 //they dispatch an action to a reducer with the maatching type
@@ -16,8 +19,12 @@ import {
 } from "./types.js";
 
 export const loadUser = () => async (dispatch) => {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("access_token");
+  const refreshToken = Cookies.get("refreshToken");
   axios.defaults.headers.common["Authorization"] = token;
+  axios.defaults.headers.common["x-refresh-token"] = refreshToken;
+  axios.defaults.withCredentials = true;
+
   await axios
     .get("/users/user")
     .then((res) => {
@@ -26,7 +33,6 @@ export const loadUser = () => async (dispatch) => {
         payload: res.data.user,
       });
       localStorage.setItem("email", res.data.user.email);
-      localStorage.setItem("name", res.data.user.username);
     })
     .catch((err) => {
       dispatch({
@@ -34,6 +40,7 @@ export const loadUser = () => async (dispatch) => {
       });
     });
 };
+
 export const signUp = (user) => async (dispatch) => {
   await axios
     .post("/users/signup", user)
@@ -42,9 +49,10 @@ export const signUp = (user) => async (dispatch) => {
         type: SIGN_UP,
         payload: res.data,
       });
-      localStorage.setItem("token", res.data.token);
       localStorage.setItem("email", res.data.user);
-      dispatch(loadUser());
+      dispatch(getTotalBalance());
+      dispatch(getDashboardTransactions());
+      dispatch(getDashboardPlans());
     })
     .catch((err) => {
       toast.error(err.response.data.msg);
@@ -58,14 +66,16 @@ export const signUp = (user) => async (dispatch) => {
 export const signIn = (user) => async (dispatch) => {
   try {
     const res = await axios.post("/users/signin", user);
-    localStorage.setItem("token", res.data.token);
     localStorage.setItem("email", res.data.user);
     dispatch({
       type: SIGN_IN,
       payload: res.data,
     });
+    dispatch(getTotalBalance());
+    dispatch(getDashboardTransactions());
+    dispatch(getDashboardPlans());
   } catch (error) {
-    toast.error(error.response.data.msg);
+    toast.error(error.response?.data.msg);
     dispatch({
       type: AUTH_ERROR,
       payload: error,
@@ -100,9 +110,11 @@ export const editUser = (data) => async () => {
   }
 };
 
-export const signOut = () => (dispatch) => {
-  localStorage.removeItem("email");
+export const signOut = (history) => (dispatch) => {
   localStorage.removeItem("name");
+  Cookies.remove("access_token");
+  Cookies.remove("refreshToken");
+  history.push("/signin");
   dispatch({
     type: SIGN_OUT,
     payload: "",
@@ -137,5 +149,39 @@ export const oauthGoogle = (token) => async (dispatch) => {
       type: SIGN_IN,
       payload: res.data,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const oauthFacebook = (token) => async (dispatch) => {
+  try {
+    const res = await axios.post("/facebook", { access_token: token });
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("email", res.data.user);
+    dispatch({
+      type: SIGN_IN,
+      payload: res.data,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const forgotPassword = (data) => async (dispatch) => {
+  try {
+    const res = await axios.post("/users/forgetPassword", data);
+    toast.success(res.data.msg);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+export const resetPassword = (data) => async (dispatch) => {
+  try {
+    const res = await axios.post("/users/resetPassword", data);
+    toast.success(res.data.msg);
+  } catch (error) {
+    console.log(error.response);
+  }
 };

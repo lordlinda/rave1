@@ -48,7 +48,7 @@ const Total = (props) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
       >
-        {numberWithCommas(props.total.toFixed(2))}
+        {numberWithCommas(props.total?.toFixed(2))}
       </motion.h1>
       <div className="total__buttons">
         <Button className="total__save" component={Link} to="/amount">

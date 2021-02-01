@@ -55,8 +55,12 @@ code {
 }
 
 button {
-  border: none;
+  border: none !important;
+  outline: none !important;
 }
 .profileBio__imageInput {
   display: none;
+}
+*:focus {
+  outline: none !important;
 }

@@ -23,7 +23,7 @@ function Contact(props) {
         </div>
         <div>
           <MailOutlineIcon />
-          <p>Hello@gmail.com</p>
+          <p>contact@pasbanc.com qw</p>
         </div>
         <div>
           <LocationOnIcon />

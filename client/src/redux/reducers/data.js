@@ -6,6 +6,7 @@ import {
   GET_DASHBOARD_TRANSACTIONS,
   MAKE_PAYMENT,
   CONFIRM_PAYMENT,
+  SIGN_OUT,
 } from "../actions/types.js";
 
 const initialState = {
@@ -57,6 +58,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
+      };
+    case SIGN_OUT:
+      return {
+        ...state,
       };
     default:
       return state;

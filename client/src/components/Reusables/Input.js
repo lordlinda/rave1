@@ -1,6 +1,7 @@
 import React from "react";
+import { FormControl, InputLabel, Input } from "@material-ui/core";
 
-const Input = ({
+const CustomInput = ({
   type,
   value,
   onChange,
@@ -11,16 +12,18 @@ const Input = ({
 }) => {
   return (
     <div>
-      <label htmlFor="">{label}</label>
-      <input
-        onChange={onChange}
-        placeholder={placeholder}
-        type={type}
-        value={value}
-        name={name}
-        disabled={disabled}
-      />
+      <FormControl fullWidth>
+        <InputLabel>{label}</InputLabel>
+        <Input
+          value={value}
+          onChange={onChange}
+          name={name}
+          disabled={disabled}
+          placeholder={placeholder}
+          type={type}
+        />
+      </FormControl>
     </div>
   );
 };
-export default Input;
+export default CustomInput;

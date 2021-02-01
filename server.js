@@ -1,9 +1,7 @@
 const express = require("express");
-const unirest = require("unirest");
 const cors = require("cors");
 require("dotenv").config();
 var bodyParser = require("body-parser");
-const moment = require("moment");
 const morgan = require("morgan");
 const path = require("path");
 //connect to mongodb
@@ -12,7 +10,12 @@ const connectDB = require("./db.js");
 const app = express();
 /**middlewares */
 /**cors allows cross site requests */
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 /**parse req.body */
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

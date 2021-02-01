@@ -12,7 +12,6 @@ function Transfers(props) {
   useEffect(() => {
     props.loadUser();
   }, []);
-  console.log(props);
   return (
     <div className="transfers">
       <h1>Transfers</h1>
@@ -32,7 +31,7 @@ function Transfers(props) {
           </IconButton>
           <p>
             Mobile <br />
-            Transfer
+            Money
           </p>
         </div>
         <div>

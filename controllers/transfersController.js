@@ -285,7 +285,7 @@ const transferAcct = async (data) => {
       opts
     );
     /**if balance is insufficient,we throw an error */
-    if (A.amount < 0) {
+    if (A.amount < data.amount) {
       // If A would have negative balance, fail and abort the transaction
       // `session.abortTransaction()` will undo the above `findOneAndUpdate()`
       throw new Error("Insufficient funds: " + A.amount);
@@ -373,7 +373,7 @@ const makeFlutterWaveIntlOtherBankTransfer = async (data) => {
       body: JSON.stringify({
         amount: data.amount,
         narration: data.id,
-        currency: "UGX",
+        currency: data.currency,
         //!dont forget to remove this
         reference: `${Date.parse(new Date())}${process.env.ENSURE_SUCCESS}`,
         beneficiary_name: data.name,

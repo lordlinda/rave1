@@ -18,19 +18,30 @@ import { calculateDueDate } from "../../helpers/middleware";
 import Input from "../Reusables/Input";
 import { motion } from "framer-motion";
 import { PulseLoader } from "react-spinners";
-
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 function Subscription(props) {
   const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [deactivate, setDeactivate] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [interval, setInterval] = useState("");
+
   const [formData, setFormData] = useState({
     startDate: "",
     endDate: "",
     subscAmt: "",
-    interval: "",
   });
+  const options = [
+    "hourly",
+    "daily",
+    "weekly",
+    "monthly",
+    "quarterly",
+    "every six months",
+  ];
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -52,11 +63,13 @@ function Subscription(props) {
       ...formData,
       startDate: props.subscription?.startDate,
       endDate: props.subscription?.endDate,
-      interval: props.subscription.interval,
       subscAmt: props.subscription.subscAmt,
     });
+    await setInterval(props.subscription.interval);
   };
-  const { startDate, endDate, interval, subscAmt } = formData;
+
+  const { startDate, endDate, subscAmt } = formData;
+
   useEffect(() => {
     fetchData();
   }, [props.subscription.startDate]);
@@ -98,8 +111,9 @@ function Subscription(props) {
   };
   const updateSubscription = () => {
     handleClose();
-    props.updateSubscription({ id, ...formData });
+    props.updateSubscription({ id, ...{ ...formData, interval } });
   };
+  console.log(interval);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -207,13 +221,19 @@ function Subscription(props) {
                 value={moment(endDate).format("YYYY-MM-DD")}
                 onChange={handleDataChange}
               />
-              <Input
-                type="text"
-                label="Interval"
-                name="interval"
-                value={interval}
-                onChange={handleDataChange}
-              />
+
+              <FormControl>
+                <Select
+                  value={interval}
+                  onChange={(e) => setInterval(e.target.value)}
+                >
+                  {options.map((option) => (
+                    <MenuItem value={option} key={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <Input
                 type="number"
                 label="Amount"

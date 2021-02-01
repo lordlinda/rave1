@@ -23,7 +23,7 @@ function LabelBottomNavigation(props) {
         icon={<FavoriteIcon />}
       />
       <BottomNavigationAction
-        label="Transfers"
+        label="Withdraw"
         value="/transfers"
         icon={<PaymentIcon />}
       />

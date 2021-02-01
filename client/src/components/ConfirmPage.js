@@ -26,7 +26,7 @@ class Subscription extends React.Component {
       currency: "",
       PBFPubKey: "FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X",
       production: false,
-      payment_options: "card",
+      payment_method: "card",
       payment_plan: "",
       open: false,
       loading: false,
@@ -114,7 +114,7 @@ class Subscription extends React.Component {
         amount: 10,
         currency: this.props.location.state.currency,
         customer_email: localStorage.email,
-        payment_options: "card",
+        payment_method: "card",
       });
     } else {
       /**if it is a single payment,then we dont need to add a payment plan */

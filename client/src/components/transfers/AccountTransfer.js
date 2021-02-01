@@ -49,10 +49,19 @@ function AccountTransfer(props) {
   }, []);
 
   const getFrom = (plan) => {
-    setFrom(plan._id);
+    if (plan._id === from) {
+      setFrom("");
+    } else {
+      setFrom(plan._id);
+    }
   };
+
   const getTo = (plan) => {
-    setTo(plan._id);
+    if (plan._id === to) {
+      setTo("");
+    } else {
+      setTo(plan._id);
+    }
   };
 
   return (
@@ -87,7 +96,12 @@ function AccountTransfer(props) {
           />
         </FormControl>
       </div>
-      <Button variant="outlined" className="editButton" onClick={account}>
+      <Button
+        variant="outlined"
+        className="editButton"
+        onClick={account}
+        disabled={props.loading}
+      >
         Transfer
       </Button>
     </div>
@@ -97,6 +111,7 @@ const mapStateToProps = (state) => {
   return {
     plans: state.plans.plans,
     numbers: state.data.user.phoneNumber,
+    loading: state.transfers.loading,
   };
 };
 export default connect(mapStateToProps, {

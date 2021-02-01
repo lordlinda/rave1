@@ -6,6 +6,7 @@ import {
   GET_PLAN,
   GET_SUBSCRIPTION,
   CONVERT_CURRENCY,
+  SIGN_OUT,
 } from "../actions/types.js";
 
 const initialState = {
@@ -65,6 +66,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isTotalLoading: true,
+      };
+    case SIGN_OUT:
+      return {
+        ...state,
       };
     default:
       return state;

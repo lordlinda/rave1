@@ -5,17 +5,33 @@ import BackArrow from "../Reusables/BackArrow";
 import "./createPlan.css";
 import { connect } from "react-redux";
 import { createPlan } from "../../redux/actions/plans";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import { toast } from "react-toastify";
+
 function CreatePlan(props) {
   const [amount, setAmount] = useState();
   const [name, setName] = useState();
+  const [currency, setCurrency] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.createPlan({
-      targetAmount: amount,
-      name,
-    });
-    props.history.push("/plans");
+
+    if (!currency) {
+      toast.error("please fill in the currency");
+    } else if (!name) {
+      toast.error("please fill in the name");
+    } else {
+      props.createPlan({
+        targetAmount: amount,
+        name,
+        currency,
+      });
+      props.history.push("/plans");
+    }
   };
+  const options = ["UGX", "USD"];
   return (
     <div>
       <div className="createPlan__header">
@@ -37,6 +53,22 @@ function CreatePlan(props) {
           type="number"
           label="Target Amount"
         />
+        <FormControl>
+          <Select
+            displayEmpty
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+          >
+            <MenuItem value="" disabled>
+              Currency
+            </MenuItem>
+            {options.map((option) => (
+              <MenuItem value={option} key={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Button
           className="createPlan__button"
           variant="contained"

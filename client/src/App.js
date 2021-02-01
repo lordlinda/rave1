@@ -30,7 +30,8 @@ import AccountTransfer from "./components/transfers/AccountTransfer";
 import MobileTransfer from "./components/transfers/MobileTransfer";
 import BankTransfer from "./components/transfers/BankTransfer";
 import AddBank from "./components/transfers/AddBank";
-
+import ForgetPassword from "./components/ForgetPassword";
+import ResetPassword from "./components/ResetPassword";
 function App() {
   const PageRoutes = () => {
     return (
@@ -99,6 +100,12 @@ function App() {
             <Route exact path="/mobile" component={authGuard(MobileTransfer)} />
             <Route exact path="/bank" component={authGuard(BankTransfer)} />
             <Route exact path="/addBank" component={authGuard(AddBank)} />
+            <Route exact path="/forgetPassword" component={ForgetPassword} />
+            <Route
+              exact
+              path="/users/password/reset/:token"
+              component={ResetPassword}
+            />
             <Route component={PageRoutes} />
           </Switch>
         </AnimatePresence>

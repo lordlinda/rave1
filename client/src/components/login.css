@@ -1,48 +1,113 @@
-.siginIn {
-  display: grid;
-  place-items: center;
-  height: 100vh;
-  width: 100vw;
+.signIn {
+  margin: 32px auto;
+  padding: 0px 30px;
 }
-.siginIn > div > h1 {
+.login__form {
+  margin-top: 32px;
+}
+.signIn > div > h1 {
   font-size: 32px;
-  margin-bottom: 16px;
 }
-.siginIn > div > form > div > button {
+.login__button > div > button {
   background: var(--purple);
-  margin-top: 8px;
+  margin-top: 20px;
   color: white;
-  padding: 8px 26px;
+  padding: 10px 26px;
+  width: 100%;
   border-radius: 40px;
-  width: 110%;
+  margin-bottom: 30px;
 }
-
-.siginIn > form > div > button:hover {
+.helper__text {
+  font-size: 12px;
+  margin: 4px 0px 12px 0px;
+  color: var(--purple-dark);
+}
+.signIn > form > div > button:hover {
   background-color: var(--purple-dark);
 }
 .signIn__link {
-  margin-top: 16px;
   display: flex;
   align-items: center;
   color: var(--purple);
+  text-align: center;
+  margin-top: 32px;
+  justify-content: center;
 }
 .signIn__link > span {
   color: var(--gray);
 }
 
-.siginIn > div > form > div > input {
-  display: block;
-  margin-top: 8px;
-  border-radius: 4px;
-  border: 0;
-  margin-bottom: 20px;
-  background: #fff;
-  padding: 12px 16px;
-  width: 110%;
-  border: 1px solid var(--gray-light);
+.signIn > div > form > div > .MuiFormControl-fullWidth {
+  margin: 8px 0px;
   font-size: 16px;
 }
-
-label {
-  display: block;
+.auth__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 30px;
+}
+.kep-login-facebook {
+  color: blue !important;
+  background-color: white !important;
+  border: 1px solid var(--gray) !important;
+  padding: 5px !important;
+}
+.kep-login-facebook.metro > .MuiSvgIcon-root {
+  font-size: 2em !important;
+}
+.google__button {
+  border: 1px solid var(--gray) !important;
+  box-shadow: unset !important;
+}
+.google__button > span {
+  display: none;
+}
+.google__button > div {
+  margin: unset !important;
+  background-color: unset;
+}
+.google__button > div > svg > g {
+  width: 4em !important;
+}
+.MuiBox-root {
+  width: 100% !important;
+}
+@media screen and (min-width: 768px) {
+  .signIn {
+    display: grid;
+    place-items: center;
+    margin: unset;
+    padding: unset;
+    height: 100vh;
+    width: 100vw;
+  }
+  .signIn > div {
+    width: 70%;
+    border: 1px solid var(--gray-light);
+    padding: 42px;
+    box-shadow: 0px 40px 50px rgba(2, 2, 2, 0.08);
+    margin-top: 10px;
+  }
+  .login__button {
+    text-align: center;
+  }
+  .login__button > div > button {
+    width: 70%;
+    margin-top: 24px;
+  }
+  .signIn > div > h1 {
+    font-size: 42px;
+  }
+  .signIn > div > p {
+    font-size: 20px;
+  }
+  .login__form {
+    margin-top: 42px;
+  }
+  .signIn__link {
+    text-align: center;
+    justify-content: center;
+    font-size: 16px;
+  }
 }

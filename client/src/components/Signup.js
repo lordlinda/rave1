@@ -6,9 +6,12 @@ import Button from "./Reusables/Button.js";
 import { Redirect } from "react-router-dom";
 import "./login.css";
 import * as actions from "../redux/actions/index.js";
-import GoogleLogin from "react-google-login";
-import FacebookLogin from "react-facebook-login";
+import { GoogleLogin } from "react-google-login-component";
 
+import FacebookLogin from "react-facebook-login";
+import { Box } from "@material-ui/core";
+import Divider from "./Divider";
+import FacebookIcon from "@material-ui/icons/Facebook";
 const Signup = (props) => {
   const [formData, setFormData] = useState({
     username: "",
@@ -40,26 +43,22 @@ const Signup = (props) => {
     }
   };
 
-  {
-    /**
-    const responseGoogle = (res) => {
-    //console.log(res)
-    this.props.oauthGoogle(res.accessToken);
+  const responseGoogle = (res) => {
+    console.log(res);
   };
 
   const responseFacebook = (res) => {
-    //console.log(res)
-    this.props.oauthFacebook(res.accessToken);
+    console.log(res);
+    props.oauthFacebook(res.accessToken);
   };
-   */
-  }
 
   return (
-    <div className="siginIn">
+    <div className="signIn">
       <div>
         {props.isAuth ? <Redirect to="/" /> : null}
         <h1 className="">Welcome!</h1>
-        <form onSubmit={handleSubmit}>
+        <p>Signup to get started</p>
+        <form onSubmit={handleSubmit} className="login__form">
           <Input
             type="text"
             label="Username"
@@ -84,30 +83,34 @@ const Signup = (props) => {
             value={confirmPassword}
             onChange={handleChange("confirmPassword")}
           />
-          <Button isButton type="submit" title="Signup" />
+          <div className="login__button">
+            <Button isButton type="submit" title="Signup" />
+          </div>
         </form>
-        <div className="signIn__link">
-          <span>Already have an account ?</span>
-          <Button title="Signin" href={"/signin"} />
-        </div>
-        {/**
-         *<div>
+        <Box>
+          <Divider>or signup with</Divider>
+        </Box>
+        <div className="auth__buttons">
           <FacebookLogin
-            appId="2636632776598777"
-            textButton="facebook"
+            appId="953574055178048"
+            autoLoad={true}
+            textButton=""
             fields="name,email,picture"
             callback={responseFacebook}
-            
+            icon={<FacebookIcon />}
           />
-          {/*google login component*
+          {/*google login component*/}
           <GoogleLogin
-            clientId="490182146410-n4p1v19co66t9r0lv387o5dpm8cmoi5f.apps.googleusercontent.com"
-            buttonText="Google"
-            onSuccess={responseGoogle}
-            onFailure={responseGoogle}
+            socialId="490182146410-vueb9fg2h1jhhnkpr8fmh5s51fgq77e6.apps.googleusercontent.com"
+            className="google__button"
+            responseHandler={responseGoogle}
+            buttonText="Login With Google"
           />
         </div>
-         */}
+        <div className="signIn__link">
+          <span>Alreadymember ?</span>
+          <Button title="Signin" href={"/signin"} />
+        </div>
       </div>
     </div>
   );

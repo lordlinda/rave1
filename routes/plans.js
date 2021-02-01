@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
-
+const { auth } = require("../middleware");
 //import Controllers
 const {
   deletePlan,
@@ -17,61 +16,37 @@ const {
 //@route            GET /plans/total
 //@description       get user total balance
 //@access            Private
-router.get(
-  "/total",
-  passport.authenticate("jwt", { session: false }),
-  calculateTotalBalance
-);
+router.get("/total", auth, calculateTotalBalance);
 
 //@route     POST /plans/create
 //@decription  create a plan
 //@access      Private
-router.post(
-  "/create",
-  passport.authenticate("jwt", { session: false }),
-  createPlan
-);
+router.post("/create", auth, createPlan);
 
 //@route        DELETE /plans/deletePlan/:id
 //@description    delete payment plan
 //@access        Private
-router.delete(
-  "/deletePlan/:id",
-  passport.authenticate("jwt", { session: false }),
-  deletePlan
-);
+router.delete("/deletePlan/:id", auth, deletePlan);
 
 //@route        Put /plans/editplan/:id
 //@description    update  payment plan
 //@access        Private
-router.put(
-  "/editplan/:id",
-  passport.authenticate("jwt", { session: false }),
-  editPlan
-);
+router.put("/editplan/:id", auth, editPlan);
 
 //@route        Get /plans/:id
 //@description    get payment plan
 //@access        Private
-router.get("/:id", passport.authenticate("jwt", { session: false }), getPlan);
+router.get("/:id", auth, getPlan);
 
 //@route        Get /plans/
 //@description    get payment plans
 //@access        Private
-router.get("/", passport.authenticate("jwt", { session: false }), getAllPlans);
+router.get("/", auth, getAllPlans);
 
-router.post(
-  "/convert",
-  passport.authenticate("jwt", { session: false }),
-  convertCurrency
-);
-//@route        Get /plans/dashboard
+router.post("/convert", auth, convertCurrency);
+//@route        Get /plans/plans/dashboard
 //@description    get plans to display on dashbaord
 //@access        Private
-router.get(
-  "/plans/dashboard",
-  passport.authenticate("jwt", { session: false }),
-  getDashboardPlans
-);
+router.get("/plans/dashboard", auth, getDashboardPlans);
 
 module.exports = router;

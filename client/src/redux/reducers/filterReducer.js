@@ -1,3 +1,4 @@
+import { SIGN_OUT } from "../actions/types";
 const initialState = {
   paymentMethod: "",
   startDate: "",
@@ -39,6 +40,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         amount: action.payload,
+      };
+    case SIGN_OUT:
+      return {
+        ...state,
       };
     default:
       return state;

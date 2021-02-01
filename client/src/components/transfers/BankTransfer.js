@@ -26,7 +26,11 @@ function BankTransfer(props) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const getFrom = (plan) => {
-    setFrom(plan);
+    if (plan === from) {
+      setFrom("");
+    } else {
+      setFrom(plan);
+    }
   };
   const bank = () => {
     if (!to || !from || !amount) {
@@ -106,7 +110,12 @@ function BankTransfer(props) {
         </FormControl>
       </div>
       <div className="buttonContainer">
-        <Button variant="outlined" className="editButton" onClick={bank}>
+        <Button
+          variant="outlined"
+          className="editButton"
+          onClick={bank}
+          disabled={props.loading}
+        >
           Transfer
         </Button>
       </div>
@@ -117,6 +126,7 @@ const mapStateToProps = (state) => {
   return {
     plans: state.plans.plans,
     accounts: state.data.user.bankAccounts,
+    loading: state.transfers.loading,
   };
 };
 export default connect(mapStateToProps, {

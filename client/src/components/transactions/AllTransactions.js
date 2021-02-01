@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../redux/actions/index.js";
 import FilterInput from "./FilterInput";
@@ -13,13 +13,33 @@ import emptyTransaction from "../../images/undraw_wallet_aym5.svg";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import { PulseLoader } from "react-spinners";
+import Dialog from "@material-ui/core/Dialog";
+import moment from "moment";
+
+import {
+  DialogContent,
+  DialogTitle,
+  List,
+  ListItemText,
+  ListItem,
+  ListItemSecondaryAction,
+} from "@material-ui/core";
 
 const Transactions = (props) => {
+  const [open, setOpen] = useState(false);
+  const [transaction, setTransaction] = useState();
+  const handleClose = (transaction) => {
+    if (open === false) {
+      setTransaction(transaction);
+    }
+    setOpen(!open);
+  };
   useEffect(() => {
     props.getTransactions();
   }, []);
   const [duration, setDuration] = React.useState("today");
   const options = ["today", "this week", "this month"];
+  console.log(transaction);
   return (
     <motion.div
       className="transactions"
@@ -58,10 +78,12 @@ const Transactions = (props) => {
               <FlipMove>
                 {props.transactions &&
                   props.transactions.map((transaction) => (
-                    <Transaction
+                    <div
+                      onClick={() => handleClose(transaction)}
                       key={transaction._id}
-                      transaction={transaction}
-                    />
+                    >
+                      <Transaction transaction={transaction} />
+                    </div>
                   ))}
               </FlipMove>
             ) : (
@@ -77,6 +99,37 @@ const Transactions = (props) => {
               </div>
             )}
           </div>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogContent>
+              <List>
+                <ListItem>
+                  <h1>Transaction</h1>
+                </ListItem>
+                <ListItem>
+                  <ListItemText>Date</ListItemText>
+                  <ListItemSecondaryAction>
+                    {moment(transaction?.createdAt).format("DD MMM YYYY")}
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText>Amount</ListItemText>
+                  <ListItemSecondaryAction>
+                    {transaction?.currency} {transaction?.amount}
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText>Type</ListItemText>
+                  <ListItemSecondaryAction>
+                    {transaction?.type}
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText>Charges</ListItemText>
+                  <ListItemSecondaryAction>0.00</ListItemSecondaryAction>
+                </ListItem>
+              </List>
+            </DialogContent>
+          </Dialog>
         </>
       )}
     </motion.div>

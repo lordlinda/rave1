@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
+const { auth } = require("../middleware");
 
 const {
   getTransactions,
@@ -11,27 +11,15 @@ const {
 //@route     POST /transactions
 //@decription  get transactions based on the parametes
 //@access      Private
-router.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  getTransactions
-);
+router.post("/", auth, getTransactions);
 
 //@route     POST /transactions
 //@decription  get transactions based for the dashboard
 //@access      Private
-router.get(
-  "/dash/transactions",
-  passport.authenticate("jwt", { session: false }),
-  getDashboardTransactions
-);
+router.get("/dash/transactions", auth, getDashboardTransactions);
 
 //@route     GET /transactions
 //@decription  get transaction
 //@access      Private
-router.get(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  getTransaction
-);
+router.get("/:id", auth, getTransaction);
 module.exports = router;

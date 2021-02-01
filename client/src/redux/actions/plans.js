@@ -11,11 +11,17 @@ import {
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 /**this route is to get the total balance of the client
  * it was calculated from the client
  */
 export const getTotalBalance = () => async (dispatch) => {
+  const token = Cookies.get("access_token");
+  const refreshToken = Cookies.get("refreshToken");
+  axios.defaults.headers.common["Authorization"] = token;
+  axios.defaults.headers.common["x-refresh-token"] = refreshToken;
+  axios.defaults.withCredentials = true;
   try {
     const res = await axios.get("/plans/total");
     dispatch({

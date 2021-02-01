@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
+const { auth } = require("../middleware");
 
 //import Controllers
 const {
@@ -8,15 +8,7 @@ const {
   deleteSubscription,
 } = require("../controllers/subscriptionsController");
 
-router.get(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  getSubscription
-);
+router.get("/:id", auth, getSubscription);
 
-router.delete(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  deleteSubscription
-);
+router.delete("/:id", auth, deleteSubscription);
 module.exports = router;

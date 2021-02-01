@@ -1,4 +1,4 @@
-import { GET_PAYMENT_PLAN } from "../actions/types.js";
+import { GET_PAYMENT_PLAN, SIGN_OUT } from "../actions/types.js";
 
 const initialState = {
   id: "",
@@ -11,6 +11,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         id: action.payload,
+      };
+    case SIGN_OUT:
+      return {
+        ...state,
       };
     default:
       return state;

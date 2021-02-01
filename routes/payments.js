@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
+const { auth } = require("../middleware");
 
 //import Controllers
 const {
@@ -16,36 +16,20 @@ const {
 //@route     POST /payments/makePayment
 //@decription  create  and update onetime payment user
 //@access      Private
-router.post(
-  "/makePayment",
-  passport.authenticate("jwt", { session: false }),
-  makePayment
-);
+router.post("/makePayment", auth, makePayment);
 
 //@route        Post /payments/schedulePayment
 //@description    schedule new subscription
 //@access        Private
-router.post(
-  "/schedulePayment",
-  passport.authenticate("jwt", { session: false }),
-  scheduleSubscription
-);
+router.post("/schedulePayment", auth, scheduleSubscription);
 //@route        Post /payments/activateSubscription/:id
 //@description    activate a cancelled subscription
 //@access        Private
-router.put(
-  "/activateSubscription/:id",
-  passport.authenticate("jwt", { session: false }),
-  activateSubscription
-);
+router.put("/activateSubscription/:id", auth, activateSubscription);
 //@route        Post /payments/cancelSubscription/:id
 //@description    cancel subscription
 //@access        Private
-router.put(
-  "/cancelSubscription/:id",
-  passport.authenticate("jwt", { session: false }),
-  cancelSubscription
-);
+router.put("/cancelSubscription/:id", auth, cancelSubscription);
 
 //@route        Post /payments/updateSubscription
 //@description    update  subscription
@@ -58,10 +42,6 @@ router.post("/updateSubscription", updateSubscriptionFromFlutterwave);
 //@access        Private
 router.put("/updateUserSubscription/:id", updateUserSubscription);
 
-router.post(
-  "/getPaymentPlan",
-  passport.authenticate("jwt", { session: false }),
-  getPaymentPlan
-);
+router.post("/getPaymentPlan", auth, getPaymentPlan);
 
 module.exports = router;

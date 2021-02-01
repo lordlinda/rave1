@@ -67,7 +67,10 @@ function Profile(props) {
 
           <ArrowForwardIosIcon />
         </Link>
-        <span onClick={() => props.signOut()} className="profile__detail">
+        <span
+          onClick={() => props.signOut(props.history)}
+          className="profile__detail"
+        >
           <ExitToAppOutlinedIcon />
           <p>Logout</p>
         </span>
@@ -77,9 +80,8 @@ function Profile(props) {
 }
 const mapStateToProps = (state) => {
   return {
-    filePath: state.data.filePath,
-    username: state.data.user.username,
-    url: state.data.user.photoUrl,
+    username: state.data.user?.username,
+    url: state.data.user?.photoUrl,
   };
 };
 export default connect(mapStateToProps, { signOut, loadUser, imageUpload })(

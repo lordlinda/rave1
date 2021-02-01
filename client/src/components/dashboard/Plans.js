@@ -19,7 +19,7 @@ const Plans = (props) => {
       </div>
       <div className="plansDashboard__plans">
         {/*mapout our plans*/}
-        {props.plans.length > 0 && (
+        {props.plans?.length > 0 && (
           <FlipMove>
             {
               /*we want to display only two plans on dashboard*/

@@ -9,10 +9,8 @@ module.exports = {
   //@access            Private
   calculateTotalBalance: async (req, res) => {
     /**we map through all the user's plan and get the amount of each plan and add them together */
-    const transactions = await Transaction.find({
-      $and: [{ type: "income" }, { user: req.user._id }],
-    });
-    const { total } = await convertCurrencies(transactions);
+    const plans = await PaymentPlan.find({ user: req.user._id });
+    const { total } = await convertCurrencies(plans);
     return res.status(200).json({
       total,
     });
@@ -23,13 +21,14 @@ module.exports = {
   createPlan: async (req, res) => {
     try {
       let plan;
-      const { name, targetAmount, description } = req.body;
+      const { name, targetAmount, description, currency } = req.body;
       plan = new PaymentPlan({
         user: req.user._id,
         description: description,
         name: name,
         amount: 0,
         targetAmount: targetAmount,
+        currency: currency,
       });
       await plan.save();
       res.status(200).json({ plan: plan });
@@ -138,7 +137,6 @@ module.exports = {
     }
   },
   convertCurrency: async (req, res) => {
-    console.log(req.body);
     let total;
     try {
       const response = await fetch(

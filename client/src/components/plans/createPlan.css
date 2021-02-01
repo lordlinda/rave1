@@ -19,10 +19,12 @@
   flex-direction: column;
   padding: 0px 16px;
 }
-.createPlan__body > .MuiFormControl-root {
-  margin-top: 8px;
+.createPlan__body > div > .MuiFormControl-root {
+  margin-top: 10px;
 }
-
+.createPlan__body > .MuiFormControl-root {
+  margin-top: 32px;
+}
 .createPlan__button {
   margin-top: 124px !important;
   text-align: center;

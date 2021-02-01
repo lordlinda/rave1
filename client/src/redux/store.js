@@ -3,15 +3,18 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import ReduxThunk from "redux-thunk"; // no changes here
 import reducer from "./reducers/index.js";
 import axios from "axios";
-
-const token = localStorage.getItem("token");
+import Cookies from "js-cookie";
+const token = Cookies.get("access_token");
+const refreshToken = Cookies.get("refreshToken");
 axios.defaults.headers.common["Authorization"] = token;
-console.log(token);
+axios.defaults.headers.common["x-refresh-token"] = refreshToken;
+axios.defaults.withCredentials = true;
+
 const store = createStore(
   reducer,
   {
     auth: {
-      isAuth: token ? true : false,
+      isAuth: false,
       loading: false,
     },
   },

@@ -55,3 +55,16 @@
   height: 2em;
   color: var(--purple);
 }
+@media screen and (min-width: 768px) {
+  .plansDashboard__plans > div {
+    display: flex;
+  }
+  .plansDashboard__plans > div > div {
+    flex: 0.5;
+    height: unset;
+    margin-left: 8px;
+  }
+  .planDashboard__plan {
+    padding: 16px;
+  }
+}

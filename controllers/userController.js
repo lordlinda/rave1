@@ -3,8 +3,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
 const multer = require("multer");
 const PaymentPlan = require("../models/PaymentPlan.js");
-
+const { createTokens } = require("../middleware");
 const { validationResult } = require("express-validator");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.MAIL_KEY);
 
 /**creating a signed token */
 function createToken(user) {
@@ -16,23 +18,6 @@ function createToken(user) {
     { expiresIn: "1d" }
   );
 }
-/**
- * function createRefreshToken() {
-  return res.cookie(
-    "refreshToken",
-    jwt.sign(
-      {
-        sub: user.id,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "15m" }
-    ),
-    {
-      httpOnly: true,
-    }
-  );
-}
- */
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -73,6 +58,7 @@ module.exports = {
       }
       /**otherwise we create a new user and send it to the database */
       user = new User({
+        methods: "local",
         username,
         email,
         password,
@@ -84,14 +70,28 @@ module.exports = {
         name: "Wallet",
         user: user._id,
         amount: 0,
+        currency: "UGX",
       });
       /**create token */
-      const token = createToken(user);
+      const { access_token, refreshToken } = await createTokens(
+        user,
+        process.env.JWT_SECRET_2
+      );
+      /**set cookie for both access token and refresh token */
+      res.cookie("access_token", access_token, {
+        secure: process.env.NODE_ENV === "production",
+      });
+      res.cookie("refreshToken", refreshToken, {
+        secure: process.env.NODE_ENV === "production",
+      });
+      /**which we will send via axios */
       res.status(200).json({
-        token: token,
         user: user.email,
+        token: access_token,
+        refreshToken: refreshToken,
       });
     } catch (err) {
+      console.log(err);
       res.status(500).json({
         msg: err.msg,
       });
@@ -137,12 +137,20 @@ module.exports = {
       //if we find a user with that email,we now compare if the passwords match
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
-        console.log(user._id);
-        const token = createToken(user);
+        const { access_token, refreshToken } = await createTokens(
+          user,
+          process.env.JWT_SECRET_2 + user.password
+        );
+        /**set cookie for both access token and refresh token */
+        res.cookie("access_token", access_token, {
+          secure: process.env.NODE_ENV === "production",
+        });
+        res.cookie("refreshToken", refreshToken, {
+          secure: process.env.NODE_ENV === "production",
+        });
         //! FIND OUT WHY WE RETURN USER HERE
         return res.status(200).json({
           user: user.email,
-          token: token,
         });
       }
       //if passwords dont match return an error
@@ -178,13 +186,93 @@ module.exports = {
       console.log(error);
     }
   },
-  facebookAuth: async (req, res) => {
+  facebookOAuth: async (req, res) => {
     try {
       const user = req.user;
       const token = createToken(user);
       res.status(200).json({ token, email: user.email });
     } catch (error) {
       console.log(error);
+    }
+  },
+  forgotPassword: async (req, res) => {
+    const { email } = req.body;
+    const errors = validationResult(req);
+    /**if we  credentials are inavlid,we send a message to the client */
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({ msg: errors.array().map((error) => error.msg)[0] });
+    }
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({
+          error: "User with that email does not exist",
+        });
+      }
+      const token = jwt.sign(
+        {
+          sub: user._id,
+        },
+        process.env.JWT_RESET_PASSWORD,
+        {
+          expiresIn: "20m",
+        }
+      );
+      const emailData = {
+        from: { name: "Pasbanc", email: process.env.EMAIL_FROM },
+        to: email,
+        template_id: "d-2db1a660ba7b486ab3f300d05419b789",
+        dynamic_template_data: {
+          subject: "Password Reset",
+          url: `${process.env.CLIENT_URL}/users/password/reset/${token}`,
+          name: `${user.username}`,
+        },
+      };
+      sgMail
+        .send(emailData)
+        .then((sent) => {
+          // console.log('SIGNUP EMAIL SENT', sent)
+          return res.json({
+            message: `Email has been sent to ${email}. Follow the instruction to activate your account`,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+      return res.json({
+        message: err.message,
+      });
+    }
+  },
+  resetPassword: async (req, res) => {
+    const { password, token } = req.body;
+    const errors = validationResult(req);
+    /**if we  credentials are inavlid,we send a message to the client */
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({ msg: errors.array().map((error) => error.msg)[0] });
+    }
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_RESET_PASSWORD);
+      if (!decoded) {
+        return {};
+      }
+      const user = await User.findById(decoded.sub);
+      user.password = password;
+      await user.save();
+
+      return res.json({
+        message: `Great! Now you can login with your new password`,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: "Expired link. Try again",
+      });
     }
   },
 };

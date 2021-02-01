@@ -52,3 +52,8 @@
 .MuiDialog-paperWidthSm {
   width: 600px !important;
 }
+
+form > .MuiFormControl-root {
+  width: 100% !important;
+  margin: 12px 0px;
+}

@@ -45,13 +45,17 @@ function MobileTransfer(props) {
     }
   }, [props.plans]);
   const getFrom = (plan) => {
-    setFrom(plan._id);
+    if (plan._id === from) {
+      setFrom("");
+    } else {
+      setFrom(plan._id);
+    }
   };
   return (
     <div className="mobile">
       <div className="accountTransfer__header">
         <BackArrow goBack={props.history} />
-        <h1>Mobile Transfer</h1>
+        <h1>Mobile Money</h1>
       </div>
       <div className="accountTransfer__plans">
         <h1>From</h1>
@@ -87,7 +91,12 @@ function MobileTransfer(props) {
         </FormControl>
       </div>
       <div className="buttonContainer">
-        <Button variant="outlined" className="editButton" onClick={mobile}>
+        <Button
+          variant="outlined"
+          className="editButton"
+          onClick={mobile}
+          disabled={props.loading}
+        >
           Transfer
         </Button>
       </div>
@@ -97,6 +106,7 @@ function MobileTransfer(props) {
 const mapStateToProps = (state) => {
   return {
     plans: state.plans.plans,
+    loading: state.transfers.loading,
   };
 };
 export default connect(mapStateToProps, {
@@ -104,13 +114,3 @@ export default connect(mapStateToProps, {
   loadUser,
   mobileTransfer,
 })(MobileTransfer);
-
-/**
- * 
- * 
- * 
- * let data = [0, 1, 2, 3, 4, 5];
-let index = 3;
-data.unshift(data.splice(index, 1)[0]);
-// data = [3, 0, 1, 2, 4, 5]
- */

@@ -21,7 +21,7 @@ import Transaction from "../transactions/Transaction.js";
 import activityImage from "../../images/undraw_Finance_re_gnv2.svg";
 import { PulseLoader } from "react-spinners";
 import RemoveIcon from "@material-ui/icons/Remove";
-
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 const SinglePlan = (props) => {
   const [open, setOpen] = useState(false);
   const [topUp, setTopUp] = useState(false);
@@ -67,9 +67,11 @@ const SinglePlan = (props) => {
         <>
           <div className="plan__header">
             <BackArrow goBack={props.history} />
-            <Link to={`/editplan/${id}`}>
-              <MoreVertIcon />
-            </Link>
+            {props.plan.name !== "Wallet" && (
+              <Link to={`/editplan/${id}`}>
+                <MoreVertIcon />
+              </Link>
+            )}
           </div>
           <div className="plan__middle">
             <h1>{props.plan?.name}</h1>
@@ -118,7 +120,10 @@ const SinglePlan = (props) => {
                             {subscription.currency} {subscription.subscAmt}
                           </p>
                         </div>
-                        <p>{subscription.interval}</p>
+                        <div className="plan_subInterval">
+                          <p>{subscription.interval}</p>
+                          <ArrowForwardIcon />
+                        </div>
                       </div>
                     </Link>
                   ))}
