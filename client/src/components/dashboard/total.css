@@ -60,11 +60,10 @@
   .total {
     width: 50%;
     border: 1px solid var(--gray-light);
-    margin: 30px 16px;
     padding: 30px 8px;
     height: unset;
     min-height: 100%;
-    margin-left: 28px;
+    margin: 30px auto;
   }
   .total h1 {
     font-size: 30px;

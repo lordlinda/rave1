@@ -57,3 +57,16 @@
   margin: 0 auto;
   margin-top: 16px;
 }
+@media screen and (min-width: 768px) {
+  .editPlan__body {
+    width: 50%;
+    margin-top: 64px;
+  }
+  .editPlan__header > h1 {
+    margin-left: 32%;
+    font-size: 32px;
+  }
+  .editPlan {
+    padding-top: 24px;
+  }
+}

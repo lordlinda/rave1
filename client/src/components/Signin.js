@@ -6,12 +6,14 @@ import Button from "./Reusables/Button.js";
 import { Redirect, Link } from "react-router-dom";
 import "./login.css";
 import * as actions from "../redux/actions/index.js";
-import { GoogleLogin } from "react-google-login-component";
+import { GoogleLogin } from "react-google-login";
 
 import FacebookLogin from "react-facebook-login";
 import { Box } from "@material-ui/core";
 import Divider from "./Divider";
 import FacebookIcon from "@material-ui/icons/Facebook";
+import signInImage from "../images/undraw_sign_in_e6hj.svg";
+
 const Signin = (props) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -49,7 +51,10 @@ const Signin = (props) => {
 
   return (
     <div className="signIn">
-      <div>
+      <div className="sideImg">
+        <img src={signInImage} alt="signinImage" />
+      </div>
+      <div className="signIn__form">
         {props.isAuth ? <Redirect to="/" /> : null}
         <h1 className="">Welcome back!</h1>
         <p>Signin to get continue</p>
@@ -87,11 +92,20 @@ const Signin = (props) => {
           />
           {/*google login component*/}
           <GoogleLogin
-            socialId="490182146410-loi4mka7sfh3mlgc75kh1d55hivj5p4r.apps.googleusercontent.com"
-            className="google__button"
-            responseHandler={responseGoogle}
-            buttonText="Login With Google"
-            disabled={false}
+            clientId="490182146410-loi4mka7sfh3mlgc75kh1d55hivj5p4r.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <button
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
+              >
+                This is my custom Google button
+              </button>
+            )}
+            buttonText="Login"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+            cookiePolicy={"single_host_origin"}
+            uxMode="redirect"
           />
         </div>
         <div className="signIn__link">

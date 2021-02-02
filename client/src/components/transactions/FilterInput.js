@@ -48,7 +48,7 @@ class FilterInput extends Component {
           value={this.props.paymentMethod}
           options={paymentOptions}
         />
-        <IconButton onClick={this.showCalender}>
+        <IconButton onClick={this.showCalender} className="calenderIcon">
           <CalenderTodayIcon />
         </IconButton>
 
@@ -68,6 +68,22 @@ class FilterInput extends Component {
             endDateId="end"
           />
         )}
+        <div className="hiddenInput">
+          <DateRangePicker
+            startDate={this.props.startDate}
+            endDate={this.props.endDate}
+            onDatesChange={this.onDatesChange}
+            focusedInput={this.state.focused}
+            onFocusChange={(focusedInput) =>
+              this.setState({ focused: focusedInput })
+            }
+            numberOfMonths={1}
+            isOutsideRange={() => false}
+            showClearDates={true}
+            startDateId="start"
+            endDateId="end"
+          />
+        </div>
       </div>
     );
   }

@@ -56,3 +56,43 @@
   font-size: 20px;
   color: var(--gray);
 }
+.hiddenInput {
+  display: none;
+}
+.hidden_transaction {
+  display: none;
+}
+@media screen and (min-width: 768px) {
+  .transactions__transaction > div {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    flex: 0.65;
+  }
+  .transactions__transaction > div > span {
+    font-size: 18px;
+    opacity: 1 !important;
+  }
+  .transactionsDashboard {
+    width: 90%;
+    margin: 36px auto;
+  }
+  .hiddenInput {
+    display: block;
+  }
+  .filterInput {
+    align-items: flex-end !important;
+  }
+  .calenderIcon {
+    display: none !important;
+  }
+}
+@media screen and (min-width: 768px) {
+  .hidden_transaction {
+    display: block;
+  }
+  .transactions__transaction > div {
+    flex: 0.5;
+  }
+}

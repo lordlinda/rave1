@@ -127,3 +127,25 @@
   overflow-x: hidden;
   overflow-y: hidden;
 }
+
+@media screen and (min-width: 768px) {
+  .plan__bodyData {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    justify-content: space-around;
+  }
+  .plan__progressBar {
+    width: 80%;
+  }
+  .plan__transactions {
+    flex: 0.6;
+  }
+  .plan_subInterval {
+    margin-left: 16px;
+  }
+  .plan__subscriptions > div > a {
+    margin-top: 24px;
+    display: block;
+  }
+}

@@ -1,14 +1,25 @@
 import React from "react";
 import "./Select.css";
-const Select = ({ value, onChange, options }) => {
+import FormControl from "@material-ui/core/FormControl";
+import { Select } from "@material-ui/core";
+import MenuItem from "@material-ui/core/MenuItem";
+
+const SelectInput = ({ value, onChange, options, label }) => {
   return (
-    <select value={value} onChange={onChange}>
-      {options.map((option) => (
-        <option value={option} key={option}>
-          {option}
-        </option>
-      ))}
-    </select>
+    <div>
+      <FormControl>
+        <Select value={value} onChange={onChange} displayEmpty>
+          <MenuItem value="" disabled>
+            {label}
+          </MenuItem>
+          {options.map((option) => (
+            <MenuItem value={option} key={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
   );
 };
-export default Select;
+export default SelectInput;

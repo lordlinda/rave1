@@ -15,33 +15,47 @@
 .amountPage__amount {
   display: flex;
   justify-content: space-around;
-}
-.amountPage__amount > div > input {
-  display: block;
-  border-radius: 4px;
-  border: 0;
-  background: #fff;
-  border: 1px solid var(--gray-light);
-  font-size: 16px;
-  outline: none;
-  flex: 0.7;
-  padding: 10px 6px;
+  align-items: flex-end;
 }
 
 .amountPage__button {
+  text-align: center;
+}
+.amountPage__button > button {
+  width: 70%;
   margin-top: 144px !important;
-  margin-left: 56px !important;
-  margin-right: 56px !important;
 }
 
-.amountPage__amount > select {
-  outline-width: 0;
-  background: #fafafa;
-  border: 1px solid var(--gray-btn);
-  text-align: center;
-  border-radius: 4px;
-}
 .false {
   color: var(--white) !important;
   background-color: var(--purple) !important;
+}
+.MuiInputBase-root {
+  font-size: 1.2em !important;
+}
+
+.amountPage__body {
+  padding: 16px;
+}
+
+@media screen and (min-width: 768px) {
+  .amountPage__header {
+    display: block;
+    flex: 0.4;
+    padding: 16px;
+  }
+  .amountPage {
+    flex-direction: row;
+  }
+  .amountPage__header > p {
+    font-size: 32px;
+  }
+  .amountPage__body {
+    flex: 0.4;
+    margin-top: 32px;
+  }
+
+  .amountPage__amount > div {
+    margin-left: 24px;
+  }
 }

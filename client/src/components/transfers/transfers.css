@@ -83,15 +83,15 @@
 .bankAcct {
   display: flex;
   background: #fff;
-  padding: 12px 4px;
+  padding: 12px 8px;
   align-items: center;
   margin-top: 8px;
 }
-.bankAcct > div {
-  margin-left: 16px;
+.bankAcct {
+  margin-left: 42px;
 }
 .bankAcct > div > p {
-  font-size: 20px;
+  font-size: 16px;
   color: var(--black);
   opacity: 0.9;
 }
@@ -104,12 +104,12 @@
   fill: var(--purple);
 }
 
-.banks {
+.banks__body {
   display: flex;
   flex-direction: column;
   padding: 16px 24px;
 }
-.banks > .MuiFormControl-root {
+.banks__body > .MuiFormControl-root {
   margin-top: 16px;
   margin-bottom: 16px;
 }
@@ -142,4 +142,36 @@
 }
 .buttonContainer {
   text-align: center;
+}
+.accountTransfer__button {
+  margin-top: 42px;
+  text-align: center;
+}
+.accountTransfer__button > button {
+  padding: 12px;
+}
+@media screen and (min-width: 540px) {
+  .transfers__accounts {
+    width: 50%;
+    margin: 56px auto;
+  }
+  .banks__header > h1 {
+    margin-left: 22%;
+    font-size: 32px;
+    padding-top: 24px;
+  }
+  .banks__body {
+    width: 50%;
+    margin: 32px auto;
+  }
+  .accountTransfer__plans > div {
+    margin-top: 16px;
+  }
+  .accountTransfer__amount {
+    width: 300px;
+  }
+  .accountTransfer__header > h1 {
+    margin-left: 30%;
+    font-size: 32px;
+  }
 }

@@ -11,7 +11,7 @@ import { signOut, loadUser, imageUpload } from "../../redux/actions/index";
 import { motion } from "framer-motion";
 import Badge from "@material-ui/core/Badge";
 import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
-
+import VerticalTabs from "./Tabs";
 function Profile(props) {
   const photoUpload = (e) => {
     if (e.target.files[0]) {
@@ -51,6 +51,9 @@ function Profile(props) {
         />
         <p>{props.username}</p>
       </div>
+      <div className="profile__tabs">
+        <VerticalTabs history={props.history} />
+      </div>
       <div className="profile__details">
         <Link className="profile__detail" to="/details">
           <div>
@@ -67,13 +70,13 @@ function Profile(props) {
 
           <ArrowForwardIosIcon />
         </Link>
-        <span
-          onClick={() => props.signOut(props.history)}
-          className="profile__detail"
-        >
-          <ExitToAppOutlinedIcon />
-          <p>Logout</p>
-        </span>
+      </div>
+      <div
+        onClick={() => props.signOut(props.history)}
+        className="profile__detail"
+      >
+        <ExitToAppOutlinedIcon />
+        <span>Logout</span>
       </div>
     </motion.div>
   );

@@ -54,11 +54,7 @@ const Total = (props) => {
         <Button className="total__save" component={Link} to="/amount">
           Save now
         </Button>
-        <Button
-          className="total__automate"
-          component={Link}
-          to="/createSubscription"
-        >
+        <Button className="total__automate" component={Link} to="/interval">
           Auto savings
         </Button>
       </div>

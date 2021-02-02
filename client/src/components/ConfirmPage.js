@@ -26,7 +26,7 @@ class Subscription extends React.Component {
       currency: "",
       PBFPubKey: "FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X",
       production: false,
-      payment_method: "card",
+      payment_options: "card",
       payment_plan: "",
       open: false,
       loading: false,
@@ -139,64 +139,71 @@ class Subscription extends React.Component {
               <BackArrow goBack={this.props.history} />
               <h1>Confirm</h1>
             </div>
-            <div className="confirmPage__details">
-              <div>
-                {this.props.location.state?.start && (
-                  <>
-                    <p>Start Date</p>
-                    <p>
-                      {moment(this.props.location.state?.start).format(
-                        "DD MMM YYYY"
-                      )}
-                    </p>
-                  </>
-                )}
+            <div className="confirmPage__body">
+              <div className="confirmPage__details">
+                <div>
+                  {this.props.location.state?.start && (
+                    <>
+                      <p>Start Date</p>
+                      <p>
+                        {moment(this.props.location.state?.start).format(
+                          "DD MMM YYYY"
+                        )}
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div>
+                  {this.props.location.state?.end && (
+                    <>
+                      <p>End Date</p>
+                      <p>
+                        {moment(this.props.location.state?.end).format(
+                          "DD MMM YYYY"
+                        )}
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div>
+                  {this.props.location.state?.interval && (
+                    <>
+                      <p>Interval</p>
+                      <p>{this.props.location.state?.interval}</p>
+                    </>
+                  )}
+                </div>
+                <div>
+                  <p>Amount</p>
+                  <p>
+                    {this.props.location.state?.currency}{" "}
+                    {numberWithCommas(this.props.location.state?.amount)}
+                  </p>
+                </div>
+                <div>
+                  <p>Charges</p>
+                  <p>0.00</p>
+                </div>
+                <Divider variant="middle" />
+                <div>
+                  <p>Total</p>
+                  <p>
+                    {this.props.location.state?.currency}{" "}
+                    {numberWithCommas(this.props.location.state?.amount)}
+                  </p>
+                </div>
               </div>
-              <div>
-                {this.props.location.state?.end && (
-                  <>
-                    <p>End Date</p>
-                    <p>
-                      {moment(this.props.location.state?.end).format(
-                        "DD MMM YYYY"
-                      )}
-                    </p>
-                  </>
-                )}
-              </div>
-              <div>
-                {this.props.location.state?.interval && (
-                  <>
-                    <p>Interval</p>
-                    <p>{this.props.location.state?.interval}</p>
-                  </>
-                )}
-              </div>
-              <div>
-                <p>Amount</p>
-                <p>
-                  {this.props.location.state?.currency}{" "}
-                  {numberWithCommas(this.props.location.state?.amount)}
-                </p>
-              </div>
-              <div>
-                <p>Charges</p>
-                <p>0.00</p>
-              </div>
-              <Divider variant="middle" />
-              <div>
-                <p>Total</p>
-                <p>
-                  {this.props.location.state?.currency}{" "}
-                  {numberWithCommas(this.props.location.state?.amount)}
-                </p>
+              <div className="confirmPage__button">
+                <RaveProvider {...this.state}>
+                  <RavePaymentButton
+                    type="submit"
+                    disabled={this.state.loading}
+                  >
+                    Pay
+                  </RavePaymentButton>
+                </RaveProvider>
               </div>
             </div>
-            <RaveProvider {...this.state}>
-              <RavePaymentButton type="submit" disabled={this.state.loading}>
-                Pay
-              </RavePaymentButton>
-            </RaveProvider>
           </>
         )}
 

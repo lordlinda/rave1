@@ -104,52 +104,54 @@ const SinglePlan = (props) => {
                 />
               )}
             </div>
-            {props.plan?.subscriptions?.length > 0 && (
-              <div className="plan__subscriptions">
-                <h1>Subscriptions</h1>
-                <FlipMove>
-                  {props.plan?.subscriptions.map((subscription) => (
-                    <Link
-                      to={`/subscription/${subscription._id}`}
-                      key={subscription._id}
-                    >
-                      <div className="plan__sub">
-                        <div>
-                          <h1>{props.plan?.name}</h1>
-                          <p>
-                            {subscription.currency} {subscription.subscAmt}
-                          </p>
-                        </div>
-                        <div className="plan_subInterval">
-                          <p>{subscription.interval}</p>
-                          <ArrowForwardIcon />
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </FlipMove>
-              </div>
-            )}
-
-            <div className="plan__transactions">
-              {props.plan?.transactions?.length > 0 ? (
-                <>
-                  <h1> Recent Transactions</h1>
+            <div className="plan__bodyData">
+              {props.plan?.subscriptions?.length > 0 && (
+                <div className="plan__subscriptions">
+                  <h1>Subscriptions</h1>
                   <FlipMove>
-                    {props.plan?.transactions.map((transaction) => (
-                      <Transaction
-                        key={transaction._id}
-                        transaction={transaction}
-                      />
+                    {props.plan?.subscriptions.map((subscription) => (
+                      <Link
+                        to={`/subscription/${subscription._id}`}
+                        key={subscription._id}
+                      >
+                        <div className="plan__sub">
+                          <div>
+                            <h1>{props.plan?.name}</h1>
+                            <p>
+                              {subscription.currency} {subscription.subscAmt}
+                            </p>
+                          </div>
+                          <div className="plan_subInterval">
+                            <p>{subscription.interval}</p>
+                            <ArrowForwardIcon />
+                          </div>
+                        </div>
+                      </Link>
                     ))}
                   </FlipMove>
-                </>
-              ) : (
-                <div className="empty__plan">
-                  <img src={activityImage} alt="no activity" />
-                  <p>{`Start saving,your goal is just one step away`}</p>
                 </div>
               )}
+
+              <div className="plan__transactions">
+                {props.plan?.transactions?.length > 0 ? (
+                  <>
+                    <h1> Recent Transactions</h1>
+                    <FlipMove>
+                      {props.plan?.transactions.map((transaction) => (
+                        <Transaction
+                          key={transaction._id}
+                          transaction={transaction}
+                        />
+                      ))}
+                    </FlipMove>
+                  </>
+                ) : (
+                  <div className="empty__plan">
+                    <img src={activityImage} alt="no activity" />
+                    <p>{`Start saving,your goal is just one step away`}</p>
+                  </div>
+                )}
+              </div>
             </div>
             <Dialog open={open} onClose={handleClose}>
               <DialogContent>

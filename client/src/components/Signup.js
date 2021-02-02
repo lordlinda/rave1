@@ -12,6 +12,8 @@ import FacebookLogin from "react-facebook-login";
 import { Box } from "@material-ui/core";
 import Divider from "./Divider";
 import FacebookIcon from "@material-ui/icons/Facebook";
+import signInImage from "../images/undraw_authentication_fsn5 (1).svg";
+
 const Signup = (props) => {
   const [formData, setFormData] = useState({
     username: "",
@@ -54,9 +56,12 @@ const Signup = (props) => {
 
   return (
     <div className="signIn">
-      <div>
+      <div className="sideImg">
+        <img src={signInImage} alt="signinImage" />
+      </div>
+      <div className="signIn__form">
         {props.isAuth ? <Redirect to="/" /> : null}
-        <h1 className="">Welcome!</h1>
+        <h1>Welcome!</h1>
         <p>Signup to get started</p>
         <form onSubmit={handleSubmit} className="login__form">
           <Input

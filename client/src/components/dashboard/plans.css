@@ -58,13 +58,23 @@
 @media screen and (min-width: 768px) {
   .plansDashboard__plans > div {
     display: flex;
+    flex-wrap: wrap;
   }
   .plansDashboard__plans > div > div {
-    flex: 0.5;
     height: unset;
     margin-left: 8px;
+    flex: 1;
   }
   .planDashboard__plan {
     padding: 16px;
+    height: 130px;
+    padding: unset;
+    margin: unset;
+    padding: 30px 16px;
+    text-align: left;
+  }
+  .plansDashboard {
+    width: 90%;
+    margin: 0 auto;
   }
 }

@@ -11,7 +11,7 @@ const Transaction = forwardRef(({ transaction }, ref) => {
             <h1>{transaction?.paymentPlan?.name}</h1>
             <span>{moment(transaction.createdAt).format("DD MMM YYYY")}</span>
           </div>
-
+          <p className="hidden_transaction">{transaction.pymnt_Mthd}</p>
           <p className={`${transaction.type === "income" ? "green" : "red"}`}>
             {transaction.currency}{" "}
             {transaction?.amount && numberWithCommas(transaction.amount)}

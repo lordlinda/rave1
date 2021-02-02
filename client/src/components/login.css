@@ -8,6 +8,9 @@
 .signIn > div > h1 {
   font-size: 32px;
 }
+.sideImg {
+  display: none;
+}
 .login__button > div > button {
   background: var(--purple);
   margin-top: 20px;
@@ -109,5 +112,32 @@
     text-align: center;
     justify-content: center;
     font-size: 16px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .signIn {
+    display: flex;
+    margin: unset;
+    padding: unset;
+    align-items: center;
+    justify-content: center;
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+  .signIn > div {
+    border: unset;
+    box-shadow: unset;
+    padding: unset;
+    width: unset;
+    margin: unset;
+    flex: 0.5;
+    margin: 0 24px;
+  }
+  .sideImg {
+    display: block;
+  }
+  .signIn__form {
+    display: block;
+    padding: 16px 24px !important;
   }
 }

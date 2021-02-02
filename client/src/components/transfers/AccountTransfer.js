@@ -96,14 +96,16 @@ function AccountTransfer(props) {
           />
         </FormControl>
       </div>
-      <Button
-        variant="outlined"
-        className="editButton"
-        onClick={account}
-        disabled={props.loading}
-      >
-        Transfer
-      </Button>
+      <div className="accountTransfer__button">
+        <Button
+          variant="outlined"
+          className="editButton"
+          onClick={account}
+          disabled={props.loading}
+        >
+          Transfer
+        </Button>
+      </div>
     </div>
   );
 }

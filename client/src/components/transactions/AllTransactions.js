@@ -18,7 +18,6 @@ import moment from "moment";
 
 import {
   DialogContent,
-  DialogTitle,
   List,
   ListItemText,
   ListItem,
@@ -39,7 +38,6 @@ const Transactions = (props) => {
   }, []);
   const [duration, setDuration] = React.useState("today");
   const options = ["today", "this week", "this month"];
-  console.log(transaction);
   return (
     <motion.div
       className="transactions"

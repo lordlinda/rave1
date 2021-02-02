@@ -15,7 +15,7 @@ function DatesPage(props) {
     ) {
       toast.error("Date must not be in the past");
     } else {
-      props.history.push("/interval", {
+      props.history.push("/amount", {
         ...props.location.state,
         start: props.startDate,
         end: props.endDate,
@@ -41,6 +41,7 @@ function DatesPage(props) {
           value={props.endDate}
           onChange={(e) => props.setEndDate(e.target.value)}
         />
+
         <Button
           variant="contained"
           disabled={!props.startDate || !props.endDate}

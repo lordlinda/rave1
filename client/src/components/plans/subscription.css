@@ -57,3 +57,22 @@ form > .MuiFormControl-root {
   width: 100% !important;
   margin: 12px 0px;
 }
+@media screen and (min-width: 768px) {
+  .subscription__top > h1 {
+    margin-left: 30%;
+    font-size: 32px;
+  }
+  .subscription__body {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  .subscription__dates {
+    display: flex;
+    justify-content: space-between;
+    flex: 0.7;
+  }
+  .plan__sub {
+    justify-content: space-between;
+  }
+}

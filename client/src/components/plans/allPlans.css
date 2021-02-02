@@ -1,7 +1,7 @@
 .plans__button {
   height: 40px !important;
   width: 40px !important;
-  position: absolute !important;
+  position: fixed !important;
   bottom: 80px;
   right: 8px;
   background-color: var(--purple) !important;
@@ -18,9 +18,11 @@
 .plans__body > div {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
 }
 .plans__body > div > div {
-  flex: 0.5;
+  min-width: 250px;
   background: var(--purple);
   border-radius: 10px;
   color: white;
@@ -76,4 +78,16 @@
   font-size: 20px;
   padding: 24px;
   color: var(--black-light);
+}
+@media screen and (min-width: 768px) {
+  .plans__body > div {
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 56px;
+  }
+  .plans__button {
+    width: 70px !important;
+    height: 70px !important;
+    bottom: 10%;
+  }
 }

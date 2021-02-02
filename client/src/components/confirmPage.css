@@ -17,11 +17,25 @@
   text-align: center;
 }
 
-.confirmPage > button {
+.confirmPage__button > button {
   background: var(--purple);
   padding: 8px 16px;
   color: white;
   width: 70%;
   margin-top: 32px;
   border-radius: 6px;
+}
+@media screen and (min-width: 768px) {
+  .confirmPage__body {
+    width: 50%;
+    margin: 0 auto;
+    font-size: 20px;
+  }
+  .confirmPage__details > div {
+    margin-top: 16px;
+  }
+  .confirmPage__header > h1 {
+    margin-left: 32%;
+    font-size: 32px;
+  }
 }

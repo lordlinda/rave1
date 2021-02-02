@@ -18,7 +18,7 @@ function IntervalPage(props) {
       ...props.location.state,
       interval: props.interval,
     };
-    props.history.push("/amount", data);
+    props.history.push("/createSubscription", data);
   };
 
   return (
@@ -34,8 +34,6 @@ function IntervalPage(props) {
           value={props.interval}
           onChange={handleChange}
         >
-          <FormControlLabel value="hourly" control={<Radio />} label="Hourly" />
-
           <FormControlLabel value="daily" control={<Radio />} label="Daily" />
           <FormControlLabel value="weekly" control={<Radio />} label="Weekly" />
           <FormControlLabel

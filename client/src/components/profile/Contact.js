@@ -19,11 +19,11 @@ function Contact(props) {
         <h1>Contact Information</h1>
         <div>
           <PhoneIcon />
-          <p>+256875835</p>
+          <p>+256 778940049</p>
         </div>
         <div>
           <MailOutlineIcon />
-          <p>contact@pasbanc.com qw</p>
+          <p>contact@pasbanc.com</p>
         </div>
         <div>
           <LocationOnIcon />

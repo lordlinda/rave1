@@ -20,26 +20,27 @@ function ResetPassword() {
   };
   return (
     <div className="resetPassword">
-      <form>
-        <h1>Reset Password</h1>
-
-        <Input
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Input
-          label="Confirm password"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <Button type="submit" className="resetButton" onClick={resetPassword}>
-          reset password
-        </Button>
-      </form>
-      <Link to="/signin">Back to login page</Link>
+      <h1>Reset Password</h1>
+      <div>
+        <form>
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Input
+            label="Confirm password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          <Button type="submit" className="resetButton" onClick={resetPassword}>
+            reset password
+          </Button>
+        </form>
+        <Link to="/signin">Back to login page</Link>
+      </div>
     </div>
   );
 }

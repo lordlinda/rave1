@@ -32,6 +32,14 @@ function BankTransfer(props) {
       setFrom(plan);
     }
   };
+  const getTo = (account) => {
+    if (account === to) {
+      setTo("");
+    } else {
+      setTo(account);
+    }
+  };
+
   const bank = () => {
     if (!to || !from || !amount) {
       toast.error("Please fill in all fields");
@@ -81,7 +89,7 @@ function BankTransfer(props) {
             props.accounts?.map((account) => (
               <div
                 className="bankAcct"
-                onClick={() => setTo(account)}
+                onClick={() => getTo(account)}
                 key={account.id}
               >
                 <IconButton>

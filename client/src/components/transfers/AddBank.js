@@ -33,35 +33,37 @@ function Banks(props) {
         <BackArrow goBack={props.history} />
         <h1>Add Bank Account</h1>
       </div>
-      <FormControl>
-        <InputLabel htmlFor="standard-adornment-amount">
-          Account Number
-        </InputLabel>
-        <Input
-          type="number"
-          aria-describedby="standard-weight-helper-text"
-          variant="outlined"
-          value={account_number}
-          onChange={(e) => setAccountNumber(e.target.value)}
-          fullWidth
-        />
-      </FormControl>
-      <TextField
-        select
-        label="Select"
-        value={bank}
-        onChange={(e) => setBank(e.target.value)}
-        helperText="Please select your bank"
-      >
-        {banks.map((bank) => (
-          <MenuItem key={bank.id} value={bank}>
-            {bank.name}
-          </MenuItem>
-        ))}
-      </TextField>
-      <Button className="editButton" onClick={addBank}>
-        Add Bank Account
-      </Button>
+      <div className="banks__body">
+        <FormControl>
+          <InputLabel htmlFor="standard-adornment-amount">
+            Account Number
+          </InputLabel>
+          <Input
+            type="number"
+            aria-describedby="standard-weight-helper-text"
+            variant="outlined"
+            value={account_number}
+            onChange={(e) => setAccountNumber(e.target.value)}
+            fullWidth
+          />
+        </FormControl>
+        <TextField
+          select
+          label="Select"
+          value={bank}
+          onChange={(e) => setBank(e.target.value)}
+          helperText="Please select your bank"
+        >
+          {banks.map((bank) => (
+            <MenuItem key={bank.id} value={bank}>
+              {bank.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Button className="editButton" onClick={addBank}>
+          Add Bank Account
+        </Button>
+      </div>
     </div>
   );
 }

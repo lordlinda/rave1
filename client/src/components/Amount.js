@@ -17,14 +17,7 @@ function AmountPage(props) {
   const handleAmount = (e) => {
     props.setAmount(e.target.value);
   };
-  const getCurrency = () => {
-    const plan = props.plans.find((plan) => plan.name === "Wallet");
-    if (plan) {
-      return plan.currency;
-    }
-  };
 
-  getCurrency();
   const handleClick = () => {
     const data = {
       ...props.location.state,
@@ -38,32 +31,34 @@ function AmountPage(props) {
     <div className="amountPage">
       <div className="amountPage__header">
         <BackArrow goBack={props.history} />
-        <p className="">Amount</p>
+        <p>Amount</p>
       </div>
-      <div className="amountPage__amount">
-        <Select
-          label="currency"
-          value={props.currency}
-          onChange={handleCurrency}
-          options={currencyOptionsArray}
-        />
-        <Input
-          placeholder="0"
-          value={props.amount}
-          onChange={handleAmount}
-          type="number"
-        />
+      <div className="amountPage__body">
+        <div className="amountPage__amount">
+          <Select
+            label="currency"
+            value={props.currency}
+            onChange={handleCurrency}
+            options={currencyOptionsArray}
+          />
+          <Input
+            placeholder="Amount"
+            value={props.amount}
+            onChange={handleAmount}
+            type="number"
+          />
+        </div>
+        <div className="amountPage__button">
+          <Button
+            disabled={!props.currency || !props.amount}
+            variant="contained"
+            onClick={handleClick}
+            className={`${!props.currency || (!props.amount && "disabled")}`}
+          >
+            Next
+          </Button>
+        </div>
       </div>
-      <Button
-        disabled={!props.currency || !props.amount}
-        variant="contained"
-        className={`amountPage__button ${
-          !props.currency || (!props.amount && "disabled")
-        }`}
-        onClick={handleClick}
-      >
-        Next
-      </Button>
     </div>
   );
 }

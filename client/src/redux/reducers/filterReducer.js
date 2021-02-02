@@ -3,7 +3,7 @@ const initialState = {
   paymentMethod: "",
   startDate: "",
   endDate: "",
-  currency: "UGX",
+  currency: "",
   interval: "",
   amount: "",
 };

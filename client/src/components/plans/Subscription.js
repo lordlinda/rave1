@@ -131,63 +131,65 @@ function Subscription(props) {
             <BackArrow goBack={props.history} />
             <h1>Subscription</h1>
           </div>
-          <div className="subscription__header">
-            <div>
-              <p>Next Due</p>
-              <p>
-                {props.subscription.startDate &&
-                  moment(
-                    calculateDueDate({
-                      startDate: props.subscription?.startDate,
-                      endDate: props.subscription?.endDate,
-                      count: props.subscription?.count,
-                      interval: props.subscription?.interval,
-                    }).dueDate
-                  ).format("DD MMM YYYY")}
-              </p>
-            </div>
-            <div>
+          <div className="subscription__body">
+            <div className="subscription__header">
               <div>
-                <p>Start Date</p>
-                <p>{moment(startDate).format("DD MMM YYYY")}</p>
+                <p>Next Due</p>
+                <p>
+                  {props.subscription.startDate &&
+                    moment(
+                      calculateDueDate({
+                        startDate: props.subscription?.startDate,
+                        endDate: props.subscription?.endDate,
+                        count: props.subscription?.count,
+                        interval: props.subscription?.interval,
+                      }).dueDate
+                    ).format("DD MMM YYYY")}
+                </p>
+              </div>
+              <div className="subscription__dates">
+                <div>
+                  <p>Start Date</p>
+                  <p>{moment(startDate).format("DD MMM YYYY")}</p>
+                </div>
+                <div>
+                  <p>End Date</p>
+                  <p>{moment(endDate).format("DD MMM YYYY")}</p>
+                </div>
+              </div>
+            </div>
+            <div className="subscription__details">
+              <div>
+                <p>Recurring</p>
+                <Switch
+                  checked={checked}
+                  onChange={handleChange}
+                  color="primary"
+                />
               </div>
               <div>
-                <p>End Date</p>
-                <p>{moment(endDate).format("DD MMM YYYY")}</p>
+                <p>Amount</p>
+                <p>
+                  {props.subscription.currency} {subscAmt}
+                </p>
+              </div>
+              <div>
+                <p>Interval</p>
+                <p>{interval}</p>
               </div>
             </div>
-          </div>
-          <div className="subscription__details">
-            <div>
-              <p>Recurring</p>
-              <Switch
-                checked={checked}
-                onChange={handleChange}
-                color="primary"
-              />
+            <div className="subscription__buttons">
+              <Button
+                variant="contained"
+                className="editButton"
+                onClick={editSubscription}
+              >
+                Edit
+              </Button>
+              <Button onClick={onDelete} color="secondary">
+                Delete
+              </Button>
             </div>
-            <div>
-              <p>Amount</p>
-              <p>
-                {props.subscription.currency} {subscAmt}
-              </p>
-            </div>
-            <div>
-              <p>Interval</p>
-              <p>{interval}</p>
-            </div>
-          </div>
-          <div className="subscription__buttons">
-            <Button
-              variant="contained"
-              className="editButton"
-              onClick={editSubscription}
-            >
-              Edit
-            </Button>
-            <Button onClick={onDelete} color="secondary">
-              Delete
-            </Button>
           </div>
         </>
       )}
