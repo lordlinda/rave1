@@ -70,6 +70,7 @@
   }
   .profile__tabs {
     display: block;
+    margin-bottom: 56px;
   }
   .tab__button {
     margin-top: 42px;

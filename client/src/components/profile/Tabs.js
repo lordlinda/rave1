@@ -12,6 +12,9 @@ import { Button } from "@material-ui/core";
 import PhoneIcon from "@material-ui/icons/Phone";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
+import emailjs from "emailjs-com";
+import { toast } from "react-toastify";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -50,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     display: "flex",
-    height: "60vh",
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -102,6 +104,30 @@ function VerticalTabs(props) {
   const signOut = () => {
     props.signOut(props.history);
   };
+  function sendEmail(e) {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+        "service_9riibtt",
+        "template_ppg3enk",
+        e.target,
+        "user_6u6K2en2011yb9DjjXbp4"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          toast.success(
+            "Thank you for feedback ,we will get in touch with you shortly"
+          );
+        },
+        (error) => {
+          console.log(error.text);
+          toast.error("Oops something went wrong,please try again");
+        }
+      );
+  }
+
   return (
     <div className={classes.root}>
       <Tabs
@@ -167,23 +193,17 @@ function VerticalTabs(props) {
             <p>Makerere University</p>
           </div>
         </div>
-        <div className="contact__form">
+        <form className="contact__form" onSubmit={sendEmail}>
           <h1>Need any more help?</h1>
-          <Input label="Name" type="text" />
-          <Input label="Email" type="email" />
-          <Input label="Message" type="text" />
+          <Input label="Name" type="text" name="name" />
+          <Input label="Email" type="email" name="email" />
+          <Input label="Message" type="text" name="message" />
           <div className="tab__button">
-            <Button
-              disabled
-              variant="contained"
-              className={`intervalPage__button ${
-                !props.startDate || (!props.endDate && "disabled")
-              }`}
-            >
+            <Button variant="contained" className="editButton" type="submit">
               Send
             </Button>
           </div>
-        </div>
+        </form>
       </TabPanel>
     </div>
   );

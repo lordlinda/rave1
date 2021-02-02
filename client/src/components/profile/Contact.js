@@ -6,7 +6,33 @@ import Input from "../Reusables/Input";
 import "./contact.css";
 import { Button } from "@material-ui/core";
 import BackArrow from "../Reusables/BackArrow";
+import emailjs from "emailjs-com";
+import { toast } from "react-toastify";
 function Contact(props) {
+  function sendEmail(e) {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+        "service_9riibtt",
+        "template_ppg3enk",
+        e.target,
+        "user_6u6K2en2011yb9DjjXbp4"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          toast.success(
+            "Thank you for feedback ,we will get in touch with you shortly"
+          );
+        },
+        (error) => {
+          console.log(error.text);
+          toast.error("Oops something went wrong,please try again");
+        }
+      );
+  }
+
   return (
     <div>
       <div className="contact__header">
@@ -30,21 +56,15 @@ function Contact(props) {
           <p>Makerere University</p>
         </div>
       </div>
-      <div className="contact__form">
+      <form className="contact__form" onSubmit={sendEmail}>
         <h1>Need any more help?</h1>
-        <Input label="Name" type="text" />
-        <Input label="Email" type="email" />
-        <Input label="Message" type="text" />
-        <Button
-          disabled
-          variant="contained"
-          className={`intervalPage__button ${
-            !props.startDate || (!props.endDate && "disabled")
-          }`}
-        >
+        <Input label="Name" type="text" name="name" />
+        <Input label="Email" type="email" name="email" />
+        <Input label="Message" type="text" name="message" />
+        <Button variant="contained" type="submit" className="editButton">
           Send
         </Button>
-      </div>
+      </form>
     </div>
   );
 }
