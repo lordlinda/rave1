@@ -35,9 +35,8 @@ module.exports = {
   googleAuth: passport.use(
     new GoogleTokenStrategy(
       {
-        clientID:
-          "490182146410-vueb9fg2h1jhhnkpr8fmh5s51fgq77e6.apps.googleusercontent.com",
-        clientSecret: "JKYLncOplddKVjdxDenx6PJc",
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
         passReqToCallback: true,
       },
       async function (req, accessToken, refreshToken, profile, done) {
@@ -78,44 +77,7 @@ module.exports = {
       }
     )
   ),
-  facebookAuth: passport.use(
-    "facebookToken",
-    new FacebookTokenStrategy(
-      {
-        //we get the app id and secret from the config file
-        clientID: "953574055178048",
-        clientSecret: "61df5052cc97ee00e553f1da877eb415",
-      },
-      async function (accessToken, refreshToken, profile, done) {
-        try {
-          //check if we have the user in our database using  facebook id
-          const alreadyUser = User.findOne({
-            $and: [{ email: profile.emails[0].value }],
-          });
-          //if we do we return the user which will be stored as req.user
-          if (alreadyUser) {
-            return done(null, alreadyUser);
-          }
-          //if the user doent exist we create new user
-          //3.If not we create this user and add them to our database
-          //we create  new user
-          const createUser = new User({
-            methods: "facebook",
-            //this is the email part from the profile
-            //emails: [ { value: 'marialindananono@gmail.com', type: 'ACCOUNT' } ],
-            email: profile.emails[0].value,
-            username: profile.name.givenName,
-            photoUrl: profile.photos[0].value,
-          });
 
-          const newUser = await createUser.save();
-          return done(null, newUser);
-        } catch (error) {
-          done(error, false, error.message);
-        }
-      }
-    )
-  ),
   createTokens: async (user, SECRET_2) => {
     const access_token = jwt.sign(
       {
