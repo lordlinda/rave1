@@ -10,6 +10,7 @@ import FlipMove from "react-flip-move";
 import { loadUser } from "../../redux/actions/index";
 import { mobileTransfer } from "../../redux/actions/transfers";
 import { toast } from "react-toastify";
+import Processor from "../Reusables/Processor";
 
 function MobileTransfer(props) {
   const [amount, setAmount] = useState("");
@@ -19,7 +20,7 @@ function MobileTransfer(props) {
     if (!phone || !from || !amount) {
       toast.error("Please fill in all fields");
     } else if (phone.length < 10) {
-      toast.error("please enter a phone valid number");
+      toast.error("please enter a  valid phone number");
     } else if (amount < 1000) {
       toast.error("Amout must be atleast 1000");
     } else {
@@ -91,14 +92,12 @@ function MobileTransfer(props) {
         </FormControl>
       </div>
       <div className="buttonContainer">
-        <Button
-          variant="outlined"
-          className="editButton"
-          onClick={mobile}
-          disabled={props.loading}
-        >
+        <Button variant="outlined" className="editButton" onClick={mobile}>
           Transfer
         </Button>
+        {props.loading && (
+          <Processor text="Transfer is processing,please wait" />
+        )}
       </div>
     </div>
   );

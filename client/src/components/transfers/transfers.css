@@ -87,9 +87,7 @@
   align-items: center;
   margin-top: 8px;
 }
-.bankAcct {
-  margin-left: 42px;
-}
+
 .bankAcct > div > p {
   font-size: 16px;
   color: var(--black);

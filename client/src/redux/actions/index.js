@@ -143,7 +143,6 @@ export const imageUpload = (data) => async (dispatch) => {
 export const oauthGoogle = (token) => async (dispatch) => {
   try {
     const res = await axios.post("/users/google", { access_token: token });
-    localStorage.setItem("token", res.data.token);
     localStorage.setItem("email", res.data.user);
     dispatch({
       type: SIGN_IN,
@@ -157,7 +156,6 @@ export const oauthGoogle = (token) => async (dispatch) => {
 export const oauthFacebook = (token) => async (dispatch) => {
   try {
     const res = await axios.post("/facebook", { access_token: token });
-    localStorage.setItem("token", res.data.token);
     localStorage.setItem("email", res.data.user);
     dispatch({
       type: SIGN_IN,

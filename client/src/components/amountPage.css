@@ -30,9 +30,6 @@
   color: var(--white) !important;
   background-color: var(--purple) !important;
 }
-.MuiInputBase-root {
-  font-size: 1.2em !important;
-}
 
 .amountPage__body {
   padding: 16px;

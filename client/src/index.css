@@ -64,3 +64,13 @@ button {
 *:focus {
   outline: none !important;
 }
+.pay_processing {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-evenly;
+  background: green;
+  color: var(--white);
+  width: 280px;
+  margin: 16px auto;
+  padding: 16px 8px;
+}

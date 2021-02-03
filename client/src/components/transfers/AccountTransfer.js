@@ -10,7 +10,7 @@ import Account from "./Account";
 import FlipMove from "react-flip-move";
 import { loadUser } from "../../redux/actions/index";
 import { accountTransfer } from "../../redux/actions/transfers";
-
+import Processor from "../Reusables/Processor";
 function AccountTransfer(props) {
   const [amount, setAmount] = useState("");
   const [to, setTo] = useState("");
@@ -97,14 +97,12 @@ function AccountTransfer(props) {
         </FormControl>
       </div>
       <div className="accountTransfer__button">
-        <Button
-          variant="outlined"
-          className="editButton"
-          onClick={account}
-          disabled={props.loading}
-        >
+        <Button variant="outlined" className="editButton" onClick={account}>
           Transfer
         </Button>
+        {props.loading && (
+          <Processor text="Transfer is processing,please wait" />
+        )}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import Badge from "@material-ui/core/Badge";
 import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
 import VerticalTabs from "./Tabs";
+
 function Profile(props) {
   const photoUpload = (e) => {
     if (e.target.files[0]) {
@@ -40,7 +41,11 @@ function Profile(props) {
         >
           <Avatar
             alt={props.username}
-            src={`${process.env.REACT_APP_URL}${props.url}`}
+            src={
+              props.method === "google"
+                ? `${props.url}`
+                : `${process.env.REACT_APP_URL}${props.url}`
+            }
           />
         </Badge>
         <input
@@ -85,6 +90,7 @@ const mapStateToProps = (state) => {
   return {
     username: state.data.user?.username,
     url: state.data.user?.photoUrl,
+    method: state.data.user?.methods,
   };
 };
 export default connect(mapStateToProps, { signOut, loadUser, imageUpload })(

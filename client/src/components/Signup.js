@@ -6,7 +6,7 @@ import Button from "./Reusables/Button.js";
 import { Redirect } from "react-router-dom";
 import "./login.css";
 import * as actions from "../redux/actions/index.js";
-import { GoogleLogin } from "react-google-login-component";
+import { GoogleLogin } from "react-google-login";
 
 import FacebookLogin from "react-facebook-login";
 import { Box } from "@material-ui/core";
@@ -46,12 +46,7 @@ const Signup = (props) => {
   };
 
   const responseGoogle = (res) => {
-    console.log(res);
-  };
-
-  const responseFacebook = (res) => {
-    console.log(res);
-    props.oauthFacebook(res.accessToken);
+    props.oauthGoogle(res.accessToken);
   };
 
   return (
@@ -96,20 +91,13 @@ const Signup = (props) => {
           <Divider>or signup with</Divider>
         </Box>
         <div className="auth__buttons">
-          <FacebookLogin
-            appId="953574055178048"
-            autoLoad={true}
-            textButton=""
-            fields="name,email,picture"
-            callback={responseFacebook}
-            icon={<FacebookIcon />}
-          />
           {/*google login component*/}
           <GoogleLogin
-            socialId="490182146410-vueb9fg2h1jhhnkpr8fmh5s51fgq77e6.apps.googleusercontent.com"
-            className="google__button"
-            responseHandler={responseGoogle}
-            buttonText="Login With Google"
+            clientId="490182146410-vueb9fg2h1jhhnkpr8fmh5s51fgq77e6.apps.googleusercontent.com"
+            buttonText="Continue with google"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+            cookiePolicy={"single_host_origin"}
           />
         </div>
         <div className="signIn__link">

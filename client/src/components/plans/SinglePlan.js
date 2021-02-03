@@ -153,7 +153,11 @@ const SinglePlan = (props) => {
                 )}
               </div>
             </div>
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              className="paymentOptions"
+            >
               <DialogContent>
                 <FormControl component="fieldset">
                   <RadioGroup

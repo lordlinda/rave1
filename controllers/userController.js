@@ -9,15 +9,6 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.MAIL_KEY);
 
 /**creating a signed token */
-function createToken(user) {
-  return jwt.sign(
-    {
-      sub: user._id,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  );
-}
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -180,8 +171,19 @@ module.exports = {
   googleOAuth: async (req, res) => {
     try {
       const user = req.user;
-      const token = createToken(user);
-      res.status(200).json({ token, email: user.email });
+      /**create token */
+      const { access_token, refreshToken } = await createTokens(
+        user,
+        process.env.JWT_SECRET_2
+      );
+      /**set cookie for both access token and refresh token */
+      res.cookie("access_token", access_token, {
+        secure: process.env.NODE_ENV === "production",
+      });
+      res.cookie("refreshToken", refreshToken, {
+        secure: process.env.NODE_ENV === "production",
+      });
+      res.status(200).json({ email: user.email });
     } catch (error) {
       console.log(error);
     }
@@ -189,8 +191,19 @@ module.exports = {
   facebookOAuth: async (req, res) => {
     try {
       const user = req.user;
-      const token = createToken(user);
-      res.status(200).json({ token, email: user.email });
+      /**create token */
+      const { access_token, refreshToken } = await createTokens(
+        user,
+        process.env.JWT_SECRET_2
+      );
+      /**set cookie for both access token and refresh token */
+      res.cookie("access_token", access_token, {
+        secure: process.env.NODE_ENV === "production",
+      });
+      res.cookie("refreshToken", refreshToken, {
+        secure: process.env.NODE_ENV === "production",
+      });
+      res.status(200).json({ email: user.email });
     } catch (error) {
       console.log(error);
     }

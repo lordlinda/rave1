@@ -1,4 +1,4 @@
-import { SIGN_OUT } from "../actions/types";
+import { SIGN_OUT, MAKE_PAYMENT } from "../actions/types";
 const initialState = {
   paymentMethod: "",
   startDate: "",
@@ -44,6 +44,15 @@ export default (state = initialState, action) => {
     case SIGN_OUT:
       return {
         ...state,
+      };
+    case MAKE_PAYMENT:
+      return {
+        paymentMethod: "",
+        startDate: "",
+        endDate: "",
+        currency: "",
+        interval: "",
+        amount: "",
       };
     default:
       return state;

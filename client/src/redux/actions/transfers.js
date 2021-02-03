@@ -33,6 +33,7 @@ export const mobileTransfer = (data, history) => async (dispatch) => {
     const res = await axios.post("/transfers/mobile", data);
     dispatch({
       type: MOBILE_MONEY,
+      payload: data,
     });
     history.push("/transfers");
     toast.success(res.data.msg);
@@ -50,6 +51,7 @@ export const bankTransfer = (data, history) => async (dispatch) => {
     const res = await axios.post("/transfers/bank", data);
     dispatch({
       type: BANK_TRANSFER,
+      payload: data,
     });
     history.push("/transfers");
     toast.success(res.data.msg);

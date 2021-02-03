@@ -16,6 +16,11 @@ import { calculateDuration } from "../helpers/middleware";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Processor from "./Reusables/Processor";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 class Subscription extends React.Component {
   constructor(props) {
     super(props);
@@ -24,9 +29,9 @@ class Subscription extends React.Component {
       customer_email: "user@example.com",
       amount: "",
       currency: "",
-      PBFPubKey: "FLWPUBK-79088d65bc6390fac8bb696a84e646cc-X",
+      PBFPubKey: "FLWPUBK_TEST-a1165663c59d9f42fa25fb408495447b-X",
       production: false,
-      payment_options: "card",
+      payment_options: "",
       payment_plan: "",
       open: false,
       loading: false,
@@ -71,6 +76,9 @@ class Subscription extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
   };
+  handleChangePayment = (e) => {
+    this.setState({ payment_options: e.target.value });
+  };
 
   async componentDidMount() {
     /**check if we have a start date */
@@ -114,7 +122,6 @@ class Subscription extends React.Component {
         amount: 10,
         currency: this.props.location.state.currency,
         customer_email: localStorage.email,
-        payment_method: "card",
       });
     } else {
       /**if it is a single payment,then we dont need to add a payment plan */
@@ -125,8 +132,8 @@ class Subscription extends React.Component {
       });
     }
   }
-
   render() {
+    console.log(this.props.complete);
     return (
       <div className="confirmPage">
         {this.props.loading ? (
@@ -193,16 +200,47 @@ class Subscription extends React.Component {
                   </p>
                 </div>
               </div>
-              <div className="confirmPage__button">
-                <RaveProvider {...this.state}>
-                  <RavePaymentButton
-                    type="submit"
-                    disabled={this.state.loading}
+              <div className="confirmPage__paymentOptions">
+                <h1> Choose a payment method</h1>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="payment_options"
+                    name="payment_options"
+                    value={this.state.payment_options}
+                    onChange={this.handleChangePayment}
                   >
-                    Pay
-                  </RavePaymentButton>
-                </RaveProvider>
+                    {!this.props.location.state.start && (
+                      <FormControlLabel
+                        value="mobilemoneyuganda"
+                        control={<Radio />}
+                        label="Mobile Money"
+                      />
+                    )}
+
+                    <FormControlLabel
+                      value="card"
+                      control={<Radio />}
+                      label="Card"
+                    />
+                  </RadioGroup>
+                </FormControl>
               </div>
+              {this.state.payment_options && (
+                <div className="confirmPage__button">
+                  <RaveProvider {...this.state}>
+                    <RavePaymentButton
+                      type="submit"
+                      disabled={this.state.loading}
+                    >
+                      Pay
+                    </RavePaymentButton>
+                  </RaveProvider>
+                </div>
+              )}
+
+              {this.props.complete && (
+                <Processor text="Payment is being processed,please wait" />
+              )}
             </div>
           </>
         )}
@@ -228,6 +266,7 @@ const mapStateToProps = (state) => {
   return {
     id: state.payment.id,
     loading: state.data.isLoading,
+    complete: state.payment.paymentComplete,
   };
 };
 export default connect(mapStateToProps, {

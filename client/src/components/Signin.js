@@ -41,7 +41,8 @@ const Signin = (props) => {
   };
 
   const responseGoogle = (res) => {
-    console.log(res);
+    //console.log(res);
+    props.oauthGoogle(res.accessToken);
   };
 
   const responseFacebook = (res) => {
@@ -82,30 +83,14 @@ const Signin = (props) => {
           <Divider>or signin with</Divider>
         </Box>
         <div className="auth__buttons">
-          <FacebookLogin
-            appId="953574055178048"
-            autoLoad={true}
-            textButton=""
-            fields="name,email,picture"
-            callback={responseFacebook}
-            icon={<FacebookIcon />}
-          />
           {/*google login component*/}
+
           <GoogleLogin
-            clientId="490182146410-loi4mka7sfh3mlgc75kh1d55hivj5p4r.apps.googleusercontent.com"
-            render={(renderProps) => (
-              <button
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                This is my custom Google button
-              </button>
-            )}
-            buttonText="Login"
+            clientId="490182146410-vueb9fg2h1jhhnkpr8fmh5s51fgq77e6.apps.googleusercontent.com"
+            buttonText="Continue with google"
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
             cookiePolicy={"single_host_origin"}
-            uxMode="redirect"
           />
         </div>
         <div className="signIn__link">

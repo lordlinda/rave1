@@ -4,6 +4,7 @@ import {
   ACTIVATE_SUBSCRIPTION,
   CANCEL_SUBSCRIPTION,
   UPDATE_SUBSCRIPTION,
+  PROCESSING_PAYMENT,
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -13,6 +14,9 @@ import { toast } from "react-toastify";
  */
 export const makePayment = (data, history) => async (dispatch) => {
   try {
+    dispatch({
+      type: PROCESSING_PAYMENT,
+    });
     const res = await axios.post("/payments/makePayment", data);
     history.push("/");
     toast.success("Payment Successful");
@@ -27,6 +31,9 @@ export const makePayment = (data, history) => async (dispatch) => {
 
 export const schedulePayment = (data, history) => async (dispatch) => {
   try {
+    dispatch({
+      type: PROCESSING_PAYMENT,
+    });
     const res = await axios.post("/payments/schedulePayment", data);
     history.push("/");
     toast.success("successful payment");

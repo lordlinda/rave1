@@ -24,11 +24,11 @@ export default (state = initialState, action) => {
       };
     case BANK_TRANSFER:
       return {
-        loading: true,
+        loading: false,
       };
     case ACCOUNT_TRANSFER:
       return {
-        loading: true,
+        loading: false,
       };
     case SIGN_OUT:
       return {

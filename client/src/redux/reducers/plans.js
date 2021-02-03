@@ -7,6 +7,8 @@ import {
   GET_SUBSCRIPTION,
   CONVERT_CURRENCY,
   SIGN_OUT,
+  MOBILE_MONEY,
+  BANK_TRANSFER,
 } from "../actions/types.js";
 
 const initialState = {
@@ -70,6 +72,12 @@ export default (state = initialState, action) => {
     case SIGN_OUT:
       return {
         ...state,
+      };
+    case MOBILE_MONEY:
+    case BANK_TRANSFER:
+      return {
+        ...state,
+        total: (state.total -= action.payload.amount),
       };
     default:
       return state;

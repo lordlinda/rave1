@@ -14,6 +14,7 @@ import { bankTransfer } from "../../redux/actions/transfers";
 import { toast } from "react-toastify";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { Link } from "react-router-dom";
+import Processor from "../Reusables/Processor";
 function BankTransfer(props) {
   useEffect(() => {
     props.getAllPlans();
@@ -118,14 +119,12 @@ function BankTransfer(props) {
         </FormControl>
       </div>
       <div className="buttonContainer">
-        <Button
-          variant="outlined"
-          className="editButton"
-          onClick={bank}
-          disabled={props.loading}
-        >
+        <Button variant="outlined" className="editButton" onClick={bank}>
           Transfer
         </Button>
+        {props.loading && (
+          <Processor text="Transfer is processing,please wait" />
+        )}
       </div>
     </div>
   );

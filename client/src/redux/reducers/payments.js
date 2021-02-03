@@ -1,7 +1,13 @@
-import { GET_PAYMENT_PLAN, SIGN_OUT } from "../actions/types.js";
+import {
+  GET_PAYMENT_PLAN,
+  SIGN_OUT,
+  MAKE_PAYMENT,
+  PROCESSING_PAYMENT,
+} from "../actions/types.js";
 
 const initialState = {
   id: "",
+  paymentComplete: false,
 };
 
 //the reducer has the inital state and alters it based on the action
@@ -15,6 +21,16 @@ export default (state = initialState, action) => {
     case SIGN_OUT:
       return {
         ...state,
+      };
+    case MAKE_PAYMENT:
+      return {
+        ...state,
+        paymentComplete: false,
+      };
+    case PROCESSING_PAYMENT:
+      return {
+        ...state,
+        paymentComplete: true,
       };
     default:
       return state;

@@ -1,4 +1,5 @@
 const { check } = require("express-validator");
+const PaymentPlan = require("./models/PaymentPlan");
 
 const FacebookTokenStrategy = require("passport-facebook-token");
 const GoogleTokenStrategy = require("passport-google-token").Strategy;
@@ -7,20 +8,6 @@ const User = require("./models/User.js");
 const jwt = require("jsonwebtoken");
 const { refreshTokens } = require("./auth");
 
-var cookieExtractor = async (req) => {
-  let token = req.headers["authorization"];
-  if (token) {
-    try {
-      jwt.verify(token, process.env.JWT_SECRET);
-      return token;
-    } catch (err) {
-      const refreshtoken = req.headers["x-refresh-token"];
-      console.log(token);
-      token = refreshtoken;
-      return token;
-    }
-  }
-};
 module.exports = {
   validateRegister: [
     check("username")
@@ -49,8 +36,8 @@ module.exports = {
     new GoogleTokenStrategy(
       {
         clientID:
-          "490182146410-n4p1v19co66t9r0lv387o5dpm8cmoi5f.apps.googleusercontent.com",
-        clientSecret: "bulbZC2V9rNZciq9k2V84Va-",
+          "490182146410-vueb9fg2h1jhhnkpr8fmh5s51fgq77e6.apps.googleusercontent.com",
+        clientSecret: "JKYLncOplddKVjdxDenx6PJc",
         passReqToCallback: true,
       },
       async function (req, accessToken, refreshToken, profile, done) {
@@ -77,6 +64,13 @@ module.exports = {
           });
 
           const newUser = await createUser.save();
+          await PaymentPlan.create({
+            name: "Wallet",
+            user: newUser._id,
+            amount: 0,
+            currency: "UGX",
+          });
+
           return done(null, newUser);
         } catch (error) {
           done(error, false, error.message);
