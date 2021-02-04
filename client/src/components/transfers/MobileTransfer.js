@@ -52,6 +52,7 @@ function MobileTransfer(props) {
       setFrom(plan._id);
     }
   };
+  console.log(props.loading);
   return (
     <div className="mobile">
       <div className="accountTransfer__header">
@@ -105,7 +106,7 @@ function MobileTransfer(props) {
 const mapStateToProps = (state) => {
   return {
     plans: state.plans.plans,
-    loading: state.transfers.loading,
+    loading: state.payment.paymentComplete,
   };
 };
 export default connect(mapStateToProps, {

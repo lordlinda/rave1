@@ -15,8 +15,6 @@ const {
 router.post("/mobile", auth, mobilePayment);
 router.post("/bank", auth, bankPayment);
 
-router.post("/updateTransfer", updateTranfer);
-
 router.post("/account", auth, accountTransfer);
 router.post("/addNumber", auth, addNumber);
 router.post("/addBankAcct", auth, addBankAcct);

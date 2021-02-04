@@ -20,19 +20,36 @@ module.exports = {
         });
       }
       /**if the amount is enough */
-      const { isSuccess } = await makeFlutterWaveMobileTransfer({
+      const { isSuccessful } = await makeFlutterWaveMobileTransfer({
         currency: Wallet.currency,
         id: Wallet._id,
         amount: req.body.amount,
         name: req.user.username,
       });
-      if (!isSuccess) {
+      if (!isSuccessful) {
         return res.status(500).json({
           msg: "transaction failed,please try again",
         });
       }
+      const data = {
+        id: Wallet._id,
+        user: Wallet.user,
+        amount: req.body.amount,
+        currency: Wallet.currency,
+        paymentType: "mobilemoney",
+      };
+
+      const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
+        data
+      );
+      if (!isSuccess) {
+        return res.status(500).json({
+          msg: "withdrawal failed,please try again",
+        });
+      }
       return res.status(201).json({
-        msg: "Transaction initiated...",
+        transaction,
+        msg: "Withdrawal successful",
       });
     }
     const plan = await PaymentPlan.findById(req.body.id);
@@ -43,21 +60,37 @@ module.exports = {
       });
     }
     //!currency is a must here
-    const { isSuccess } = await makeFlutterWaveMobileTransfer({
+    const { isSuccessful } = await makeFlutterWaveMobileTransfer({
       currency: plan.currency,
       id: req.body.id,
       amount: req.body.amount,
       name: req.user.username,
       phone: req.body.phone,
     });
-    console.log(isSuccess);
-    if (!isSuccess) {
+    if (!isSuccessful) {
       return res.status(500).json({
         msg: "transaction failed,please try again",
       });
     }
+    const data = {
+      id: plan._id,
+      user: plan.user,
+      amount: req.body.amount,
+      currency: plan.currency,
+      paymentType: "mobilemoney",
+    };
+
+    const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
+      data
+    );
+    if (!isSuccess) {
+      return res.status(500).json({
+        msg: "withdrawal failed,please try again",
+      });
+    }
     return res.status(201).json({
-      msg: "Transaction initiated...",
+      transaction,
+      msg: "Withdrawal successful",
     });
   },
   /**bank transfer */
@@ -75,7 +108,7 @@ module.exports = {
         });
       }
       /**if the amount is enough */
-      const { isSuccess } = await makeFlutterWaveIntlOtherBankTransfer({
+      const { isSuccessful } = await makeFlutterWaveIntlOtherBankTransfer({
         currency: Wallet.currency,
         id: Wallet._id,
         amount: req.body.amount,
@@ -83,13 +116,30 @@ module.exports = {
         account_number: req.body.account_number,
         account_bank: req.body.account_bank,
       });
-      if (!isSuccess) {
+      if (!isSuccessful) {
         return res.status(500).json({
           msg: "transaction failed,please try again",
         });
       }
+      const data = {
+        id: Wallet._id,
+        user: Wallet.user,
+        amount: req.body.amount,
+        currency: Wallet.currency,
+        paymentType: "mobilemoney",
+      };
+
+      const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
+        data
+      );
+      if (!isSuccess) {
+        return res.status(500).json({
+          msg: "withdrawal failed,please try again",
+        });
+      }
       return res.status(201).json({
-        msg: "Transaction initiated...",
+        transaction,
+        msg: "Withdrawal successful",
       });
     }
     const plan = await PaymentPlan.findById(req.body.id);
@@ -100,7 +150,7 @@ module.exports = {
       });
     }
     //!currency is a must here
-    const { isSuccess } = await makeFlutterWaveIntlOtherBankTransfer({
+    const { isSuccessful } = await makeFlutterWaveIntlOtherBankTransfer({
       currency: plan.currency,
       id: req.body.id,
       amount: req.body.amount,
@@ -108,13 +158,30 @@ module.exports = {
       account_number: req.body.account_number,
       account_bank: req.body.account_bank,
     });
-    if (!isSuccess) {
+    if (!isSuccessful) {
       return res.status(500).json({
         msg: "transaction failed,please try again",
       });
     }
+    const data = {
+      id: plan._id,
+      user: plan.user,
+      amount: req.body.amount,
+      currency: plan.currency,
+      paymentType: "mobilemoney",
+    };
+
+    const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
+      data
+    );
+    if (!isSuccess) {
+      return res.status(500).json({
+        msg: "withdrawal failed,please try again",
+      });
+    }
     return res.status(201).json({
-      msg: "Transaction initiated...",
+      transaction,
+      msg: "Withdrawal successful",
     });
   },
 
@@ -238,7 +305,7 @@ module.exports = {
 };
 
 const makeFlutterWaveMobileTransfer = async (data) => {
-  let isSuccess;
+  let isSuccessful;
   try {
     const response = await fetch(`${process.env.BASE_API_URL}/transfers`, {
       method: "POST",
@@ -254,12 +321,12 @@ const makeFlutterWaveMobileTransfer = async (data) => {
         currency: data.currency,
         reference: Date.parse(new Date()),
         beneficiary_name: data.name,
-        callback_url: process.env.TRANSFER_WEBHOOK,
+        //callback_url: process.env.TRANSFER_WEBHOOK,
       }),
     });
     const res = await response.json();
     if (res.status === "success") {
-      isSuccess = true;
+      isSuccessful = true;
     } else {
       throw new Error("Transaction creation failed");
     }
@@ -268,7 +335,7 @@ const makeFlutterWaveMobileTransfer = async (data) => {
     throw error;
   }
   return {
-    isSuccess,
+    isSuccessful,
   };
 };
 
@@ -288,7 +355,7 @@ const transferAcct = async (data) => {
     if (A.amount < data.amount) {
       // If A would have negative balance, fail and abort the transaction
       // `session.abortTransaction()` will undo the above `findOneAndUpdate()`
-      throw new Error("Insufficient funds: " + A.amount);
+      throw new Error("Insufficient funds ");
     }
     /**create transaction for withdrawal */
     await Transaction.create({
@@ -361,7 +428,7 @@ const updateAmountAndCreateTransaction = async (data) => {
 };
 
 const makeFlutterWaveIntlOtherBankTransfer = async (data) => {
-  let isSuccess;
+  let isSuccessful;
 
   try {
     const response = await fetch(`${process.env.BASE_API_URL}/transfers`, {
@@ -379,12 +446,12 @@ const makeFlutterWaveIntlOtherBankTransfer = async (data) => {
         beneficiary_name: data.name,
         account_bank: data.account_bank,
         account_number: data.account_number,
-        callback_url: process.env.TRANSFER_WEBHOOK,
+        //callback_url: process.env.TRANSFER_WEBHOOK,
       }),
     });
     const res = await response.json();
     if (res.status === "success") {
-      isSuccess = true;
+      isSuccessful = true;
     } else {
       throw new Error("Transaction creation failed");
     }
@@ -393,6 +460,6 @@ const makeFlutterWaveIntlOtherBankTransfer = async (data) => {
     throw error;
   }
   return {
-    isSuccess,
+    isSuccessful,
   };
 };

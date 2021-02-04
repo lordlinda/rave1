@@ -4,6 +4,9 @@ import {
   MAKE_PAYMENT,
   PROCESSING_PAYMENT,
   PAYMENT_FAILURE,
+  MOBILE_MONEY,
+  BANK_TRANSFER,
+  ACCOUNT_TRANSFER,
 } from "../actions/types.js";
 
 const initialState = {
@@ -24,6 +27,10 @@ export default (state = initialState, action) => {
         ...state,
       };
     case MAKE_PAYMENT:
+    case MOBILE_MONEY:
+    case BANK_TRANSFER:
+    case ACCOUNT_TRANSFER:
+    case PAYMENT_FAILURE:
       return {
         ...state,
         paymentComplete: false,
@@ -33,11 +40,7 @@ export default (state = initialState, action) => {
         ...state,
         paymentComplete: true,
       };
-    case PAYMENT_FAILURE:
-      return {
-        ...state,
-        paymentComplete: false,
-      };
+
     default:
       return state;
   }

@@ -6,14 +6,15 @@ import {
   BANK_TRANSFER,
   ACCOUNT_TRANSFER,
   PAYMENT_FAILURE,
+  PROCESSING_PAYMENT,
 } from "./types";
 /**this route is to transfer money from one plan to another
  */
 export const accountTransfer = (data, history) => async (dispatch) => {
+  dispatch({
+    type: PROCESSING_PAYMENT,
+  });
   try {
-    dispatch({
-      type: TRANSFERS_LOADING,
-    });
     const res = await axios.post("/transfers/account", data);
     dispatch({
       type: ACCOUNT_TRANSFER,
@@ -21,19 +22,18 @@ export const accountTransfer = (data, history) => async (dispatch) => {
     history.push("/transfers");
     toast.success(res.data.msg);
   } catch (error) {
-    console.log(error);
+    toast.error(error?.response?.data.msg);
     dispatch({
       type: PAYMENT_FAILURE,
     });
-    toast.error("Transfer failed,please try again");
   }
 };
 
 export const mobileTransfer = (data, history) => async (dispatch) => {
+  dispatch({
+    type: PROCESSING_PAYMENT,
+  });
   try {
-    dispatch({
-      type: TRANSFERS_LOADING,
-    });
     const res = await axios.post("/transfers/mobile", data);
     dispatch({
       type: MOBILE_MONEY,
@@ -42,19 +42,18 @@ export const mobileTransfer = (data, history) => async (dispatch) => {
     history.push("/transfers");
     toast.success(res.data.msg);
   } catch (error) {
-    console.log(error);
+    toast.error(error?.response?.data.msg);
     dispatch({
       type: PAYMENT_FAILURE,
     });
-    toast.error("Transfer failed,please try again");
   }
 };
 
 export const bankTransfer = (data, history) => async (dispatch) => {
+  dispatch({
+    type: PROCESSING_PAYMENT,
+  });
   try {
-    dispatch({
-      type: TRANSFERS_LOADING,
-    });
     const res = await axios.post("/transfers/bank", data);
     dispatch({
       type: BANK_TRANSFER,
@@ -63,11 +62,10 @@ export const bankTransfer = (data, history) => async (dispatch) => {
     history.push("/transfers");
     toast.success(res.data.msg);
   } catch (error) {
-    console.log(error);
+    toast.error(error?.response?.data.msg);
     dispatch({
       type: PAYMENT_FAILURE,
     });
-    toast.error("Transfer failed,please try again");
   }
 };
 
@@ -80,10 +78,10 @@ export const addNumber = (data) => async (dispatch) => {
 };
 
 export const addBankAcct = (data, history) => async (dispatch) => {
+  dispatch({
+    type: TRANSFERS_LOADING,
+  });
   try {
-    dispatch({
-      type: TRANSFERS_LOADING,
-    });
     const res = await axios.post("/transfers/addBankAcct", data);
     history.push("/transfers");
     toast.success(res.data.msg);

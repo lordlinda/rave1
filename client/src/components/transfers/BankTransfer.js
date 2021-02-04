@@ -133,7 +133,7 @@ const mapStateToProps = (state) => {
   return {
     plans: state.plans.plans,
     accounts: state.data.user.bankAccounts,
-    loading: state.transfers.loading,
+    loading: state.payment.paymentComplete,
   };
 };
 export default connect(mapStateToProps, {
