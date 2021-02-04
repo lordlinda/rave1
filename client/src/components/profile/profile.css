@@ -1,3 +1,6 @@
+.profile {
+  margin-bottom: 56px;
+}
 .profile__header {
   display: flex;
   flex-direction: column;
