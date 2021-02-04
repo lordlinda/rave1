@@ -1,7 +1,6 @@
 const { check } = require("express-validator");
 const PaymentPlan = require("./models/PaymentPlan");
 
-const FacebookTokenStrategy = require("passport-facebook-token");
 const GoogleTokenStrategy = require("passport-google-token").Strategy;
 const passport = require("passport");
 const User = require("./models/User.js");

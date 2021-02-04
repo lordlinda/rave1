@@ -168,18 +168,22 @@ export const oauthFacebook = (token) => async (dispatch) => {
 
 export const forgotPassword = (data) => async (dispatch) => {
   try {
-    const res = await axios.post("/users/forgetPassword", data);
+    const res = await axios.post("/users/forgetPassword", { email: data });
+    console.log(res.data);
     toast.success(res.data.msg);
   } catch (error) {
     console.log(error.response);
+    toast.error(error?.response?.data?.msg);
   }
 };
 
 export const resetPassword = (data) => async (dispatch) => {
   try {
-    const res = await axios.post("/users/resetPassword", data);
+    const res = await axios.post("/users/resetPassword", {
+      password: data,
+    });
     toast.success(res.data.msg);
   } catch (error) {
-    console.log(error.response);
+    toast.error(error?.response?.data?.msg);
   }
 };

@@ -217,11 +217,12 @@ module.exports = {
         .status(400)
         .json({ msg: errors.array().map((error) => error.msg)[0] });
     }
+
     try {
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({
-          error: "User with that email does not exist",
+          msg: "User with that email does not exist",
         });
       }
       const token = jwt.sign(
@@ -248,7 +249,7 @@ module.exports = {
         .then((sent) => {
           // console.log('SIGNUP EMAIL SENT', sent)
           return res.json({
-            message: `Email has been sent to ${email}. Follow the instruction to activate your account`,
+            msg: `Email has been sent to ${email}. Follow the instruction to activate your account`,
           });
         })
         .catch((err) => {
@@ -257,7 +258,7 @@ module.exports = {
     } catch (err) {
       console.log(err);
       return res.json({
-        message: err.message,
+        msg: err.message,
       });
     }
   },
@@ -280,11 +281,11 @@ module.exports = {
       await user.save();
 
       return res.json({
-        message: `Great! Now you can login with your new password`,
+        msg: `Great! Now you can login with your new password`,
       });
     } catch (error) {
       return res.status(400).json({
-        error: "Expired link. Try again",
+        msg: "Expired link. Try again",
       });
     }
   },

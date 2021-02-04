@@ -4,14 +4,18 @@ import Input from "./Reusables/Input";
 import { connect } from "react-redux";
 import { forgotPassword } from "../redux/actions/index";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+
 function ForgetPassword(props) {
   const [email, setEmail] = useState("");
-  const forgetPassword = () => {
+  const forgetPassword = (e) => {
+    e.preventDefault();
     if (email) {
       props.forgotPassword(email);
     } else {
       toast.error("please fill in the email field");
     }
+    setEmail("");
   };
   return (
     <div className="forgetPassword">
@@ -33,6 +37,7 @@ function ForgetPassword(props) {
           send email
         </Button>
       </form>
+      <Link to="/signin">Back to login page</Link>
     </div>
   );
 }

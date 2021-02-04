@@ -7,22 +7,24 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { resetPassword } from "../redux/actions/index";
 
-function ResetPassword() {
+function ResetPassword(props) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const resetPassword = () => {
+  const resetPassword = (e) => {
+    e.preventDefault();
     if (password !== confirmPassword) {
       toast.error("Passwords must match");
     } else {
       /**reset password function */
+      props.resetPassword(password);
     }
   };
   return (
     <div className="resetPassword">
       <h1>Reset Password</h1>
       <div>
-        <form>
+        <form onSubmit={resetPassword}>
           <Input
             label="Password"
             type="password"
@@ -35,7 +37,7 @@ function ResetPassword() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <Button type="submit" className="resetButton" onClick={resetPassword}>
+          <Button type="submit" className="resetButton">
             reset password
           </Button>
         </form>
