@@ -133,7 +133,6 @@ class Subscription extends React.Component {
     }
   }
   render() {
-    console.log(this.props.complete);
     return (
       <div className="confirmPage">
         {this.props.loading ? (

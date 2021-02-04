@@ -76,7 +76,7 @@
 .MuiBox-root {
   width: 100% !important;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 540px) {
   .signIn {
     display: grid;
     place-items: center;

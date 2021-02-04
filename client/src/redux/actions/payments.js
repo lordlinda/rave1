@@ -5,6 +5,7 @@ import {
   CANCEL_SUBSCRIPTION,
   UPDATE_SUBSCRIPTION,
   PROCESSING_PAYMENT,
+  PAYMENT_FAILURE,
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -26,6 +27,9 @@ export const makePayment = (data, history) => async (dispatch) => {
     });
   } catch (error) {
     console.log(error);
+    dispatch({
+      type: PAYMENT_FAILURE,
+    });
   }
 };
 
@@ -44,6 +48,9 @@ export const schedulePayment = (data, history) => async (dispatch) => {
   } catch (error) {
     console.log(error);
     toast.error(error);
+    dispatch({
+      type: PAYMENT_FAILURE,
+    });
   }
 };
 

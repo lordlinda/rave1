@@ -3,6 +3,7 @@ import {
   SIGN_OUT,
   MAKE_PAYMENT,
   PROCESSING_PAYMENT,
+  PAYMENT_FAILURE,
 } from "../actions/types.js";
 
 const initialState = {
@@ -31,6 +32,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         paymentComplete: true,
+      };
+    case PAYMENT_FAILURE:
+      return {
+        ...state,
+        paymentComplete: false,
       };
     default:
       return state;

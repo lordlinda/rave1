@@ -5,6 +5,7 @@ import {
   MOBILE_MONEY,
   BANK_TRANSFER,
   ACCOUNT_TRANSFER,
+  PAYMENT_FAILURE,
 } from "./types";
 /**this route is to transfer money from one plan to another
  */
@@ -21,6 +22,9 @@ export const accountTransfer = (data, history) => async (dispatch) => {
     toast.success(res.data.msg);
   } catch (error) {
     console.log(error);
+    dispatch({
+      type: PAYMENT_FAILURE,
+    });
     toast.error("Transfer failed,please try again");
   }
 };
@@ -39,6 +43,9 @@ export const mobileTransfer = (data, history) => async (dispatch) => {
     toast.success(res.data.msg);
   } catch (error) {
     console.log(error);
+    dispatch({
+      type: PAYMENT_FAILURE,
+    });
     toast.error("Transfer failed,please try again");
   }
 };
@@ -57,6 +64,9 @@ export const bankTransfer = (data, history) => async (dispatch) => {
     toast.success(res.data.msg);
   } catch (error) {
     console.log(error);
+    dispatch({
+      type: PAYMENT_FAILURE,
+    });
     toast.error("Transfer failed,please try again");
   }
 };
