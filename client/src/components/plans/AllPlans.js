@@ -52,7 +52,7 @@ const AllPlans = (props) => {
                 }}
               >
                 {props.plans.map((plan) => (
-                  <Plan plan={plan} key={plan._id} />
+                  <Plan plan={plan} key={plan?._id} />
                 ))}
               </FlipMove>
             </div>

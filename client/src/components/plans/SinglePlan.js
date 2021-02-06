@@ -173,7 +173,7 @@ const SinglePlan = (props) => {
                           label="Make a one-time payment"
                         />
                         <FormControlLabel
-                          value="/createSubscription"
+                          value="/interval"
                           control={<Radio />}
                           label="Setup scheduled payments"
                         />
