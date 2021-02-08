@@ -6,17 +6,17 @@ import {
   getPaymentPlan,
   schedulePayment,
   makePayment,
-} from "../redux/actions/payments";
-import BackArrow from "./Reusables/BackArrow.js";
+} from "../../redux/actions/payments";
+import BackArrow from "../Reusables/BackArrow.js";
 import "./confirmPage.css";
-import { numberWithCommas } from "../helpers/middleware";
+import { numberWithCommas } from "../../helpers/middleware";
 import { PulseLoader } from "react-spinners";
 import moment from "moment";
-import { calculateDuration } from "../helpers/middleware";
+import { calculateDuration } from "../../helpers/middleware";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Processor from "./Reusables/Processor";
+import Processor from "../Reusables/Processor";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";

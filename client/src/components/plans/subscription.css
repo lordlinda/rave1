@@ -1,3 +1,6 @@
+.subscription {
+  flex: 1;
+}
 .subscription__header {
   display: flex;
   justify-content: space-between;

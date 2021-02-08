@@ -61,8 +61,6 @@
     width: 50%;
     border: 1px solid var(--gray-light);
     padding: 30px 8px;
-    height: unset;
-    min-height: 100%;
     margin: 30px auto;
   }
   .total h1 {

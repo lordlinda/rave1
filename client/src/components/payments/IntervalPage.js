@@ -3,10 +3,10 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import BackArrow from "./Reusables/BackArrow";
+import BackArrow from "../Reusables/BackArrow";
 import { Button } from "@material-ui/core";
 import { connect } from "react-redux";
-import { setInterval } from "../redux/actions/filterActions";
+import { setInterval } from "../../redux/actions/filterActions";
 
 function IntervalPage(props) {
   const handleChange = (event) => {
@@ -22,7 +22,9 @@ function IntervalPage(props) {
   };
 
   return (
-    <div style={{ width: "90%", margin: "0 auto", marginTop: "24px" }}>
+    <div
+      style={{ width: "90%", margin: "0 auto", marginTop: "24px", flex: "1" }}
+    >
       <div style={{ display: "flex", alignItems: "center" }}>
         <BackArrow goBack={props.history} />
         <h1 style={{ fontSize: "20px" }}>Choose interval</h1>

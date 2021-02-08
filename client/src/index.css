@@ -28,6 +28,9 @@ code {
     0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
   outline-width: 0;
 }
+.MuiDrawer-root {
+  display: none;
+}
 .Mui-selected {
   color: var(--purple) !important;
   border: none !important;
@@ -73,4 +76,21 @@ button {
   width: 280px;
   margin: 16px auto;
   padding: 16px 8px;
+}
+.active-item {
+  opacity: 1;
+  color: var(--purple);
+  background-color: rgba(0, 102, 245, 0.07);
+}
+
+@media screen and (min-width: 900px) {
+  .MuiBottomNavigation-root {
+    display: none !important;
+  }
+  .MuiDrawer-root {
+    display: block;
+  }
+  .sidebarContainer {
+    display: flex;
+  }
 }

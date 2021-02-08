@@ -7,8 +7,10 @@ import HomeSharpIcon from "@material-ui/icons/HomeSharp";
 import SwapHorizSharpIcon from "@material-ui/icons/SwapHorizSharp";
 import { withRouter } from "react-router-dom";
 import PaymentIcon from "@material-ui/icons/Payment";
+
 function LabelBottomNavigation(props) {
   const [value, setValue] = React.useState("recents");
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
     props.history.push(newValue);

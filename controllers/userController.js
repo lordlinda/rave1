@@ -78,8 +78,6 @@ module.exports = {
       /**which we will send via axios */
       res.status(200).json({
         user: user.email,
-        token: access_token,
-        refreshToken: refreshToken,
       });
     } catch (err) {
       console.log(err);
@@ -105,7 +103,6 @@ module.exports = {
       for (let key in req.body) {
         findArgs[key] = req.body[key];
       }
-      console.log(findArgs);
       await User.updateOne({ _id: req.user._id }, { ...findArgs });
       res.status(200).json({ msg: "User details updated successfully" });
     } catch (error) {
@@ -142,6 +139,8 @@ module.exports = {
         //! FIND OUT WHY WE RETURN USER HERE
         return res.status(200).json({
           user: user.email,
+          access_token,
+          refreshToken,
         });
       }
       //if passwords dont match return an error
@@ -183,7 +182,7 @@ module.exports = {
       res.cookie("refreshToken", refreshToken, {
         secure: process.env.NODE_ENV === "production",
       });
-      res.status(200).json({ email: user.email });
+      res.status(200).json({ user: user.email });
     } catch (error) {
       console.log(error);
     }

@@ -1,4 +1,6 @@
 const Subscription = require("../models/Subscription");
+const fetch = require("node-fetch");
+
 module.exports = {
   getSubscription: async (req, res) => {
     try {
@@ -17,12 +19,18 @@ module.exports = {
       const subscriptionPlan = await Subscription.findById(req.params.id);
       /**check the status */
       if (subscriptionPlan.status !== "active") {
-        subscriptionPlan.delete();
+        await subscriptionPlan.delete();
         return res.status(200).json({
           msg: "Subscription deleted successfully",
         });
       }
       const { subscriptions } = await getFlutterwaveSubscriptions();
+      if (!subscriptions && subscriptionPlan.status === "active") {
+        await subscriptionPlan.delete();
+        return res.status(200).json({
+          msg: "Subscription deleted successfully",
+        });
+      }
       /**from the list of plans we have
        * since this is an array we have to pick the first item using array[0]
        */
@@ -42,10 +50,13 @@ module.exports = {
           msg: "Subscription deletion failed,please try again",
         });
       }
+      await subscriptionPlan.delete();
+
       return res.status(200).json({
         msg: "Congragulations,subscription deleted successfully",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         msg: error.msg,
       });
@@ -66,6 +77,7 @@ const getFlutterwaveSubscriptions = async () => {
     });
     const json = await response.json();
     subscriptions = json.data;
+    console.log(json.data);
   } catch (error) {
     errors = error.msg;
   }

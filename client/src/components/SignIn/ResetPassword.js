@@ -1,11 +1,11 @@
 import { Button } from "@material-ui/core";
 import React, { useState } from "react";
-import Input from "./Reusables/Input";
+import Input from "../Reusables/Input";
 import "./Password.css";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { resetPassword } from "../redux/actions/index";
+import { resetPassword } from "../../redux/actions/index";
 
 function ResetPassword(props) {
   const [password, setPassword] = useState("");

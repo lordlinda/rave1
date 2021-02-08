@@ -2,7 +2,6 @@ import React from "react";
 import Total from "./Total.js";
 import Plans from "./Plans.js";
 import TransactionList from "./TransactionList.js";
-import LabelBottomNavigation from "../Reusables/BottomNavigation";
 import "./dashboard.css";
 import { motion } from "framer-motion";
 import { PulseLoader } from "react-spinners";
@@ -27,8 +26,6 @@ const Dashboard = (props) => {
           <TransactionList />
         </>
       )}
-
-      <LabelBottomNavigation />
     </motion.div>
   );
 };

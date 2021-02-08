@@ -15,6 +15,7 @@ function PersonalDetails(props) {
     dateOfBirth: "",
   });
   const { username, email, dateOfBirth } = formData;
+
   const fetchData = async () => {
     await props.loadUser();
     await setFormData({
@@ -24,18 +25,22 @@ function PersonalDetails(props) {
       dateOfBirth: props.user?.dateOfBirth,
     });
   };
+
   useEffect(() => {
     fetchData();
   }, []);
+
   const handleDataChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
+
   const editUser = () => {
     props.editUser(formData);
   };
+
   return (
     <div>
       {props.loading && (

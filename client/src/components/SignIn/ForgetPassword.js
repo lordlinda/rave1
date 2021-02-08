@@ -1,8 +1,8 @@
 import { Button } from "@material-ui/core";
 import React, { useState } from "react";
-import Input from "./Reusables/Input";
+import Input from "../Reusables/Input";
 import { connect } from "react-redux";
-import { forgotPassword } from "../redux/actions/index";
+import { forgotPassword } from "../../redux/actions/index";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
@@ -36,8 +36,8 @@ function ForgetPassword(props) {
         <Button type="submit" className="resetButton">
           send email
         </Button>
+        <Link to="/signin">Back to login page</Link>
       </form>
-      <Link to="/signin">Back to login page</Link>
     </div>
   );
 }

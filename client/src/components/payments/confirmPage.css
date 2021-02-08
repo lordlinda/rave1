@@ -1,3 +1,6 @@
+.confirmPage {
+  flex: 1;
+}
 .confirmPage__header {
   display: flex;
   padding: 16px;

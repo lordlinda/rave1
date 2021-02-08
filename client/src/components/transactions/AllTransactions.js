@@ -40,7 +40,7 @@ const Transactions = (props) => {
   const options = ["today", "this week", "this month"];
   return (
     <motion.div
-      className="transactions"
+      className="allTransactions"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >

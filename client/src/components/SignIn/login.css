@@ -11,6 +11,7 @@
 .sideImg {
   display: none;
 }
+
 .login__button > div > button {
   background: var(--purple);
   margin-top: 20px;
@@ -25,9 +26,7 @@
   margin: 4px 0px 12px 0px;
   color: var(--purple-dark);
 }
-.signIn > form > div > button:hover {
-  background-color: var(--purple-dark);
-}
+
 .signIn__link {
   display: flex;
   align-items: center;
@@ -76,6 +75,16 @@
 .MuiBox-root {
   width: 100% !important;
 }
+.login__button {
+  text-align: center;
+}
+.login__button > div > button {
+  width: 70%;
+  margin-top: 24px;
+}
+@media screen and (min-width: 385px) {
+}
+
 @media screen and (min-width: 540px) {
   .signIn {
     display: grid;
@@ -85,25 +94,16 @@
     height: 100vh;
     width: 100vw;
   }
-  .signIn > div {
+  .signIn__form {
     width: 70%;
     border: 1px solid var(--gray-light);
     padding: 42px;
     box-shadow: 0px 40px 50px rgba(2, 2, 2, 0.08);
     margin-top: 10px;
   }
-  .login__button {
-    text-align: center;
-  }
-  .login__button > div > button {
-    width: 70%;
-    margin-top: 24px;
-  }
-  .signIn > div > h1 {
-    font-size: 42px;
-  }
+
   .signIn > div > p {
-    font-size: 20px;
+    font-size: 16px;
   }
   .login__form {
     margin-top: 42px;
@@ -112,6 +112,11 @@
     text-align: center;
     justify-content: center;
     font-size: 16px;
+  }
+}
+@media screen and (min-width: 635px) {
+  .signIn__form {
+    width: 60%;
   }
 }
 @media screen and (min-width: 1024px) {

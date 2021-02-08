@@ -11,7 +11,6 @@ module.exports = {
   //@decription  create  and update onetime payment user
   //@access      Private
   makePayment: async (req, res) => {
-    console.log(req.body);
     try {
       //!dont forget to verify the VERIFY_URL
       const { isVerified } = await verifyTransaction({
@@ -140,7 +139,7 @@ module.exports = {
       paymentType: req.body.paymentType,
       count: moment(req.body.startDate) > moment() ? 0 : 1,
     };
-
+    console.log(data);
     try {
       //!dont forget to verify the VERIFY_URL
       const { isVerified } = await verifyTransaction({

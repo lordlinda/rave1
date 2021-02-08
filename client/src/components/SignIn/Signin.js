@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { connect } from "react-redux";
-import Input from "./Reusables/Input.js";
-import Button from "./Reusables/Button.js";
+import Input from "../Reusables/Input.js";
+import Button from "../Reusables/Button.js";
 import { Redirect, Link } from "react-router-dom";
 import "./login.css";
-import * as actions from "../redux/actions/index.js";
+import * as actions from "../../redux/actions/index.js";
 import { GoogleLogin } from "react-google-login";
 
-import FacebookLogin from "react-facebook-login";
 import { Box } from "@material-ui/core";
 import Divider from "./Divider";
-import FacebookIcon from "@material-ui/icons/Facebook";
-import signInImage from "../images/undraw_sign_in_e6hj.svg";
+import signInImage from "../../images/undraw_sign_in_e6hj.svg";
 
 const Signin = (props) => {
   const [formData, setFormData] = useState({

@@ -7,6 +7,7 @@ import {
   GET_SUBSCRIPTION,
   CONVERT_CURRENCY,
   SIGN_OUT,
+  DELETE_SUBCRIPTION,
 } from "../actions/types.js";
 
 const initialState = {
@@ -71,7 +72,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
       };
-
+    case DELETE_SUBCRIPTION:
+      return {
+        ...state,
+        plan: {
+          ...state.plan.subscriptions.filter(
+            (subscription) => subscription._id !== action.payload
+          ),
+        },
+      };
     default:
       return state;
   }

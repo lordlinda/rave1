@@ -60,9 +60,6 @@ const useStyles = makeStyles((theme) => ({
   panel: {
     width: "500px",
   },
-  tab: {
-    color: "#613eea",
-  },
 }));
 
 function VerticalTabs(props) {

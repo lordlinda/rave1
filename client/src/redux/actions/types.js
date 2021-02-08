@@ -17,6 +17,7 @@ export const CREATE_PLAN = "CREATE_PLAN";
 export const GET_PLAN = "GET_PLAN";
 export const DELETE_PLAN = "DELETE_PLAN";
 export const GET_SUBSCRIPTION = "GET_SUBSCRIPTION";
+export const DELETE_SUBCRIPTION = "DELETE_SUBCRIPTION";
 
 /**payments */
 export const MAKE_PAYMENT = "MAKE_PAYMENT";

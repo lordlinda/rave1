@@ -126,8 +126,12 @@ module.exports = {
           });
         }
         if (access_token && refreshToken) {
-          res.set("authorization", access_token);
-          res.set("x-refresh-token", refreshToken);
+          res.cookie("access_token", access_token, {
+            secure: process.env.NODE_ENV === "production",
+          });
+          res.cookie("refreshToken", refreshToken, {
+            secure: process.env.NODE_ENV === "production",
+          });
         }
         req.user = user;
       }

@@ -8,6 +8,7 @@ import {
   DELETE_PLAN,
   GET_SUBSCRIPTION,
   CONVERT_CURRENCY,
+  DELETE_SUBCRIPTION,
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -135,11 +136,16 @@ export const getSubscription = (id) => async (dispatch) => {
   }
 };
 
-export const deleteSubscription = (id) => async () => {
+export const deleteSubscription = (id) => async (dispatch) => {
   try {
-    await axios.delete(`/subscriptions/${id}`);
-    toast.success("Congragulations,subscription deleted successfully");
+    const res = await axios.delete(`/subscriptions/${id}`);
+    dispatch({
+      type: DELETE_SUBCRIPTION,
+      payload: id,
+    });
+    toast.success(res.data.msg);
   } catch (error) {
     console.log(error);
+    toast.error(error.response?.data?.msg);
   }
 };

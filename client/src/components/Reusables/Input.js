@@ -13,7 +13,7 @@ const CustomInput = ({
   return (
     <div>
       <FormControl fullWidth>
-        <InputLabel inputlabelprops={{ shrink: true }}>{label}</InputLabel>
+        <InputLabel>{label}</InputLabel>
         <Input
           value={value}
           onChange={onChange}

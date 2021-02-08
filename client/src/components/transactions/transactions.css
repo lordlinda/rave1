@@ -1,3 +1,6 @@
+.allTransactions {
+  flex: 1;
+}
 .transactions__header {
   padding-top: 32px;
 }

@@ -1,12 +1,12 @@
 import React from "react";
-import Input from "./Reusables/Input.js";
+import Input from "../Reusables/Input.js";
 import { connect } from "react-redux";
-import { makePayment } from "../redux/actions/payments";
-import { setAmount, setCurrency } from "../redux/actions/filterActions";
+import { makePayment } from "../../redux/actions/payments";
+import { setAmount, setCurrency } from "../../redux/actions/filterActions";
 
-import Select from "./Reusables/select/Select.js";
-import BackArrow from "./Reusables/BackArrow.js";
-import { currencyOptionsArray } from "./Reusables/select/Options.js";
+import Select from "../Reusables/select/Select.js";
+import BackArrow from "../Reusables/BackArrow.js";
+import { currencyOptionsArray } from "../Reusables/select/Options.js";
 import "./amountPage.css";
 import { Button } from "@material-ui/core";
 
@@ -36,7 +36,7 @@ function AmountPage(props) {
       <div className="amountPage__body">
         <div className="amountPage__amount">
           <Select
-            label="currency"
+            label="curr"
             value={props.currency}
             onChange={handleCurrency}
             options={currencyOptionsArray}

@@ -1,10 +1,10 @@
 import { Button } from "@material-ui/core";
 import React from "react";
-import BackArrow from "./Reusables/BackArrow";
-import Input from "./Reusables/Input";
+import BackArrow from "../Reusables/BackArrow";
+import Input from "../Reusables/Input";
 import "./dates.css";
 import { connect } from "react-redux";
-import { setStartDate, setEndDate } from "../redux/actions/filterActions";
+import { setStartDate, setEndDate } from "../../redux/actions/filterActions";
 import moment from "moment";
 import { toast } from "react-toastify";
 function DatesPage(props) {
@@ -23,7 +23,7 @@ function DatesPage(props) {
     }
   };
   return (
-    <div>
+    <div className="datesPage">
       <div className="datesPage__header">
         <BackArrow goBack={props.history} />
         <h1 className="">Choose dates</h1>
