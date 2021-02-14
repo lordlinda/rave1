@@ -113,7 +113,6 @@ function Subscription(props) {
     handleClose();
     props.updateSubscription({ id, ...{ ...formData, interval } });
   };
-  console.log(interval);
   return (
     <motion.div
       initial={{ opacity: 0 }}

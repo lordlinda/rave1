@@ -1,0 +1,36 @@
+.intervalPage {
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 24px;
+}
+.intervalPage__header {
+  display: flex;
+  align-items: center;
+}
+.intervalPage__header > h1 {
+  font-size: 20px;
+  margin-left: 16%;
+}
+.intervalPage__body {
+  margin-top: 24px;
+  margin-left: 16px;
+}
+.intervalPage__body > h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.intervalPage__message {
+  margin-top: 24px;
+  font-size: 20px;
+  letter-spacing: 6;
+  line-height: 1.8;
+  background: green;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
+.intervalPage__message > span {
+  font-weight: 800;
+}

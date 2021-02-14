@@ -15,12 +15,20 @@ import { toast } from "react-toastify";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { Link } from "react-router-dom";
 import Processor from "../Reusables/Processor";
-function BankTransfer(props) {
+function BankTransfer({
+  loading,
+  history,
+  getAllPlans,
+  loadUser,
+  bankTransfer,
+  plans,
+  accounts,
+}) {
   useEffect(() => {
-    props.getAllPlans();
+    getAllPlans();
   }, []);
   useEffect(() => {
-    props.loadUser();
+    loadUser();
   }, []);
 
   const [amount, setAmount] = useState("");
@@ -55,25 +63,25 @@ function BankTransfer(props) {
         account_bank: to.account_bank,
         account_number: to.account_number,
       };
-      props.bankTransfer(data, props.history);
+      bankTransfer(data, history);
     }
     /**transfer money */
   };
   useEffect(() => {
-    if (props.history.location.state) {
-      setFrom(props.history.location.state.id);
+    if (history.location.state) {
+      setFrom(history.location.state.id);
     }
-  }, [props.plans]);
+  }, [plans]);
   return (
     <div className="bankTransfer">
       <div className="accountTransfer__header">
-        <BackArrow goBack={props.history} />
+        <BackArrow goBack={history} />
         <h1> Bank Transfer</h1>
       </div>
       <div className="accountTransfer__plans">
         <p>From</p>
         <FlipMove>
-          {props.plans.map((plan) => (
+          {plans.map((plan) => (
             <Account
               plan={plan}
               key={plan._id}
@@ -86,8 +94,8 @@ function BankTransfer(props) {
       <div className="accountTransfer__plans">
         <p>to</p>
         <div>
-          {props.accounts?.length > 0 ? (
-            props.accounts?.map((account) => (
+          {accounts?.length > 0 ? (
+            accounts?.map((account) => (
               <div
                 className="bankAcct"
                 onClick={() => getTo(account)}
@@ -122,9 +130,7 @@ function BankTransfer(props) {
         <Button variant="outlined" className="editButton" onClick={bank}>
           Transfer
         </Button>
-        {props.loading && (
-          <Processor text="Transfer is processing,please wait" />
-        )}
+        {loading && <Processor text="Transfer is processing,please wait" />}
       </div>
     </div>
   );

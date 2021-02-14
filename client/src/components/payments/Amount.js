@@ -1,59 +1,60 @@
-import React from "react";
-import Input from "../Reusables/Input.js";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { makePayment } from "../../redux/actions/payments";
 import { setAmount, setCurrency } from "../../redux/actions/filterActions";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 
-import Select from "../Reusables/select/Select.js";
 import BackArrow from "../Reusables/BackArrow.js";
-import { currencyOptionsArray } from "../Reusables/select/Options.js";
 import "./amountPage.css";
 import { Button } from "@material-ui/core";
 
-function AmountPage(props) {
-  const handleCurrency = (e) => {
-    props.setCurrency(e.target.value);
-  };
+function AmountPage({ history, currency, amount, setAmount, setCurrency }) {
+  useEffect(() => {
+    setCurrency(history.location.state.currency);
+  }, []);
   const handleAmount = (e) => {
-    props.setAmount(e.target.value);
+    setAmount(e.target.value);
   };
 
   const handleClick = () => {
     const data = {
-      ...props.location.state,
-      currency: props.currency,
-      amount: props.amount,
+      ...history.location.state,
+      currency: currency,
+      amount: amount,
     };
-    props.history.push("/confirm", data);
+    history.push("/maturity", data);
   };
-
   return (
     <div className="amountPage">
       <div className="amountPage__header">
-        <BackArrow goBack={props.history} />
-        <p>Amount</p>
+        <BackArrow goBack={history} />
+        <h1>Amount</h1>
       </div>
       <div className="amountPage__body">
+        <h1>How much would you like to save ?</h1>
         <div className="amountPage__amount">
-          <Select
-            label="curr"
-            value={props.currency}
-            onChange={handleCurrency}
-            options={currencyOptionsArray}
-          />
-          <Input
-            placeholder="Amount"
-            value={props.amount}
-            onChange={handleAmount}
-            type="number"
-          />
+          <FormControl fullWidth variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-amount"
+              value={amount}
+              onChange={handleAmount}
+              startAdornment={
+                <InputAdornment position="start">{currency}</InputAdornment>
+              }
+              labelWidth={60}
+            />
+          </FormControl>
         </div>
         <div className="amountPage__button">
           <Button
-            disabled={!props.currency || !props.amount}
+            disabled={!currency || !amount}
             variant="contained"
             onClick={handleClick}
-            className={`${!props.currency || (!props.amount && "disabled")}`}
+            className={`${!currency || (!amount && "disabled")}`}
           >
             Next
           </Button>

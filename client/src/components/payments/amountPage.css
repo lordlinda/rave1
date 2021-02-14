@@ -9,8 +9,8 @@
   display: flex;
   align-items: center;
 }
-.amountPage__header > p {
-  font-size: 25px;
+.amountPage__header > h1 {
+  font-size: 20px;
   margin-left: 20%;
 }
 .amountPage__amount {
@@ -35,6 +35,17 @@
 .amountPage__body {
   padding: 16px;
 }
+.amountPage__body > h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.amountPage__amount {
+  margin-top: 24px;
+}
+.amountPage__amount > .MuiFormControl-root > .MuiInputBase-root {
+  padding: 12px !important;
+  font-size: 1.5rem !important;
+}
 
 @media screen and (min-width: 768px) {
   .amountPage__header {
@@ -51,9 +62,5 @@
   .amountPage__body {
     flex: 0.4;
     margin-top: 32px;
-  }
-
-  .amountPage__amount > div {
-    margin-left: 24px;
   }
 }

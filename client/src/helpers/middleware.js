@@ -67,3 +67,34 @@ export const calculateDueDate = ({ startDate, count, endDate, interval }) => {
     dueDate,
   };
 };
+
+export const calculateEndDate = ({ period, startDate }) => {
+  let end;
+  if (startDate) {
+    end = moment(startDate).add(period, "months").format("YYYY-MM-DD");
+  } else {
+    end = moment().add(period, "months").format("YYYY-MM-DD");
+  }
+  return {
+    end,
+  };
+};
+export const calculateTotalAmountAccrued = ({ period, amount }) => {
+  let total = 0;
+  //first convert the interest rate percentage to  a decimal
+  let rate;
+  if (period == 3) {
+    rate = 0.02;
+  } else if (period == 6) {
+    rate = 0.04;
+  } else if (period == 9) {
+    rate = 0.06;
+  } else {
+    rate = 0.08;
+  }
+  //calculate the new amount
+  total = amount * (1 + rate);
+  return {
+    total,
+  };
+};

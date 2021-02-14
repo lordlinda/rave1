@@ -9,45 +9,75 @@ import "./plan.css";
 import FlipMove from "react-flip-move";
 import { motion } from "framer-motion";
 import AddIcon from "@material-ui/icons/Add";
-import Fab from "@material-ui/core/Fab";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
 import { Link } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
-import { DialogContent } from "@material-ui/core";
+import {
+  DialogContent,
+  IconButton,
+  Button,
+  DialogActions,
+} from "@material-ui/core";
 import Transaction from "../transactions/Transaction.js";
 import activityImage from "../../images/undraw_Finance_re_gnv2.svg";
 import { PulseLoader } from "react-spinners";
 import RemoveIcon from "@material-ui/icons/Remove";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-const SinglePlan = (props) => {
+import AutorenewIcon from "@material-ui/icons/Autorenew";
+import RadioButtons from "../Reusables/RadioButtons";
+import {
+  topUpOptions,
+  transferOptions,
+  durationOptions,
+} from "../Reusables/select/Options";
+
+const SinglePlan = ({ match, history, plan, loading, getPlan }) => {
   const [open, setOpen] = useState(false);
   const [topUp, setTopUp] = useState(false);
   const [withdraw, setWithdraw] = useState(false);
+  const [renew, setRenew] = useState(false);
+  const [duration, setDuration] = useState("");
   const handleClose = () => {
     setOpen(!open);
   };
-  const id = props.match.params.id;
+  const id = match.params.id;
   useEffect(() => {
-    props.getPlan(id);
+    getPlan(id);
   }, []);
 
   const handleTopUp = () => {
     setWithdraw(false);
+    setRenew(false);
     setTopUp(true);
     setOpen(!open);
   };
 
   const handleWithdraw = () => {
     setTopUp(false);
+    setRenew(false);
+
     setWithdraw(true);
+    setOpen(!open);
+  };
+  const handleRenew = () => {
+    setTopUp(false);
+    setRenew(true);
+    setWithdraw(false);
     setOpen(!open);
   };
 
   const handleChange = (e) => {
-    props.history.push(e.target.value, { id });
+    history.push(e.target.value, { id, currency: plan.currency });
+  };
+  const handleInterval = (e) => {
+    setDuration(e.target.value);
+  };
+  const rollOver = () => {
+    const data = {
+      id,
+      period: duration,
+      amount: plan?.availableBalance,
+    };
+    console.log(data);
   };
 
   //give the first subscriptions
@@ -59,64 +89,84 @@ const SinglePlan = (props) => {
       transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
       className="plan"
     >
-      {props.loading ? (
+      {loading ? (
         <div className="plan__loading">
           <PulseLoader color={"#613eea"} />
         </div>
       ) : (
         <>
           <div className="plan__header">
-            <BackArrow goBack={props.history} />
-            {props.plan.name !== "Wallet" && (
-              <Link to={`/editplan/${id}`}>
-                <MoreVertIcon />
-              </Link>
-            )}
+            <BackArrow goBack={history} />
+            <h1>{plan?.name}</h1>
+            <Link to={`/editplan/${id}`}>
+              <MoreVertIcon />
+            </Link>
           </div>
           <div className="plan__middle">
-            <h1>{props.plan?.name}</h1>
-            {props.plan?.amount && (
-              <p>
-                {props.plan.currency} {numberWithCommas(props.plan?.amount)}
-              </p>
-            )}
-            <div className="plan__actions">
+            {plan?.amount && <p></p>}
+            <div className="plan__balances">
               <div>
-                <Fab aria-label="add">
-                  <AddIcon onClick={handleTopUp} />
-                </Fab>
-                <p>Topup</p>
+                <p>Actual Balance</p>
+                {plan.currency} {numberWithCommas(plan?.actualBalance)}
               </div>
               <div>
-                <Fab aria-label="remove">
-                  <RemoveIcon onClick={handleWithdraw} />
-                </Fab>
+                <p>Available Balance</p>
+                {plan.currency} {numberWithCommas(plan?.availableBalance)}
+              </div>
+            </div>
+
+            <div className="plan__actions">
+              <div>
+                <IconButton onClick={handleTopUp}>
+                  <AddIcon />
+                </IconButton>
+
+                <p>Topup</p>
+              </div>
+
+              <div>
+                <IconButton
+                  disabled={plan.availableBalance === 0}
+                  onClick={handleWithdraw}
+                >
+                  <RemoveIcon />
+                </IconButton>
+
                 <p>Withdraw</p>
+              </div>
+
+              <div>
+                <IconButton
+                  disabled={plan.availableBalance === 0}
+                  onClick={handleRenew}
+                >
+                  <AutorenewIcon />
+                </IconButton>
+                <p>Auto renew</p>
               </div>
             </div>
           </div>
           <div className="plan__body">
             <div className="plan__progressBar">
-              {props.plan?.targetAmount && (
+              {plan?.targetAmount && (
                 <ProgressBar
-                  amount={props.plan?.amount}
-                  targetAmount={props.plan?.targetAmount}
+                  amount={plan?.actualBalance}
+                  targetAmount={plan?.targetAmount}
                 />
               )}
             </div>
             <div className="plan__bodyData">
-              {props.plan?.subscriptions?.length > 0 && (
+              {plan?.subscriptions?.length > 0 && (
                 <div className="plan__subscriptions">
                   <h1>Subscriptions</h1>
                   <FlipMove>
-                    {props.plan?.subscriptions.map((subscription) => (
+                    {plan?.subscriptions.map((subscription) => (
                       <Link
                         to={`/subscription/${subscription._id}`}
                         key={subscription._id}
                       >
                         <div className="plan__sub">
                           <div>
-                            <h1>{props.plan?.name}</h1>
                             <p>
                               {subscription.currency} {subscription.subscAmt}
                             </p>
@@ -133,11 +183,11 @@ const SinglePlan = (props) => {
               )}
 
               <div className="plan__transactions">
-                {props.plan?.transactions?.length > 0 ? (
+                {plan?.transactions?.length > 0 ? (
                   <>
                     <h1> Recent Transactions</h1>
                     <FlipMove>
-                      {props.plan?.transactions.map((transaction) => (
+                      {plan?.transactions.map((transaction) => (
                         <Transaction
                           key={transaction._id}
                           transaction={transaction}
@@ -159,47 +209,39 @@ const SinglePlan = (props) => {
               className="paymentOptions"
             >
               <DialogContent>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    aria-label="interval"
-                    name="interval1"
+                {topUp && (
+                  <RadioButtons
                     onChange={handleChange}
-                  >
-                    {topUp && (
-                      <>
-                        <FormControlLabel
-                          value="/amount"
-                          control={<Radio />}
-                          label="Make a one-time payment"
-                        />
-                        <FormControlLabel
-                          value="/interval"
-                          control={<Radio />}
-                          label="Setup scheduled payments"
-                        />
-                      </>
-                    )}
-                    {withdraw && (
-                      <>
-                        <FormControlLabel
-                          value="/account"
-                          control={<Radio />}
-                          label="Account Transfer"
-                        />
-                        <FormControlLabel
-                          value="/mobile"
-                          control={<Radio />}
-                          label="Mobile Transfer"
-                        />
-                        <FormControlLabel
-                          value="/bank"
-                          control={<Radio />}
-                          label="Bank Transfer"
-                        />
-                      </>
-                    )}
-                  </RadioGroup>
-                </FormControl>
+                    options={topUpOptions}
+                  />
+                )}
+                {withdraw && (
+                  <RadioButtons
+                    onChange={handleChange}
+                    options={transferOptions}
+                  />
+                )}
+                {renew && (
+                  <>
+                    <RadioButtons
+                      value={duration}
+                      onChange={handleInterval}
+                      options={durationOptions}
+                    />
+                    <div>
+                      You will not be able to have access until the maturity
+                      date
+                    </div>
+                    <DialogActions>
+                      <Button onClick={handleClose} color="secondary">
+                        Disagree
+                      </Button>
+                      <Button onClick={rollOver} className="editButton">
+                        Agree
+                      </Button>
+                    </DialogActions>
+                  </>
+                )}
               </DialogContent>
             </Dialog>
           </div>

@@ -11,6 +11,7 @@ const {
   updateUserSubscription,
   getPaymentPlan,
   updateSubscriptionFromFlutterwave,
+  rollOverBalance,
 } = require("../controllers/paymentsController.js");
 
 //@route     POST /payments/makePayment
@@ -43,5 +44,7 @@ router.post("/updateSubscription", updateSubscriptionFromFlutterwave);
 router.put("/updateUserSubscription/:id", updateUserSubscription);
 
 router.post("/getPaymentPlan", auth, getPaymentPlan);
+
+router.post("/rollover", auth, rollOverBalance);
 
 module.exports = router;

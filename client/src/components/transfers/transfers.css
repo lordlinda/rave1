@@ -1,6 +1,3 @@
-.transfers {
-  flex: 1;
-}
 .transfers > h1 {
   font-size: 32px;
   padding: 0px 16px;
@@ -41,6 +38,7 @@
 }
 .accountTransfer {
   padding: 16px;
+  flex: 1;
 }
 .accountTransfer__header {
   display: flex;
@@ -176,5 +174,25 @@
     font-size: 32px;
   }
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
+  .accountTransfer,
+  .mobile,
+  .bankTransfer {
+    margin-left: 150px;
+  }
+  .transfers__icons {
+    justify-content: flex-start;
+  }
+  .transfers__accounts {
+    margin: unset;
+    margin-top: 56px;
+  }
+  .buttonContainer,
+  .accountTransfer__button {
+    text-align: unset;
+    margin-left: 24px;
+  }
+  .accountTransfer__amount {
+    margin-left: 16px;
+  }
 }

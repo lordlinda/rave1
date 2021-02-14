@@ -1,10 +1,9 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./assets/main.css";
 import "react-toastify/dist/ReactToastify.css";
-import { Provider } from "react-redux";
-import store from "./redux/store.js";
+
 import Signup from "./components/SignIn/Signup.js";
 import Signin from "./components/SignIn/Signin.js";
 import Dashboard from "./components/dashboard/Dashboard.js";
@@ -32,12 +31,12 @@ import AddBank from "./components/transfers/AddBank";
 import ForgetPassword from "./components/SignIn/ForgetPassword";
 import ResetPassword from "./components/SignIn/ResetPassword";
 import Sidebar from "./components/Sidebar/Sidebar";
-
-function App() {
+import { matchPath } from "react-router";
+import Maturity from "./components/payments/MaturityDate";
+function App(props) {
   const PageRoutes = () => {
     return (
-      <div className="sidebarContainer">
-        <Sidebar />
+      <div>
         <Switch>
           <Route exact path="/" component={authGuard(Dashboard)} />
           <Route
@@ -53,11 +52,22 @@ function App() {
       </div>
     );
   };
+  const match = matchPath(props.location.pathname, {
+    path: "/users/password/reset/:token",
+    exact: true,
+    strict: false,
+  });
 
   return (
-    <div>
-      <Provider store={store}>
-        <ToastContainer />
+    <div className="app">
+      <ToastContainer />
+      <div className="sidebarContainer">
+        {props.location.pathname === "/signin" ? null : props.location
+            .pathname === "/signup" ? null : props.location.pathname ===
+          "/forgetPassword" ? null : match ? null : (
+          <Sidebar />
+        )}
+
         <Switch>
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/signup" component={Signup} />
@@ -73,12 +83,8 @@ function App() {
             path="/createSubscription"
             component={authGuard(Dates)}
           />
-          <Route exact path="/amount/:id" component={authGuard(AmountPage)} />
-          <Route
-            exact
-            path="/createSubscription/:id"
-            component={authGuard(Dates)}
-          />
+
+          <Route exact path="/maturity" component={Maturity} />
           <Route exact path="/createPlan" component={authGuard(createPlan)} />
           <Route exact path="/plan/:id" component={authGuard(Plan)} />
           <Route exact path="/editplan/:id" component={authGuard(editPlan)} />
@@ -102,9 +108,9 @@ function App() {
           <Route exact path="/addBank" component={authGuard(AddBank)} />
           <Route component={PageRoutes} />
         </Switch>
-      </Provider>
+      </div>
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);

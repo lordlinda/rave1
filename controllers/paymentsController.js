@@ -5,7 +5,7 @@ const Transaction = require("../models/Transaction");
 const mongoose = require("mongoose");
 var cron = require("node-cron");
 const Subscription = require("../models/Subscription");
-
+const Deposit = require("../models/Deposit");
 module.exports = {
   //@route     POST /payments/makePayment
   //@decription  create  and update onetime payment user
@@ -23,77 +23,11 @@ module.exports = {
           error: "Wrong url or malicious payment",
         });
       }
-      /**2.Check if the user already has a payment plan
-       * by querying the payment plan collection for plans by the user
-       */
-      const planCount = await PaymentPlan.find({
-        user: req.user._id,
-      }).countDocuments();
-      /**if they dont have, their planCount will be zero */
-      //! ACID NEEDED HERE
-      if (planCount === 0) {
-        /**create  a wallet for user */
-        const { createdWallet } = await createWallet({
-          user: req.user._id,
-          currency: req.body.currency,
-        });
-        /**and add the amount to the wallet */
-        /**create a transaction for the payment */
-        /**return a successful response */
-        const {
-          isSuccess,
-          transaction,
-        } = await updateAmountAndCreateTransaction({
-          user: req.user._id,
-          id: createdWallet._id,
-          amount: req.body.amount,
-          paymentType: req.body.paymentType,
-          currency: req.body.currency,
-        });
-        if (!isSuccess) {
-          return res.status(500).json({
-            msg: "transaction failed,please try again",
-          });
-        }
-        return res.status(201).json({
-          transaction,
-          msg: "Payment successful",
-        });
-      }
-      /**if the user already has a plan with us,the next step is to find out which plan to update */
-      /**if the user hasnt passed in an id ,we update the amount in the user wallet */
-      if (!req.body.id) {
-        /**if the user didnt choose which plan we update their wallet */
-        const Wallet = await PaymentPlan.findOne({
-          $and: [{ name: "Wallet" }, { user: req.user._id }],
-        });
-        console.log(Wallet);
-        /**if this is the user's first payment ,the amount is zero and therefore we update the currency */
-        if (Wallet.amount === 0) {
-          await Wallet.updateOne({ currency: req.body.currency });
-        }
-        if (Wallet) {
-          const {
-            isSuccess,
-            transaction,
-          } = await updateAmountAndCreateTransaction({
-            user: req.user._id,
-            id: Wallet._id,
-            amount: req.body.amount,
-            paymentType: req.body.paymentType,
-            currency: req.body.currency,
-          });
-          return res.status(201).json({
-            transaction,
-            msg: "Payment successful",
-          });
-        }
-      }
-      /**we need to check the amount and update the currency */
-      const plan = await PaymentPlan.findById(req.body.id);
-      if (plan.amount === 0) {
-        await plan.updateOne({ currency: req.body.currency });
-      }
+
+      /**we calculate maturity date for transaction */
+      const { date } = await calculateMaturityDate({
+        period: req.body.period,
+      });
       /**we update the plan the user has specified by id */
       const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
         {
@@ -102,6 +36,9 @@ module.exports = {
           amount: req.body.amount,
           paymentType: req.body.paymentType,
           currency: req.body.currency,
+          txRef: req.body.txRef,
+          period: req.body.period,
+          maturityDate: date,
         }
       );
       /**if the mongodb transaction fails we dont , we dont update the user's account balance or create a transaction */
@@ -139,7 +76,6 @@ module.exports = {
       paymentType: req.body.paymentType,
       count: moment(req.body.startDate) > moment() ? 0 : 1,
     };
-    console.log(data);
     try {
       //!dont forget to verify the VERIFY_URL
       const { isVerified } = await verifyTransaction({
@@ -152,80 +88,12 @@ module.exports = {
           error: "Wrong url or malicious payment",
         });
       }
-      //we first check if the user has a wallet with us or not
-      const planCount = await PaymentPlan.find({
-        user: req.user._id,
-      }).countDocuments();
-      /**if the user doesnt have an account with us ,we create one */
-      /**we will receive an object containing start date,end date and amount with currency */
+      /**we calculate maturity date for deposit */
+      const { date } = await calculateMaturityDate({
+        period: req.body.period,
+      });
       /**the start date could be today or a day in the future so we keep that in mind setting up the wallet and transactions */
-      if (planCount === 0) {
-        /**we create a wallet for them */
-        const { createdWallet } = await createWallet({
-          user: req.user._id,
-          currency: req.body.currency,
-        });
-        /**now the amount we have here is that amount not for the subscription but to verify the payment method */
-        //! ACID NEEDED HERE
-        const {
-          isSuccess,
-          transaction,
-        } = await updateAmountAndCreateTransactionAndSubscription({
-          user: req.user._id,
-          id: createdWallet._id,
-          amount: req.body.amount,
-          subscription: data,
-        });
-        if (!isSuccess) {
-          return res.status(500).json({
-            msg: "transaction failed,please try again",
-          });
-        }
-        return res.status(201).json({
-          transaction,
-          msg: "Payment successful",
-        });
-      }
 
-      /**if no id was specified ,then the subscription plan belongs to the wallet account*/
-      if (!req.body.id) {
-        /**if the user didnt choose which plan we know this subscription belongs to the user's wallet account */
-        /**even for scheduling we need to update the amount because there is some money we deduct from the user to verify the transaction to acquire the token */
-        const Wallet = await PaymentPlan.findOne({
-          $and: [{ name: "Wallet" }, { user: req.user._id }],
-        });
-        if (Wallet.amount === 0) {
-          await Wallet.updateOne({ currency: req.body.currency });
-        }
-        /**we update the wallet amount if we dont get an id from the client */
-        if (Wallet) {
-          const {
-            isSuccess,
-            transaction,
-          } = await updateAmountAndCreateTransactionAndSubscription({
-            user: req.user._id,
-            id: Wallet._id,
-            amount: req.body.amount,
-            subscription: data,
-          });
-
-          if (!isSuccess) {
-            return res.status(500).json({
-              msg: "transaction failed,please try again",
-            });
-          }
-
-          return res.status(201).json({
-            transaction,
-            msg: "Payment successful",
-          });
-        }
-      }
-      /**we need to check the amount and update the currency */
-      const plan = await PaymentPlan.findById(req.body.id);
-      if (plan.amount === 0) {
-        await plan.updateOne({ currency: req.body.currency });
-      }
       /**if the user choose the id i.e they selected plan they want to subscribe to,
        * then we create a subscription with the plan specified  and create a transaction*/
       /**we update the plan the user has specified by id */
@@ -238,6 +106,8 @@ module.exports = {
         id: req.body.id,
         amount: req.body.amount,
         subscription: data,
+        period: req.body.period,
+        maturityDate: date,
       });
       /**if the mongodb transaction fails we dont , we dont update the user's account balance or create a transaction */
       if (!isSuccess) {
@@ -399,10 +269,8 @@ module.exports = {
     //we check if the event is charge.completed
     //update the amount with the amount
 
-    console.log(req.body);
     if (
-      req.body.data.narration === "Charge for Hourly Savings" ||
-      "Charge for Daily Savings" ||
+      req.body.data.narration === "Charge for Daily Savings" ||
       "Charge for Monthly Savings" ||
       "Charge for Weekly Savings" ||
       "Charge for Yearly Savings"
@@ -443,6 +311,12 @@ module.exports = {
         });
       }
       /**if the subscription exits ,lets
+       /**first we find a deposit that matches the txref and get the plan and period to calculate the date */
+      const deposit = await Deposit.findOne({ txRef: req.body.data.tx_ref });
+      /**we calculate maturity date for deposit */
+      const { date } = await calculateMaturityDate({
+        period: deposit.period,
+      });
       /* then we use a MONGODB ACID transaction to update the wallet and create a transaction */
       const { isSuccess } = await updateAmountAndCreateTransaction({
         user: subscription.user,
@@ -450,6 +324,8 @@ module.exports = {
         amount: req.body.data.amount,
         paymentType: req.body.data.payment_type.slice(0, 11),
         currency: req.body.data.currency,
+        period: deposit.period,
+        maturityDate: date,
       });
 
       if (!isSuccess) {
@@ -533,23 +409,39 @@ module.exports = {
       msg: "subscription updated successfuly",
     });
   },
-};
+  rollOverBalance: async (req, res) => {
+    try {
+      /**here the user has decide to  continue*/
+      /**we calculate maturity date for transaction */
+      const { date } = await calculateMaturityDate({
+        period: req.body.period,
+      });
+      /**so this money is the available balance as it has earned  interest and now we want to make it unavailable */
+      await PaymentPlan.updateOne(
+        { _id: req.body.id },
+        {
+          $inc: { availableBalance: -req.body.amount },
+        }
+      );
 
-/**not exported functions */
-/**we create a wallet for a new user */
-const createWallet = async (data) => {
-  let createdWallet;
-  createdWallet = new PaymentPlan({
-    name: "Wallet",
-    user: data.user,
-    amount: 0,
-    currency: data.currency,
-  });
-  /**Save checking account to database */
-  await createdWallet.save();
-  return {
-    createdWallet,
-  };
+      await Deposit.create({
+        plan: req.body.id,
+        amount: req.body.amount,
+        txRef: req.body.txRef,
+        status: "unavailable",
+        period: req.body.period,
+        maturityDate: date,
+      });
+      return res.status(200).json({
+        msg: "plan updated successfully",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        msg: error.message,
+      });
+    }
+  },
 };
 
 /**we run this function we make  a transaction with flutterwave to ensure it is a valid transaction */
@@ -739,6 +631,13 @@ const calculateDuration = ({ startDate, endDate, interval }) => {
   };
 };
 
+const calculateMaturityDate = ({ period }) => {
+  let date;
+  date = moment().add(period, "months").format("DD MMMM YYYY");
+  return {
+    date,
+  };
+};
 const activateFlutterwaveSubscription = async (subscription) => {
   let isSuccess;
   try {
@@ -778,20 +677,39 @@ const updateAmountAndCreateTransaction = async (data) => {
     const opts = { session, new: true };
     const plan = await PaymentPlan.findOneAndUpdate(
       { _id: data.id, user: data.user },
-      { $inc: { amount: data.amount } },
+      { $inc: { actualBalance: data.amount } },
       opts
     );
     if (!plan) {
       throw new Error("No plan found");
     }
-    transaction = await Transaction.create({
-      user: data.user,
-      paymentPlan: data.id,
-      amount: data.amount,
-      currency: data.currency,
-      type: "income",
-      pymnt_Mthd: data.paymentType,
-    });
+    await Deposit.create(
+      [
+        {
+          plan: data.id,
+          amount: data.amount,
+          txRef: data.txRef,
+          status: "unavailable",
+          period: data.period,
+          maturityDate: data.maturityDate,
+        },
+      ],
+      opts
+    );
+
+    transaction = await Transaction.create(
+      [
+        {
+          user: data.user,
+          paymentPlan: data.id,
+          amount: data.amount,
+          currency: data.currency,
+          type: "income",
+          pymnt_Mthd: data.paymentType,
+        },
+      ],
+      opts
+    );
 
     await session.commitTransaction();
     session.endSession();
@@ -802,6 +720,37 @@ const updateAmountAndCreateTransaction = async (data) => {
     isSuccess = false;
   }
   return { isSuccess, transaction };
+};
+
+const updateAvailableBalanceAndDeposit = async (data) => {
+  let isSuccess;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const opts = { session, new: true };
+    const plan = await PaymentPlan.findOneAndUpdate(
+      { _id: data.id },
+      { $inc: { availableBalance: data.amount } },
+      opts
+    );
+    if (!plan) {
+      throw new Error("No plan found");
+    }
+    await Deposit.updateOne(
+      { _id: data.deposit },
+      { status: "available" },
+      opts
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+    isSuccess = true;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    isSuccess = false;
+  }
+  return { isSuccess };
 };
 
 const updateAmountAndCreateTransactionAndSubscription = async (data) => {
@@ -813,36 +762,61 @@ const updateAmountAndCreateTransactionAndSubscription = async (data) => {
     const opts = { session, new: true };
     const plan = await PaymentPlan.findOneAndUpdate(
       { _id: data.id },
-      { $inc: { amount: data.amount } },
+      { $inc: { actualBalance: data.amount } },
       opts
     );
     if (!plan) {
       throw new Error("No plan found");
     }
-    transaction = await Transaction.create({
-      user: data.user,
-      paymentPlan: data.id,
-      amount: data.amount,
-      currency: data.subscription.currency,
-      type: "income",
-      pymnt_Mthd: data.subscription.paymentType,
-    });
-    const subscription = await Subscription.create({
-      user: data.user,
-      plan: data.id,
-      subscAmt: data.subscription.subscAmt,
-      trnsxn_ref: data.subscription.txRef,
-      interval: data.subscription.interval,
-      startDate: moment(data.subscription.startDate).format(
-        "DD MMMM YYYY HH:mm"
-      ),
-      endDate: moment(data.subscription.endDate).format("DD MMMM YYYY HH:mm"),
-      subscId: data.subscription.subscId,
-      subscToken: data.subscription.token,
-      status: data.subscription.status,
-      currency: data.subscription.currency,
-      count: data.subscription.count,
-    });
+    await Deposit.create(
+      [
+        {
+          plan: data.id,
+          amount: data.amount,
+          txRef: data.subscription.txRef,
+          status: "unavailable",
+          period: data.period,
+          maturityDate: data.maturityDate,
+        },
+      ],
+      opts
+    );
+    transaction = await Transaction.create(
+      [
+        {
+          user: data.user,
+          paymentPlan: data.id,
+          amount: data.amount,
+          currency: data.subscription.currency,
+          type: "income",
+          pymnt_Mthd: data.subscription.paymentType,
+        },
+      ],
+      opts
+    );
+    await Subscription.create(
+      [
+        {
+          user: data.user,
+          plan: data.id,
+          subscAmt: data.subscription.subscAmt,
+          trnsxn_ref: data.subscription.txRef,
+          interval: data.subscription.interval,
+          startDate: moment(data.subscription.startDate).format(
+            "DD MMMM YYYY HH:mm"
+          ),
+          endDate: moment(data.subscription.endDate).format(
+            "DD MMMM YYYY HH:mm"
+          ),
+          subscId: data.subscription.subscId,
+          subscToken: data.subscription.token,
+          status: data.subscription.status,
+          currency: data.subscription.currency,
+          count: data.subscription.count,
+        },
+      ],
+      opts
+    );
 
     await session.commitTransaction();
     session.endSession();
@@ -854,10 +828,10 @@ const updateAmountAndCreateTransactionAndSubscription = async (data) => {
   }
   return { isSuccess, transaction };
 };
-/**every midnight  "0 0 0 * * *"*/
+
 //schedule susbscriptions to run every midnight
+/**this functions runs to see if the startDate of the subscription has started and inorder to create the flutterwave payment plan and then start susbscribing to flutterwave*/
 cron.schedule("*/20 * * * *", async () => {
-  console.log("running a task every midnight");
   /**we look through our subscriptions to find the subscriptions whose start state is today and has a status of inactive */
   const subscriptions = await Subscription.find({
     $and: [
@@ -870,7 +844,6 @@ cron.schedule("*/20 * * * *", async () => {
       { status: { $in: ["inactive", "reactivated"] } },
     ],
   }).populate("user", "email");
-  console.log("subs", subscriptions);
   /**using the token stored in the subsciption,we create flutterwave subscriptions */
   /**we loop through the subscriptions  every after a given time interval because flutterwave doesnt support bulk writes*/
   for (var i = 1; i <= subscriptions.length; i++) {
@@ -889,6 +862,150 @@ cron.schedule("*/20 * * * *", async () => {
     })(i);
   }
   /**for each successful subscriptions,we update the status to active */
+});
+
+//'0 0 */12 * * *'
+/**this functions runs to see if the maturity date of the savinsg has been reached and therefore update the avaialble balance such that the funds can now be used by the client*/
+cron.schedule("*/30 * * * *", async () => {
+  console.log("running a task every twelve hours");
+  /**first we find the deposits to be settled today */
+  const depositsToBeSettled = await Deposit.find({
+    $and: [
+      {
+        maturityDate: {
+          $lte: moment().endOf("day").format("DD MMMM YYYY"),
+          $gte: moment().startOf("day").format("DD MMMM YYYY"),
+        },
+      },
+      { status: "unavailable" },
+    ],
+  });
+  for (var i = 1; i <= depositsToBeSettled.length; i++) {
+    (function (i) {
+      setTimeout(function () {
+        const deposit = depositsToBeSettled[i - 1];
+        console.log(deposit);
+        /** we get the total amount*/
+        calculateTotalAmountAccrued({
+          deposit,
+        });
+      }, 50000 * i);
+    })(i);
+  }
+});
+
+/**this is what calculates the total amount to be added to the client's available balance on maturity date */
+const calculateTotalAmountAccrued = async ({ deposit }) => {
+  const { period, amount } = deposit;
+
+  //first convert the interest rate percentage to  a decimal
+  let rate;
+  if (period == 3) {
+    rate = 0.02;
+  } else if (period == 6) {
+    rate = 0.04;
+  } else if (period == 9) {
+    rate = 0.06;
+  } else {
+    rate = 0.08;
+  }
+  //calculate the new amount
+  const total = amount * (1 + rate);
+  /**then we update the plan available balance and also update the deposit */
+  const { isSuccess } = await updateAvailableBalanceAndDeposit({
+    deposit: deposit._id,
+    id: deposit.plan,
+    amount: total,
+  });
+  /**then send an sms to the user */
+  if (isSuccess) {
+    console.log("sending an sms");
+  }
+};
+
+/**this function runs everyday to ensure that the daily return on the clients savings are seen on their actual balance */
+const calculateDailyAmountAccrued = async ({ deposit }) => {
+  const { period, amount } = deposit;
+
+  //first convert the interest rate percentage to  a decimal
+  let rate;
+  if (period == 3) {
+    rate = 0.02 / 91;
+  } else if (period == 6) {
+    rate = 0.04 / 182;
+  } else if (period == 9) {
+    rate = 0.06 / 273;
+  } else {
+    rate = 0.08 / 365;
+  }
+  //calculate the new amount
+  const total = amount * (1 + rate);
+  /**then we update the plan available balance and also update the deposit */
+  const { isSuccess } = await updateActualBalanceAndDeposit({
+    deposit: deposit._id,
+    id: deposit.plan,
+    amount: total,
+  });
+};
+
+const updateActualBalanceAndDeposit = async (data) => {
+  let isSuccess;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const opts = { session, new: true };
+    const plan = await PaymentPlan.findOneAndUpdate(
+      { _id: data.id },
+      { $inc: { actualBalance: data.amount } },
+      opts
+    );
+    if (!plan) {
+      throw new Error("No plan found");
+    }
+    await Deposit.updateOne(
+      { _id: data.deposit },
+      { amount: data.amount },
+      opts
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+    isSuccess = true;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    isSuccess = false;
+  }
+  return { isSuccess };
+};
+
+/**this function runs everyday to settle the clients daily savings and update their actual balance */
+//0 0 0 * * *
+cron.schedule("*/2 * * * *", async () => {
+  console.log("running a task every day");
+  /**first we find the deposits to be settled today */
+  const dailySettlements = await Deposit.find({
+    $and: [
+      {
+        maturityDate: {
+          $lt: moment(),
+        },
+      },
+      { status: "unavailable" },
+    ],
+  });
+  console.log(dailySettlements.length);
+  for (var i = 1; i <= dailySettlements.length; i++) {
+    (function (i) {
+      setTimeout(function () {
+        const deposit = dailySettlements[i - 1];
+        /** we get the total amount*/
+        calculateDailyAmountAccrued({
+          deposit,
+        });
+      }, 5000 * i);
+    })(i);
+  }
 });
 
 //! DONT FORGET TO PASS IN THE SUBSCRID

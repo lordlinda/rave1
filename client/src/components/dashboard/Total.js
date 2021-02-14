@@ -1,29 +1,61 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { getTotalBalance, convertCurrency } from "../../redux/actions/plans";
+import {
+  getTotalBalance,
+  convertCurrency,
+  getPlansList,
+} from "../../redux/actions/plans";
 import { currencyOptionsArray } from "../Reusables/select/Options.js";
 import { numberWithCommas } from "../../helpers/middleware.js";
 import "./total.css";
-import { Button } from "@material-ui/core";
+import { Button, DialogContent } from "@material-ui/core";
 import { motion } from "framer-motion";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Select from "../Reusables/select/Select";
 
-const Total = (props) => {
+const Total = ({
+  total,
+  loading,
+  history,
+  planList,
+  getTotalBalance,
+  convertCurrency,
+  getPlansList,
+}) => {
   const [currencySelected, setCurrency] = useState("UGX");
+  const [open, setOpen] = useState(false);
+  const [plan, setPlan] = useState("");
+  const [type, setLink] = useState("");
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
-    props.getTotalBalance();
+    getTotalBalance();
   }, []);
 
   const handleChange = async (currency) => {
-    if (!props.loading && props.total > 0 && currency !== currencySelected) {
+    if (!loading && total > 0 && currency !== currencySelected) {
       await setCurrency(currency);
       const data = {
-        amount: props.total,
+        amount: total,
         from: currencySelected,
         to: currency,
       };
-      await props.convertCurrency(data);
+      await convertCurrency(data);
     }
+  };
+  const getPlan = (type) => {
+    getPlansList();
+    setLink(type);
+    setOpen(true);
+  };
+
+  const handlePlan = async (e) => {
+    await setPlan(e.target.value);
+    history.push(`${type}`, e.target.value);
   };
   return (
     <div className="total">
@@ -48,16 +80,30 @@ const Total = (props) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }}
       >
-        {numberWithCommas(props.total?.toFixed(2))}
+        {numberWithCommas(total?.toFixed(2))}
       </motion.h1>
       <div className="total__buttons">
-        <Button className="total__save" component={Link} to="/amount">
+        <Button className="total__save" onClick={() => getPlan("/amount")}>
           Save now
         </Button>
-        <Button className="total__automate" component={Link} to="/interval">
+        <Button
+          className="total__automate"
+          onClick={() => getPlan("/interval")}
+        >
           Auto savings
         </Button>
       </div>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{`Choose a plan to topup`}</DialogTitle>
+        <DialogContent className="selectPlan">
+          <Select
+            label="--select a plan-- "
+            value={plan}
+            onChange={handlePlan}
+            planList={planList}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -66,9 +112,12 @@ const mapStateToProps = (state) => {
   return {
     total: state.plans.total,
     loading: state.plans.isTotalLoading,
+    planList: state.plans.planList,
   };
 };
 
-export default connect(mapStateToProps, { getTotalBalance, convertCurrency })(
-  Total
-);
+export default connect(mapStateToProps, {
+  getTotalBalance,
+  convertCurrency,
+  getPlansList,
+})(Total);

@@ -11,6 +11,7 @@ const {
   calculateTotalBalance,
   getDashboardPlans,
   convertCurrency,
+  getPlanNames,
 } = require("../controllers/plansController");
 
 //@route            GET /plans/total
@@ -42,6 +43,11 @@ router.get("/:id", auth, getPlan);
 //@description    get payment plans
 //@access        Private
 router.get("/", auth, getAllPlans);
+
+//@route     GET/plans/list
+//@decription  get plan name list
+//@access      Private
+router.get("/plans/list", auth, getPlanNames);
 
 router.post("/convert", auth, convertCurrency);
 //@route        Get /plans/plans/dashboard

@@ -1,5 +1,4 @@
 .total {
-  height: 174px;
   border-radius: 6px;
   display: flex;
   /* here the directi
@@ -31,23 +30,22 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  margin-top: 8px;
+  margin-top: 16px;
 }
-.total__buttons > .MuiButton-root {
-  padding: 6px 16px;
-}
+
 .total__save {
   background: var(--purple) !important;
   border-radius: 25px !important;
   font-size: 12px !important;
   color: white !important;
-  padding: 10px 24px !important;
+  padding: 14px 24px !important;
 }
 .total__automate {
   border-radius: 25px !important;
   font-size: 12px !important;
   margin-left: 8px !important;
   border: 1px solid indigo !important;
+  padding: 14px 24px !important;
 }
 
 .active {
@@ -55,6 +53,13 @@
   background-color: var(--purple);
   padding: 4px;
   border-radius: 8px;
+}
+.selectPlan > div > div {
+  width: 100% !important;
+  padding: 16px;
+}
+.disabledButton {
+  background-color: var(--purple-light) !important;
 }
 @media screen and (min-width: 768px) {
   .total {

@@ -56,6 +56,7 @@ class Subscription extends React.Component {
           transactionId: response.tx.id,
           paymentType: response.tx.paymentType.slice(0, 11),
           id: this.props.location.state.id,
+          period: this.props.location.state.period,
         };
 
         if (this.props.location.state.start) {
@@ -147,20 +148,18 @@ class Subscription extends React.Component {
             </div>
             <div className="confirmPage__body">
               <div className="confirmPage__details">
-                <div>
-                  {this.props.location.state?.start && (
-                    <>
-                      <p>Start Date</p>
-                      <p>
-                        {moment(this.props.location.state?.start).format(
-                          "DD MMM YYYY"
-                        )}
-                      </p>
-                    </>
-                  )}
-                </div>
-                <div>
-                  {this.props.location.state?.end && (
+                {this.props.location.state?.start && (
+                  <>
+                    <p>Start Date</p>
+                    <p>
+                      {moment(this.props.location.state?.start).format(
+                        "DD MMM YYYY"
+                      )}
+                    </p>
+                  </>
+                )}
+                {this.props.location.state?.end &&
+                  this.props.location.state?.start && (
                     <>
                       <p>End Date</p>
                       <p>
@@ -170,15 +169,12 @@ class Subscription extends React.Component {
                       </p>
                     </>
                   )}
-                </div>
-                <div>
-                  {this.props.location.state?.interval && (
-                    <>
-                      <p>Interval</p>
-                      <p>{this.props.location.state?.interval}</p>
-                    </>
-                  )}
-                </div>
+                {this.props.location.state?.interval && (
+                  <>
+                    <p>Interval</p>
+                    <p>{this.props.location.state?.interval}</p>
+                  </>
+                )}
                 <div>
                   <p>Amount</p>
                   <p>

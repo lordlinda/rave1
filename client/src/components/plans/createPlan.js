@@ -9,7 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { toast } from "react-toastify";
-
+import Maturity from "../payments/MaturityDate";
 function CreatePlan(props) {
   const [amount, setAmount] = useState();
   const [name, setName] = useState();
@@ -39,6 +39,7 @@ function CreatePlan(props) {
         <h1>Create Plan</h1>
       </div>
       <form className="createPlan__body" onSubmit={handleSubmit}>
+        <p>Why are you saving ?</p>
         <Input
           placeholder=""
           value={name}
@@ -46,6 +47,7 @@ function CreatePlan(props) {
           type="text"
           label="Name"
         />
+        <p>How much do you need to achieve this goal</p>
         <Input
           placeholder="0.00"
           value={amount}
@@ -54,6 +56,7 @@ function CreatePlan(props) {
           label="Target Amount"
         />
         <FormControl>
+          <p>Which is your preferred currency when saving for this goal?</p>
           <Select
             displayEmpty
             value={currency}
@@ -69,6 +72,7 @@ function CreatePlan(props) {
             ))}
           </Select>
         </FormControl>
+        <Maturity />
         <Button
           className="createPlan__button"
           variant="contained"

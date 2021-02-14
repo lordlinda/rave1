@@ -2,7 +2,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
 const multer = require("multer");
-const PaymentPlan = require("../models/PaymentPlan.js");
 const { createTokens } = require("../middleware");
 const { validationResult } = require("express-validator");
 const sgMail = require("@sendgrid/mail");
@@ -56,13 +55,7 @@ module.exports = {
       });
 
       await user.save();
-      /**create wallet for user */
-      await PaymentPlan.create({
-        name: "Wallet",
-        user: user._id,
-        amount: 0,
-        currency: "UGX",
-      });
+
       /**create token */
       const { access_token, refreshToken } = await createTokens(
         user,

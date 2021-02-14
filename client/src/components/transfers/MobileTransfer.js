@@ -12,7 +12,14 @@ import { mobileTransfer } from "../../redux/actions/transfers";
 import { toast } from "react-toastify";
 import Processor from "../Reusables/Processor";
 
-function MobileTransfer(props) {
+function MobileTransfer({
+  loading,
+  history,
+  plans,
+  mobileTransfer,
+  loadUser,
+  getAllPlans,
+}) {
   const [amount, setAmount] = useState("");
   const [from, setFrom] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,22 +36,22 @@ function MobileTransfer(props) {
         amount,
         phone: `256${phone.substr(1)}`,
       };
-      props.mobileTransfer(data, props.history);
+      mobileTransfer(data, history);
     }
   };
   /**transfer money */
 
   useEffect(() => {
-    props.getAllPlans();
+    getAllPlans();
   }, []);
   useEffect(() => {
-    props.loadUser();
+    loadUser();
   }, []);
   useEffect(() => {
-    if (props.history.location.state) {
-      setFrom(props.history.location.state.id);
+    if (history.location.state) {
+      setFrom(history.location.state.id);
     }
-  }, [props.plans]);
+  }, [plans]);
   const getFrom = (plan) => {
     if (plan._id === from) {
       setFrom("");
@@ -52,17 +59,16 @@ function MobileTransfer(props) {
       setFrom(plan._id);
     }
   };
-  console.log(props.loading);
   return (
     <div className="mobile">
       <div className="accountTransfer__header">
-        <BackArrow goBack={props.history} />
+        <BackArrow goBack={history} />
         <h1>Mobile Money</h1>
       </div>
       <div className="accountTransfer__plans">
         <h1>From</h1>
         <FlipMove>
-          {props.plans.map((plan) => (
+          {plans.map((plan) => (
             <Account plan={plan} key={plan._id} id={from} getId={getFrom} />
           ))}
         </FlipMove>
@@ -96,9 +102,7 @@ function MobileTransfer(props) {
         <Button variant="outlined" className="editButton" onClick={mobile}>
           Transfer
         </Button>
-        {props.loading && (
-          <Processor text="Transfer is processing,please wait" />
-        )}
+        {loading && <Processor text="Transfer is processing,please wait" />}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ const Plan = forwardRef(({ plan }, ref) => {
           <h1>{plan.name}</h1>
           <p>
             {" "}
-            {plan.currency} {numberWithCommas(plan.amount)}
+            {plan.currency} {numberWithCommas(plan.actualBalance)}
           </p>
         </Link>
       </div>

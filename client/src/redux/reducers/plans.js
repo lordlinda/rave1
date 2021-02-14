@@ -8,6 +8,7 @@ import {
   CONVERT_CURRENCY,
   SIGN_OUT,
   DELETE_SUBCRIPTION,
+  GET_PLAN_NAMES,
 } from "../actions/types.js";
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   isSubscriptionLoading: true,
   isDashLoading: true,
   isTotalLoading: false,
+  planList: [],
 };
 
 //the reducer has the inital state and alters it based on the action
@@ -45,6 +47,11 @@ export default (state = initialState, action) => {
         ...state,
         isPlansLoading: false,
         plans: action.payload,
+      };
+    case GET_PLAN_NAMES:
+      return {
+        ...state,
+        planList: action.payload,
       };
     case DELETE_PLAN:
       return {

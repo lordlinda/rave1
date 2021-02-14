@@ -21,7 +21,7 @@ const Dashboard = (props) => {
         </div>
       ) : (
         <>
-          <Total />
+          <Total history={props.history} />
           <Plans />
           <TransactionList />
         </>

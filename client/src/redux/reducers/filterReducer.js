@@ -2,7 +2,7 @@ import { SIGN_OUT, MAKE_PAYMENT } from "../actions/types";
 const initialState = {
   paymentMethod: "",
   startDate: "",
-  endDate: "",
+  duration: "",
   currency: "UGX",
   interval: "",
   amount: "",
@@ -15,10 +15,10 @@ export default (state = initialState, action) => {
         ...state,
         startDate: action.payload,
       };
-    case "SET_END_DATE":
+    case "SET_DURATION":
       return {
         ...state,
-        endDate: action.payload,
+        duration: action.payload,
       };
 
     case "SET_CURRENCY":
@@ -49,7 +49,7 @@ export default (state = initialState, action) => {
       return {
         paymentMethod: "",
         startDate: "",
-        endDate: "",
+        duration: "",
         currency: "",
         interval: "",
         amount: "",

@@ -1,69 +1,46 @@
 import React from "react";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
 import BackArrow from "../Reusables/BackArrow";
 import { Button } from "@material-ui/core";
 import { connect } from "react-redux";
 import { setInterval } from "../../redux/actions/filterActions";
-
-function IntervalPage(props) {
+import RadioButtons from "../Reusables/RadioButtons";
+import { intervalOptions } from "../Reusables/select/Options";
+import "./interval.css";
+function IntervalPage({ history, setInterval, interval }) {
   const handleChange = (event) => {
-    props.setInterval(event.target.value);
+    setInterval(event.target.value);
   };
 
   const handleClick = () => {
     const data = {
-      ...props.location.state,
-      interval: props.interval,
+      ...history.location.state,
+      interval: interval,
     };
-    props.history.push("/createSubscription", data);
+    history.push("/createSubscription", data);
   };
 
   return (
-    <div
-      style={{ width: "90%", margin: "0 auto", marginTop: "24px", flex: "1" }}
-    >
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <BackArrow goBack={props.history} />
-        <h1 style={{ fontSize: "20px" }}>Choose interval</h1>
+    <div className="intervalPage">
+      <div className="intervalPage__header">
+        <BackArrow goBack={history} />
+        <h1>Choose interval</h1>
       </div>
-      <FormControl component="fieldset">
-        <RadioGroup
-          aria-label="interval"
-          name="interval1"
-          value={props.interval}
+      <div className="intervalPage__body">
+        <h1>How frequently would you like to save?</h1>
+        <RadioButtons
+          value={interval}
           onChange={handleChange}
-        >
-          <FormControlLabel value="daily" control={<Radio />} label="Daily" />
-          <FormControlLabel value="weekly" control={<Radio />} label="Weekly" />
-          <FormControlLabel
-            value="monthly"
-            control={<Radio />}
-            label="Monthly"
-          />
-          <FormControlLabel value="yearly" control={<Radio />} label="Yearly" />
-          <FormControlLabel
-            value="quarterly"
-            control={<Radio />}
-            label="Quarterly"
-          />
-          <FormControlLabel
-            value="Every 6 months"
-            control={<Radio />}
-            label="Every 6 months"
-          />
-        </RadioGroup>
+          options={intervalOptions}
+        />
         <Button
-          disabled={!props.interval}
+          disabled={!interval}
           variant="contained"
           onClick={handleClick}
-          className={`intervalPage__button ${!props.interval && "disabled"}`}
+          className={`intervalPage__button ${!interval && "disabled"}`}
         >
           Next
         </Button>
-      </FormControl>
+      </div>
     </div>
   );
 }

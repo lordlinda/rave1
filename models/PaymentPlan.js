@@ -10,9 +10,10 @@ const paymentPlanSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    amount: {
+    actualBalance: {
       type: Number,
     },
+    availableBalance: { type: Number, default: 0 },
     targetAmount: {
       type: Number,
     },

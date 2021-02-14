@@ -7,7 +7,7 @@
   align-items: center;
 }
 .datesPage__header > h1 {
-  font-size: 30px;
+  font-size: 20px;
   margin-left: 20%;
 }
 .datesPage__body {
@@ -16,6 +16,10 @@
   padding: 0px 16px;
   width: 60%;
   margin: 10px auto;
+}
+.datesPage__body > h1 {
+  font-size: 18px;
+  font-weight: 600;
 }
 .datesPage__body > div > label {
   margin-top: 24px;

@@ -17,7 +17,7 @@ const Account = forwardRef(({ plan, id, getId }, ref) => {
 
         <span>
           {" "}
-          {plan.currency} {numberWithCommas(plan.amount)}
+          {plan.currency} {numberWithCommas(plan.availableBalance)}
         </span>
       </div>
     </div>

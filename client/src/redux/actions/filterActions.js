@@ -17,11 +17,11 @@ export const setStartDate = (startDate) => {
   };
 };
 
-export const setEndDate = (endDate) => {
+export const setDuration = (duration) => {
   return (dispatch) => {
     dispatch({
-      type: "SET_END_DATE",
-      payload: endDate,
+      type: "SET_DURATION",
+      payload: duration,
     });
   };
 };

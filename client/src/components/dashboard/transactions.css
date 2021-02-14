@@ -6,7 +6,7 @@
 .transactionsDashboard__heading {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   margin-bottom: 16px;
 }
 
@@ -63,13 +63,6 @@
   display: none;
 }
 @media screen and (min-width: 768px) {
-  .transactions__transaction > div {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: space-between;
-    flex: 0.65;
-  }
   .transactions__transaction > div > span {
     font-size: 18px;
     opacity: 1 !important;
@@ -87,8 +80,17 @@
   .calenderIcon {
     display: none !important;
   }
+  .hiddenDetails {
+    display: none;
+  }
 }
 @media screen and (min-width: 768px) {
+  .transactions__transaction {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 20px;
+  }
   .hidden_transaction {
     display: block;
   }

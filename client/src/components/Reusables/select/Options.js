@@ -125,3 +125,74 @@ export const banks = [
     name: "Crane Bank Ltd",
   },
 ];
+
+export const durationOptions = [
+  {
+    label: "3 months",
+    value: "3",
+  },
+  {
+    label: "6 months",
+    value: "6",
+  },
+  {
+    label: "9 months",
+    value: "9",
+  },
+  {
+    label: "1 year",
+    value: "12",
+  },
+];
+
+export const intervalOptions = [
+  {
+    label: "Daily",
+    value: "daily",
+  },
+  {
+    label: "Weekly",
+    value: "weekly",
+  },
+  {
+    label: "Monthly",
+    value: "monthly",
+  },
+  {
+    label: "Yearly",
+    value: "yearly",
+  },
+  {
+    label: "Quarterly",
+    value: "quarterly",
+  },
+  {
+    label: "Every 6 months",
+    value: "Every 6 months",
+  },
+];
+
+export const topUpOptions = [
+  {
+    label: "Make a single payment",
+    value: "/amount",
+  },
+  {
+    label: "Make automatic payments",
+    value: "/interval",
+  },
+];
+export const transferOptions = [
+  {
+    label: "Account Transfer",
+    value: "/account",
+  },
+  {
+    label: "Mobile Money",
+    value: "/mobile",
+  },
+  {
+    label: "Bank Transfer",
+    value: "/bank",
+  },
+];

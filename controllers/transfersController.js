@@ -7,54 +7,9 @@ const mongoose = require("mongoose");
 module.exports = {
   /**mobile money */
   mobilePayment: async (req, res) => {
-    /**check if the user has specified which plan to withdraw from */
-    if (!req.body.id) {
-      /**find the wallet */
-      const Wallet = await PaymentPlan.findOne({
-        $and: [{ name: "Wallet" }, { user: req.user._id }],
-      });
-      /**check the amount */
-      if (Wallet.amount < req.body.amount) {
-        return res.status(422).json({
-          msg: "Insufficient funds",
-        });
-      }
-      /**if the amount is enough */
-      const { isSuccessful } = await makeFlutterWaveMobileTransfer({
-        currency: Wallet.currency,
-        id: Wallet._id,
-        amount: req.body.amount,
-        name: req.user.username,
-      });
-      if (!isSuccessful) {
-        return res.status(500).json({
-          msg: "transaction failed,please try again",
-        });
-      }
-      const data = {
-        id: Wallet._id,
-        user: Wallet.user,
-        amount: req.body.amount,
-        currency: Wallet.currency,
-        paymentType: "mobilemoney",
-      };
-
-      const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
-        data
-      );
-      if (!isSuccess) {
-        return res.status(500).json({
-          msg: "withdrawal failed,please try again",
-        });
-      }
-      return res.status(201).json({
-        transaction,
-        msg: "Withdrawal successful",
-      });
-    }
     const plan = await PaymentPlan.findById(req.body.id);
 
-    if (plan.amount < req.body.amount) {
+    if (plan.availableBalance < req.body.amount) {
       return res.status(422).json({
         msg: "Insufficient funds",
       });
@@ -67,11 +22,13 @@ module.exports = {
       name: req.user.username,
       phone: req.body.phone,
     });
+
     if (!isSuccessful) {
       return res.status(500).json({
         msg: "transaction failed,please try again",
       });
     }
+
     const data = {
       id: plan._id,
       user: plan.user,
@@ -95,56 +52,9 @@ module.exports = {
   },
   /**bank transfer */
   bankPayment: async (req, res) => {
-    /**check if the user has specified which plan to withdraw from */
-    if (!req.body.id) {
-      /**find the wallet */
-      const Wallet = await PaymentPlan.findOne({
-        $and: [{ name: "Wallet" }, { user: req.user._id }],
-      });
-      /**check the amount */
-      if (Wallet.amount < req.body.amount) {
-        return res.status(422).json({
-          msg: "Insufficient funds",
-        });
-      }
-      /**if the amount is enough */
-      const { isSuccessful } = await makeFlutterWaveIntlOtherBankTransfer({
-        currency: Wallet.currency,
-        id: Wallet._id,
-        amount: req.body.amount,
-        name: req.user.username,
-        account_number: req.body.account_number,
-        account_bank: req.body.account_bank,
-      });
-      if (!isSuccessful) {
-        return res.status(500).json({
-          msg: "transaction failed,please try again",
-        });
-      }
-      const data = {
-        id: Wallet._id,
-        user: Wallet.user,
-        amount: req.body.amount,
-        currency: Wallet.currency,
-        paymentType: "mobilemoney",
-      };
-
-      const { isSuccess, transaction } = await updateAmountAndCreateTransaction(
-        data
-      );
-      if (!isSuccess) {
-        return res.status(500).json({
-          msg: "withdrawal failed,please try again",
-        });
-      }
-      return res.status(201).json({
-        transaction,
-        msg: "Withdrawal successful",
-      });
-    }
     const plan = await PaymentPlan.findById(req.body.id);
 
-    if (plan.amount < req.body.amount) {
+    if (plan.availableBalance < req.body.amount) {
       return res.status(422).json({
         msg: "Insufficient funds",
       });
@@ -214,45 +124,7 @@ module.exports = {
       });
     }
   },
-  updateTranfer: async (req, res) => {
-    try {
-      if (
-        req.body.data.status === "SUCCESSFUL" &&
-        req.body.data.complete_message === "Successful"
-      ) {
-        //console.log("transaction through");
-        /**the first thing is that we use the narration to get the planId to update the amount and create a transaction */
-        const plan = await PaymentPlan.findById(req.body.data.narration);
-        const data = {
-          id: plan._id,
-          user: plan.user,
-          amount: req.body.data.amount,
-          currency: req.body.data.currency,
-          paymentType:
-            req.body.data.bank_code === "MPS" ? "mobilemoney" : "card",
-        };
 
-        const {
-          isSuccess,
-          transaction,
-        } = await updateAmountAndCreateTransaction(data);
-        if (!isSuccess) {
-          return res.status(500).json({
-            msg: "withdrawal failed,please try again",
-          });
-        }
-        return res.status(201).json({
-          transaction,
-          msg: "Withdrawal successful",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        msg: "Sorry,withdrawal failed",
-      });
-    }
-  },
   addNumber: async (req, res) => {
     console.log(req.body.phone);
     /** */
@@ -348,11 +220,11 @@ const transferAcct = async (data) => {
     /**decrease the amount in the acount we want to withdraw from */
     const A = await PaymentPlan.findOneAndUpdate(
       { _id: data.from },
-      { $inc: { amount: -data.amount } },
+      { $inc: { availableBalance: -data.amount } },
       opts
     );
     /**if balance is insufficient,we throw an error */
-    if (A.amount < data.amount) {
+    if (A.availableBalance < data.amount) {
       // If A would have negative balance, fail and abort the transaction
       // `session.abortTransaction()` will undo the above `findOneAndUpdate()`
       throw new Error("Insufficient funds ");
@@ -368,7 +240,7 @@ const transferAcct = async (data) => {
     });
     const B = await PaymentPlan.findOneAndUpdate(
       { _id: data.to },
-      { $inc: { amount: data.amount } },
+      { $inc: { availableBalance: data.amount } },
       opts
     );
     await Transaction.create({
@@ -401,7 +273,7 @@ const updateAmountAndCreateTransaction = async (data) => {
     const opts = { session, new: true };
     const plan = await PaymentPlan.findOneAndUpdate(
       { _id: data.id, user: data.user },
-      { $inc: { amount: -data.amount } },
+      { $inc: { availableBalance: -data.amount } },
       opts
     );
     if (!plan) {
@@ -446,7 +318,6 @@ const makeFlutterWaveIntlOtherBankTransfer = async (data) => {
         beneficiary_name: data.name,
         account_bank: data.account_bank,
         account_number: data.account_number,
-        //callback_url: process.env.TRANSFER_WEBHOOK,
       }),
     });
     const res = await response.json();

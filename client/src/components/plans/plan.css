@@ -1,7 +1,5 @@
 .plan {
-  height: 100vh;
-  width: 100vw;
-  flex: 1 !important;
+  flex: 1;
 }
 .plan__header {
   padding: 16px;
@@ -24,7 +22,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 24px;
 }
+.plan__balances {
+  letter-spacing: 1px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .plan__actions > div {
   margin-top: 16px;
   min-width: 100px;
@@ -32,8 +39,8 @@
 .plan__actions > div > button {
   height: 40px !important;
   width: 40px !important;
-  background-color: var(--purple) !important;
-  color: white !important;
+  background-color: var(--purple-light) !important;
+  color: var(--purple) !important;
   margin-bottom: 8px;
 }
 .plan__progressBar {
@@ -124,12 +131,10 @@
 
 /**this feels the entire page*/
 .plan__loading {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   display: grid;
   place-items: center;
-  overflow-x: hidden;
-  overflow-y: hidden;
 }
 
 @media screen and (min-width: 768px) {
@@ -151,5 +156,13 @@
   .plan__subscriptions > div > a {
     margin-top: 24px;
     display: block;
+  }
+  .plan__balances {
+    justify-content: center;
+    width: 50%;
+    margin: 0 auto;
+  }
+  .plan__balances > div {
+    margin-left: 16px;
   }
 }

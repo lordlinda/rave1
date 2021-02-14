@@ -82,6 +82,9 @@ button {
   color: var(--purple);
   background-color: rgba(0, 102, 245, 0.07);
 }
+.app {
+  overflow: hidden;
+}
 
 @media screen and (min-width: 900px) {
   .MuiBottomNavigation-root {
@@ -91,6 +94,9 @@ button {
     display: block;
   }
   .sidebarContainer {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+    grid-template-rows: 1fr;
+    gap: 0px 50px;
   }
 }

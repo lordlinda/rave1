@@ -2,7 +2,6 @@ const PaymentPlan = require("../models/PaymentPlan.js");
 const Subscription = require("../models/Subscription");
 const Transaction = require("../models/Transaction");
 const fetch = require("node-fetch");
-
 module.exports = {
   //@route            GET /plans/total
   //@description       get user total balance
@@ -10,6 +9,12 @@ module.exports = {
   calculateTotalBalance: async (req, res) => {
     /**we map through all the user's plan and get the amount of each plan and add them together */
     const plans = await PaymentPlan.find({ user: req.user._id });
+    if (!plans) {
+      return res.status(200).json({
+        total: 0,
+      });
+    }
+
     const { total } = await convertCurrencies(plans);
     return res.status(200).json({
       total,
@@ -21,12 +26,19 @@ module.exports = {
   createPlan: async (req, res) => {
     try {
       let plan;
-      const { name, targetAmount, description, currency } = req.body;
+      const { name, targetAmount, currency } = req.body;
+      /**first check if the user already has a plan with this name */
+      const alreadyPlan = await PaymentPlan.findOne({
+        $and: [{ name: "name" }, { user: req.user._id }],
+      });
+      if (alreadyPlan) {
+        res.status(422).json({ msg: "plan with this name already exists" });
+      }
       plan = new PaymentPlan({
         user: req.user._id,
-        description: description,
         name: name,
-        amount: 0,
+        actualBalance: 0,
+        availableBalance: 0,
         targetAmount: targetAmount,
         currency: currency,
       });
@@ -41,15 +53,6 @@ module.exports = {
   editPlan: async (req, res) => {
     try {
       //so when editing a plan we update the targetAmount and the description and name
-
-      const { isWallet } = await isPlanWallet(req.params.id);
-      //we first find the payment plan using the id
-      /**the user cant update anything about their wallet */
-      if (isWallet) {
-        return res.status(400).json({
-          msg: "cant update wallet",
-        });
-      }
       //then update  using the updateOne method
       //it with the description and targetAmount
       //if updated sucessfully,we send am messsage to the client
@@ -69,6 +72,7 @@ module.exports = {
   getPlan: async (req, res) => {
     try {
       const plan = await PaymentPlan.findOne({ _id: req.params.id });
+
       const subscriptions = await Subscription.find({ plan: req.params.id });
       const transactions = await Transaction.find({
         paymentPlan: req.params.id,
@@ -121,6 +125,31 @@ module.exports = {
       });
     }
   },
+
+  //@route     GET/plans/list
+  //@decription  get plan name list
+  //@access      Private
+  getPlanNames: async (req, res) => {
+    try {
+      const plans = await PaymentPlan.find({ user: req.user._id });
+      let planList = [];
+      plans.map((plan) => {
+        planList.push({
+          name: plan.name,
+          currency: plan.currency,
+          id: plan._id,
+        });
+      });
+      res.status(200).json({
+        plans: planList,
+      });
+    } catch (error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
+  },
+
   //@route     GET/plans/dashboard
   //@decription  get plans for dashboard
   //@access      Private
@@ -164,22 +193,6 @@ module.exports = {
   },
 };
 
-/**not exported functions */
-
-/**this function is to check if the plan whose id we have received if it belongs to  wallet*/
-const isPlanWallet = async (id) => {
-  let isWallet;
-  let plan = await PaymentPlan.findById({ _id: id });
-  if (plan.name === "Wallet") {
-    isWallet = true;
-  } else {
-    isWallet = false;
-  }
-  return {
-    isWallet,
-  };
-};
-
 const convertCurrencies = async (transactions) => {
   let total = 0;
   try {
@@ -195,7 +208,7 @@ const convertCurrencies = async (transactions) => {
     );
     const res = await response.json();
     transactions.map((transaction) => {
-      total += transaction.amount / res.rates[transaction.currency];
+      total += transaction.actualBalance / res.rates[transaction.currency];
     });
     total = total * res.rates.UGX;
   } catch (error) {

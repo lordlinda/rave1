@@ -9,6 +9,7 @@ import {
   GET_SUBSCRIPTION,
   CONVERT_CURRENCY,
   DELETE_SUBCRIPTION,
+  GET_PLAN_NAMES,
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -147,5 +148,17 @@ export const deleteSubscription = (id) => async (dispatch) => {
   } catch (error) {
     console.log(error);
     toast.error(error.response?.data?.msg);
+  }
+};
+
+export const getPlansList = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/plans/plans/list");
+    dispatch({
+      type: GET_PLAN_NAMES,
+      payload: res.data.plans,
+    });
+  } catch (error) {
+    console.log(error);
   }
 };

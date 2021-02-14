@@ -107,3 +107,13 @@ export const updateSubscription = (data) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const rolloverSavings = (data) => async (dispatch) => {
+  try {
+    const res = await axios.post("/payments/rollover", data);
+    /**we have to decrease amount available */
+    toast.success(res.data.msg);
+  } catch (error) {
+    console.log(error);
+  }
+};

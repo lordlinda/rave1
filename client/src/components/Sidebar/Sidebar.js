@@ -13,16 +13,11 @@ import PaymentIcon from "@material-ui/icons/Payment";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    width: drawerWidth,
     flexShrink: 0,
   },
-  drawerPaper: {
-    width: drawerWidth,
-  },
+  drawerPaper: {},
   list: {
     fontWeight: 500,
     fontSize: ".95rem",
@@ -86,33 +81,31 @@ function PermanentDrawerLeft(props) {
   ];
 
   return (
-    <div>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-        anchor="left"
-      >
-        <div className={classes.toolbar} />
-        <List>
-          {navList.map(({ text, url, Icon }) => (
-            <ListItem
-              key={text}
-              component={Link}
-              to={url}
-              className={`classes.list ${isActive(props.history, url)}`}
-            >
-              <ListItemIcon>
-                <Icon />
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-    </div>
+    <Drawer
+      className={classes.drawer}
+      variant="permanent"
+      classes={{
+        paper: classes.drawerPaper,
+      }}
+      anchor="left"
+    >
+      <div className={classes.toolbar} />
+      <List>
+        {navList.map(({ text, url, Icon }) => (
+          <ListItem
+            key={text}
+            component={Link}
+            to={url}
+            className={`classes.list ${isActive(props.history, url)}`}
+          >
+            <ListItemIcon>
+              <Icon />
+            </ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
   );
 }
 export default withRouter(PermanentDrawerLeft);

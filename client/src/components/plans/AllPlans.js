@@ -10,7 +10,6 @@ import FlipMove from "react-flip-move";
 import Plan from "./Plan";
 import image from "../../images/undraw_stepping_up_g6oo.svg";
 import { PulseLoader } from "react-spinners";
-import LabelBottomNavigation from "../Reusables/BottomNavigation";
 
 const AllPlans = (props) => {
   useEffect(() => {
