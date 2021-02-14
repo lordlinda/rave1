@@ -981,8 +981,7 @@ const updateActualBalanceAndDeposit = async (data) => {
 
 /**this function runs everyday to settle the clients daily savings and update their actual balance */
 //0 0 0 * * *
-cron.schedule("*/2 * * * *", async () => {
-  console.log("running a task every day");
+cron.schedule("0 0 0 * * *", async () => {
   /**first we find the deposits to be settled today */
   const dailySettlements = await Deposit.find({
     $and: [
