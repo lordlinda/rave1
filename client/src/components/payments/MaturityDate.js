@@ -75,7 +75,7 @@ function Maturity({ history, duration, setDuration }) {
             </span>{" "}
             <br />
             on {moment(endDate).format("DD MMM,YYYY")} at{" "}
-            <span>{rate}% per annum</span>
+            <span>{rate}% Per Annum</span>
           </motion.div>
         )}
       </div>

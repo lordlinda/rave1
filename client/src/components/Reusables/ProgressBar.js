@@ -10,9 +10,7 @@ function LinearProgressWithLabel(props) {
         <LinearProgress variant="determinate" {...props} />
       </Box>
       <Box className="progress__text">
-        <p>{`${Math.round(
-          props.value > 100 ? 100 : props.value
-        )} % complete`}</p>
+        <p>{`${Math.round(props.value > 100 ? 100 : props.value)} % saved`}</p>
       </Box>
     </Box>
   );

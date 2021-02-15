@@ -174,11 +174,11 @@ export const intervalOptions = [
 
 export const topUpOptions = [
   {
-    label: "Make a single payment",
+    label: "Make a one-time payment",
     value: "/amount",
   },
   {
-    label: "Make automatic payments",
+    label: "Set up automatic payments",
     value: "/interval",
   },
 ];

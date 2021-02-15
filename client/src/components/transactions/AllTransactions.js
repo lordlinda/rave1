@@ -101,7 +101,7 @@ const Transactions = (props) => {
             <DialogContent>
               <List>
                 <ListItem>
-                  <h1>Transaction</h1>
+                  <h1 style={{ fontSize: "25px" }}>Transaction</h1>
                 </ListItem>
                 <ListItem>
                   <ListItemText>Date</ListItemText>

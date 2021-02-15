@@ -58,6 +58,11 @@
   width: 100% !important;
   padding: 16px;
 }
+.selectPlan > a {
+  padding: 16px;
+  font-size: 20px;
+  color: var(--purple);
+}
 .disabledButton {
   background-color: var(--purple-light) !important;
 }

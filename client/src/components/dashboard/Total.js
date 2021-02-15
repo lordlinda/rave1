@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Select from "../Reusables/select/Select";
+import { Link } from "react-router-dom";
 
 const Total = ({
   total,
@@ -96,6 +97,9 @@ const Total = ({
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{`Choose a plan to topup`}</DialogTitle>
         <DialogContent className="selectPlan">
+          <Link to="/createPlan">Create a new plan</Link>
+          <br />
+          or
           <Select
             label="--select a plan-- "
             value={plan}

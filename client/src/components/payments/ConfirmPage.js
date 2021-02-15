@@ -149,31 +149,31 @@ class Subscription extends React.Component {
             <div className="confirmPage__body">
               <div className="confirmPage__details">
                 {this.props.location.state?.start && (
-                  <>
+                  <div>
                     <p>Start Date</p>
                     <p>
                       {moment(this.props.location.state?.start).format(
                         "DD MMM YYYY"
                       )}
                     </p>
-                  </>
+                  </div>
                 )}
                 {this.props.location.state?.end &&
                   this.props.location.state?.start && (
-                    <>
+                    <div>
                       <p>End Date</p>
                       <p>
                         {moment(this.props.location.state?.end).format(
                           "DD MMM YYYY"
                         )}
                       </p>
-                    </>
+                    </div>
                   )}
                 {this.props.location.state?.interval && (
-                  <>
+                  <div>
                     <p>Interval</p>
                     <p>{this.props.location.state?.interval}</p>
-                  </>
+                  </div>
                 )}
                 <div>
                   <p>Amount</p>

@@ -9,7 +9,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { toast } from "react-toastify";
-import Maturity from "../payments/MaturityDate";
 function CreatePlan(props) {
   const [amount, setAmount] = useState();
   const [name, setName] = useState();
@@ -72,7 +71,6 @@ function CreatePlan(props) {
             ))}
           </Select>
         </FormControl>
-        <Maturity />
         <Button
           className="createPlan__button"
           variant="contained"
