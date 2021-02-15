@@ -901,16 +901,16 @@ const calculateTotalAmountAccrued = async ({ deposit }) => {
   //first convert the interest rate percentage to  a decimal
   let rate;
   if (period == 3) {
-    rate = 0.02;
+    rate = 0.025;
   } else if (period == 6) {
-    rate = 0.04;
+    rate = 0.042;
   } else if (period == 9) {
-    rate = 0.06;
+    rate = 0.063;
   } else {
     rate = 0.08;
   }
   //calculate the new amount
-  const total = amount * (1 + rate);
+  const total = (amount * (1 + rate)).toFixed(0);
   /**then we update the plan available balance and also update the deposit */
   const { isSuccess } = await updateAvailableBalanceAndDeposit({
     deposit: deposit._id,
@@ -930,16 +930,16 @@ const calculateDailyAmountAccrued = async ({ deposit }) => {
   //first convert the interest rate percentage to  a decimal
   let rate;
   if (period == 3) {
-    rate = 0.02 / 91;
+    rate = 0.007 / 100;
   } else if (period == 6) {
-    rate = 0.04 / 182;
+    rate = 0.012 / 100;
   } else if (period == 9) {
-    rate = 0.06 / 273;
+    rate = 0.017 / 100;
   } else {
-    rate = 0.08 / 365;
+    rate = 0.022 / 100;
   }
   //calculate the new amount
-  const total = amount * (1 + rate);
+  const total = (amount * (1 + rate)).toFixed(0);
   /**then we update the plan available balance and also update the deposit */
   const { isSuccess } = await updateActualBalanceAndDeposit({
     deposit: deposit._id,

@@ -16,6 +16,7 @@ import { durationOptions } from "../Reusables/select/Options";
 function Maturity({ history, duration, setDuration }) {
   const [endDate, setEndDate] = useState("");
   const [total, setTotal] = useState(0);
+  const [rate, setRate] = useState("");
   const handleClick = async () => {
     const data = {
       ...history.location.state,
@@ -31,11 +32,12 @@ function Maturity({ history, duration, setDuration }) {
       startDate: history.location.state.start,
     });
     setEndDate(end);
-    const { total } = calculateTotalAmountAccrued({
+    const { total, yearlyRate } = calculateTotalAmountAccrued({
       period: e.target.value,
       amount: history.location.state.amount,
     });
     setTotal(total);
+    setRate(yearlyRate);
   };
 
   return (
@@ -73,7 +75,7 @@ function Maturity({ history, duration, setDuration }) {
             </span>{" "}
             <br />
             on {moment(endDate).format("DD MMM,YYYY")} at{" "}
-            <span>8% per annum</span>
+            <span>{rate}% per annum</span>
           </motion.div>
         )}
       </div>

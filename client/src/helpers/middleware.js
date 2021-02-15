@@ -83,18 +83,24 @@ export const calculateTotalAmountAccrued = ({ period, amount }) => {
   let total = 0;
   //first convert the interest rate percentage to  a decimal
   let rate;
+  let yearlyRate;
   if (period == 3) {
-    rate = 0.02;
+    rate = 0.025;
+    yearlyRate = 2.5;
   } else if (period == 6) {
-    rate = 0.04;
+    rate = 0.042;
+    yearlyRate = 4.2;
   } else if (period == 9) {
-    rate = 0.06;
+    rate = 0.063;
+    yearlyRate = 6.3;
   } else {
     rate = 0.08;
+    yearlyRate = 8;
   }
   //calculate the new amount
-  total = amount * (1 + rate);
+  total = (amount * (1 + rate)).toFixed(0);
   return {
     total,
+    yearlyRate,
   };
 };

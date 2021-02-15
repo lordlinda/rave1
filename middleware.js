@@ -62,12 +62,6 @@ module.exports = {
           });
 
           const newUser = await createUser.save();
-          await PaymentPlan.create({
-            name: "Wallet",
-            user: newUser._id,
-            amount: 0,
-            currency: "UGX",
-          });
 
           return done(null, newUser);
         } catch (error) {
